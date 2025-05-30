@@ -1,0 +1,21 @@
+<h1>Usuarios Registrados</h1>
+<ul>
+{% for usuario in usuarios %}
+    <li>{{ usuario.username }} - {{ usuario.email }}</li>
+{% endfor %}
+{% if 'superuser' in request.user.permisos %}
+<p>superuser</p>
+{% endif %}
+{% if request.user and 'superuser' not in request.user.permisos %}
+<p>not superuser </p>
+{% endif %}
+{% if 'user' in request.user.permisos %}
+<p>user</p>
+{% endif %}
+</ul>
+
+{% if request.user %}
+    <h1>Bienvenido, {{ request.user.username }}</h1>
+{% else %}
+    <h1>Bienvenido, Invitado</h1>
+{% endif %}

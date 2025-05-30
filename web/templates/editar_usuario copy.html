@@ -1,0 +1,126 @@
+<!-- miapp/templates/editar_usuario.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario</title>
+    <style>
+        /* Estilo para las dos secciones */
+        .container {
+            display: flex;
+        }
+        .lista {
+            width: 30%;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+        }
+        .formulario {
+            width: 70%;
+            padding: 10px;
+        }
+        .lista ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .lista li {
+            cursor: pointer;
+            margin: 5px 0;
+            padding: 5px;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+        }
+        .lista li:hover {
+            background-color: #ddd;
+        }
+
+        .lista button {
+            width: 100%;
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Datos de personas</h1>
+    <div class="container">
+        <!-- Lista de usuarios -->
+        <div class="lista">
+            <h2>Lista:</h2>
+            <button onclick="nuevoUser()">Nuevo usuario</button>
+            <ul>
+                {% for usuario in usuarios %}
+                <li onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
+                    {{ usuario.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <!-- Formulario de edición -->
+        <div class="formulario">
+            <h2>Formulario:</h2>
+            <form method="POST" action="{% url 'editar_usuario' %}">
+                {% csrf_token %}
+                <input type="hidden" id="usuario_id" name="usuario_id">
+                
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required><br><br>
+                
+                <label for="edad">Edad:</label>
+                <input type="number" id="edad" name="edad" required><br><br>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="genero">Genero:</label>
+                <select id="genero" name="genero" required>
+                    <option value="" disabled selected hidden>- - - - -</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Otro">Otro</option>
+                </select><br><br>
+
+                <label for="gr_sanguineo">Grupo sanguineo:</label>
+                <select id="gr_sanguineo" name="gr_sanguineo" required>
+                    <option value="" disabled selected hidden>- - - - -</option>
+                    <option value="0-">0-</option>
+                    <option value="0+">0+</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select><br><br>
+
+
+                <button type="submit" id="guardarDatos">Guardar Usuario</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Función para cargar los datos del usuario al hacer clic en su nombre
+        function editarUsuario(id, nombre, edad, email, genero, gr_sanguineo) {
+            document.getElementById('usuario_id').value = id;
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('edad').value = edad;
+            document.getElementById('email').value = email;
+            document.getElementById('genero').value = genero;
+            document.getElementById('gr_sanguineo').value = gr_sanguineo;
+            document.getElementById('guardarDatos').innerText = "Actualizar Usuario";
+        }
+
+        function nuevoUser(){
+            document.getElementById('usuario_id').value = "";
+            document.getElementById('nombre').value = "";
+            document.getElementById('edad').value = "";
+            document.getElementById('email').value = "";
+            document.getElementById('genero').value = "";
+            document.getElementById('gr_sanguineo').value = "";
+            document.getElementById('guardarDatos').innerText = "Guardar Usuario";
+        }
+    </script>
+</body>
+</html>

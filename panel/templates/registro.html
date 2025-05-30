@@ -1,0 +1,23 @@
+{% extends 'layout/base1.html' %}
+{% load static %}
+
+{% block title %}Registro{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'formulario/styles-register.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    {% if error %}
+    <p id="Men_error" style="color: red;">{{ error }}</p>
+    {% endif %}
+    <input type="text" name="username" placeholder="Nombre de usuario*" {% if user %} value="{{ user }}" {% endif %}required>
+    <input type="email" name="email" placeholder="email*" {% if email %} value="{{ email }}" {% endif %}required>
+    <input type="password" name="password" placeholder="password*" required>
+    <button type="submit">Registrarse</button>
+</form>
+
+{% endblock %}

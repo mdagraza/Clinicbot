@@ -1,0 +1,235 @@
+{% extends 'layout/base1.html' %}
+{% load static %}
+
+{% block title %}Datos Pacientes{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'formulario/styles-form.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+    <h1>Datos de pacientes</h1>
+    <div class="container">
+        <!-- Lista de usuarios -->
+        <div class="lista">
+            <h2>Lista:</h2>
+            
+            <button onclick="nuevoUser()">Nuevo paciente</button>
+            <div class="lista2">
+                <ul>
+                    {% for usuario in usuarios %}
+                    <li onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_paciente }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
+                        {{ usuario.apellidos }}, {{ usuario.nombre }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Formulario de edición -->
+        <div class="formulario">
+            <h2>Formulario:</h2>
+            <form method="POST" action="{% url 'editar_usuario' %}">
+                {% csrf_token %}
+                <input type="hidden" id="usuario_id" name="usuario_id">
+                
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required>
+
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" id="apellidos" name="apellidos" required>
+
+                <label for="ident_paciente">Identificador paciente:</label>
+                <input type="text" id="ident_paciente" name="ident_paciente" required>
+                
+                <label for="edad">Edad:</label>
+                <input type="number" id="edad" name="edad" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="genero">Genero:</label>
+                <select id="genero" name="genero" required>
+                    <option value="" disabled selected hidden>- - - - -</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Otro">Otro</option>
+                </select>
+
+                <label for="gr_sanguineo">Grupo sanguineo:</label>
+                <select id="gr_sanguineo" name="gr_sanguineo" required>
+                    <option value="" disabled selected hidden>- - - - -</option>
+                    <option value="0-">0-</option>
+                    <option value="0+">0+</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+
+
+                <button type="submit" id="guardarDatos">Guardar paciente</button>
+            </form>
+            <br>
+            <form method="POST" action="{% url 'borrar_usuario' %}">
+                {% csrf_token %}
+                <input type="hidden" id="usuario_id2" name="usuario_id2">
+                <button type="submit" id="eliminarDatos">Eliminar paciente</button>
+            </form>
+        </div>
+    </div>
+
+    <!---->
+    
+    <div class="container2">
+        <!-- Lista de usuarios -->
+        <div class="lista11">
+            <div class="texto-boton"> 
+                <h2>Muestras asociadas:</h2>
+                <button id="cerrarForm" style="display:none;">X</button>
+            </div>
+            
+            <div class="lista22">
+                <ul id="muestras-lista">
+                    <li>No hay muestras asociadas</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Formulario de edición de muestras -->
+        <div class="formulario-muestras" id="formulario-muestras" style="display:none;">
+            <h2>Edición muestra:</h2>
+            <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
+                {% csrf_token %}
+                <input type="hidden" id="muestra_id" name="muestra_id">
+                <label for="paciente_id">Nombre:</label>
+                <select id="paciente_id" name="paciente_id" disabled>
+                    <option value="" disabled selected hidden>- - - - -</option>
+                    {% for usuario in usuarios %}
+                    <option value="{{ usuario.id }}">{{ usuario.apellidos }}, {{ usuario.nombre }}</option>
+                    {% endfor %}
+                </select>
+               
+                <label for="identificador">Identificador:</label>
+                <input type="text" id="identificador" name="identificador" disabled>
+                <p id="Men_error" style="color: red; display: none;">Mensaje error</p>
+                
+                <label for="color">Color:</label>
+                <input type="text" id="color" name="color" required>
+               
+                <label for="posicion">Posición:</label>
+                <input type="number" id="posicion" name="posicion" required>
+               
+                <label for="fecha" id="fechaL">Fecha:
+                <input type="datetime-local" id="fecha" name="fecha"></label>
+                
+                <button type="submit" id="guardarDatos">Guardar muestra</button>
+            </form>
+            <br>
+            <form method="POST" action="{% url 'borrar_muestra' %}">
+                {% csrf_token %}
+                <input type="hidden" id="muestra_id2" name="muestra_id2">
+                <button type="submit" id="eliminarDatos">Eliminar muestra</button>
+            </form>
+        </div>
+
+        
+    </div>
+    
+    
+    <!---->
+
+    <script>
+        // Función para cargar los datos del usuario al hacer clic en su nombre
+        function editarUsuario(id, nombre, apellidos, ident_paciente, edad, email, genero, gr_sanguineo) {
+            document.getElementById('usuario_id').value = id;
+            document.getElementById('usuario_id2').value = id;
+            document.getElementById('nombre').value = nombre;
+            document.getElementById('apellidos').value = apellidos;
+            document.getElementById('ident_paciente').value = ident_paciente;
+            document.getElementById('edad').value = edad;
+            document.getElementById('email').value = email;
+            document.getElementById('genero').value = genero;
+            document.getElementById('gr_sanguineo').value = gr_sanguineo;
+            document.getElementById('guardarDatos').innerText = "Actualizar paciente";
+
+            document.getElementById('formulario-muestras').style.display = 'none';
+            document.getElementById('cerrarForm').style.display = 'none'; 
+
+            // Obtener muestras del usuario seleccionado
+            fetch(`/obtener_muestras/${id}/`)
+            .then(response => response.json())
+            .then(muestras => {
+                let listaMuestras = document.getElementById("muestras-lista");
+                listaMuestras.innerHTML = ""; // Limpiar la lista
+
+                if (muestras.length > 0) {
+                    muestras.forEach(muestra => {
+                        let li = document.createElement("li");
+                        li.setAttribute('data-muestra-id', muestra.id);
+                        li.setAttribute('data-usuario-id', id);
+                        li.innerText = muestra.identificador + " | " + muestra.color;
+                        li.onclick = function() {
+                            editarMuestra(muestra.id, id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
+                        };
+                        listaMuestras.appendChild(li);
+                    });
+                } else {
+                    let li = document.createElement("li");
+                    li.innerText = "No hay muestras asociadas";
+                    listaMuestras.appendChild(li);
+                }
+            })
+            .catch(error => console.error("Error al obtener las muestras:", error));
+        }
+
+        function nuevoUser(){
+            document.getElementById('usuario_id').value = "";
+            document.getElementById('usuario_id2').value = "";
+            document.getElementById('nombre').value = "";
+            document.getElementById('apellidos').value = "";
+            document.getElementById('ident_paciente').value = "";
+            document.getElementById('edad').value = "";
+            document.getElementById('email').value = "";
+            document.getElementById('genero').value = "";
+            document.getElementById('gr_sanguineo').value = "";
+            document.getElementById('guardarDatos').innerText = "Guardar paciente";
+
+            document.getElementById("muestras-lista").innerHTML = "";
+            let li = document.createElement("li");
+            li.innerText = "No hay muestras asociadas";
+            document.getElementById("muestras-lista").appendChild(li);
+
+            document.getElementById('formulario-muestras').style.display = 'none';
+            document.getElementById('cerrarForm').style.display = 'none'; 
+        }
+
+        function editarMuestra(muestraId, usuarioId, identificador, color, posicion, fecha) {
+            document.getElementById('muestra_id').value = muestraId;
+            document.getElementById('muestra_id2').value = muestraId;
+            document.getElementById('paciente_id').value = usuarioId;
+            document.getElementById('identificador').value = identificador;
+            document.getElementById('color').value = color;
+            document.getElementById('posicion').value = posicion;
+            document.getElementById('fecha').value = fecha;
+
+            document.getElementById('formulario-muestras').style.display = 'block';
+            document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
+
+            document.getElementById('cerrarForm').style.display = 'block'; //Mostrar boton cerrar
+
+
+        }
+
+        document.getElementById('cerrarForm').addEventListener('click', function() {
+            document.getElementById('formulario-muestras').style.display = 'none';
+            document.getElementById('cerrarForm').style.display = 'none'; 
+    });
+
+    </script>
+
+{% endblock %}
