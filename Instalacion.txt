@@ -3,11 +3,12 @@
 2. Crear un nuevo entorno virtual:
 	python -m venv <nombre_del_entorno>
 
-3. Instalar todas las dependencias
+3. Descomprimir Clinicbot dentro de la carpeta del entorno virtual.
+4. En la carpeta del entorno virtual abrir consola y ejecutar : Scripts\activate
+
+5. Instalar todas las dependencias
 	pip install -r requirements.txt
-	
-4. Descomprimir Clinicbot dentro de la carpeta del entorno virtual.
-5. En la carpeta del entorno virtual abrir consola y ejecutar : Scripts\activate
+
 6. En la consola moverse a la carpeta Clinicbot
 7. Ejecutar servidor
 	python manage.py runserver
