@@ -36,16 +36,19 @@ class UsuarioService:
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
         usuario = {
+            'numUser' : self.obtener_numUser(),
             'username': username,
             'email': email,
             'password': hashed_password,
             'es_superuser': es_superuser, 
+            'es_staff': es_superuser,   
+            'activo': True, 
             'permisos': ['usuario_normal'] if not es_superuser else ['superuser']
         }
 
         return self.collection.insert_one(usuario)
 
-    def autenticar_usuario(self, username, password):
+    def validar_credenciales(self, username, password):
         # Buscar usuario
         usuario = self.collection.find_one({'username': username})
         
@@ -56,6 +59,10 @@ class UsuarioService:
 
     def obtener_usuario(self, username):
         return self.collection.find_one({'username': username})
+    
+    def obtener_usuario_por_id(self, user_id):
+        print(f"Obteniendo usuario con ID: {user_id}")
+        return self.collection.find_one({'numUser': user_id})
 
     def listar_usuarios(self):
         return list(self.collection.find({}, {'password': 0}))  # Excluir contraseñas
@@ -67,6 +74,15 @@ class UsuarioService:
     def obtener_permisos(self, username):
         usuario = self.obtener_usuario(username)
         return usuario.get('permisos', []) if usuario else []
+    
+    def obtener_numUser(self):
+        # Buscar el documento con el numUser más alto
+        max_user = self.collection.find_one(sort=[("numUser", -1)])
+    
+        if max_user and "numUser" in max_user:
+            return max_user["numUser"] + 1
+        else:
+            return 1
     
 
 class AuthMiddleware:

@@ -13,6 +13,10 @@ collection = get_db_pacientes()
 collection2 = get_db_muestras()
 
 def home2(request):
+    print(f"Usuario en home_view: {request.user}")
+    mis_cookies = request.COOKIES
+    print(mis_cookies)  # Es un diccionario
+
     return render(request, "home2.html")
 
 # Vista para mostrar la lista de usuarios y el formulario de edición

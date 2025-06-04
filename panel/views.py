@@ -3,6 +3,7 @@ from django.contrib import messages
 from Clinicbot.utils import UsuarioService
 import bcrypt
 from .decorators import *
+from django.contrib.auth import login, authenticate, logout
 
 # Inicializar servicio
 usuario_service = UsuarioService()
@@ -34,23 +35,38 @@ def registro(request):
     return render(request, 'registro.html')
 
 def login_view(request):
-    if request.user and request.user.get('username'):
-        messages.info(request, "Ya estas autenticado")
-        return redirect('home2')
-        #return redirect(request.path)
-
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        if usuario_service.autenticar_usuario(username, password):
-            # Guardar en sesión
-            request.session['username'] = username
-            messages.success(request, 'Inicio de sesión exitoso')
+        user = authenticate(request, username=username, password=password)
+        print('###############')
+        print(f'Username: {username}, Password: {password}')
+        print(f'User: {user}')
+        print('###############')
+        if user is not None:
+            login(request, user)
             return redirect('home2')
         else:
             messages.error(request, 'Credenciales inválidas')
             return render(request, 'login.html', {"error": 'Credenciales inválidas'})
+    # if request.user and request.user.get('username'):
+    #     messages.info(request, "Ya estas autenticado")
+    #     return redirect('home2')
+    #     #return redirect(request.path)
+
+    # if request.method == 'POST':
+    #     username = request.POST.get('username')
+    #     password = request.POST.get('password')
+
+    #     if usuario_service.autenticar_usuario(username, password):
+    #         # Guardar en sesión
+    #         request.session['username'] = username
+    #         messages.success(request, 'Inicio de sesión exitoso')
+    #         return redirect('home2')
+    #     else:
+    #         messages.error(request, 'Credenciales inválidas')
+    #         return render(request, 'login.html', {"error": 'Credenciales inválidas'})
 
     return render(request, 'login.html')
 
@@ -62,7 +78,8 @@ def dashboard(request):
 
 def logout_view(request):
     # Limpiar sesión
-    request.session.flush()
+    #request.session.flush()
+    logout(request)
     messages.success(request, 'Sesión cerrada exitosamente')
     return redirect('home2')
 
