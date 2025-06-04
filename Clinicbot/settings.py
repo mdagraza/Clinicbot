@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'web',
     'panel',
     'api',
+    'panel_admin',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +53,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'panel.utils.AuthMiddleware',
+    'Clinicbot.utils.AuthMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    'Clinicbot.backends.MongoBackend',
+    'django.contrib.auth.backends.ModelBackend',  # opcional
 ]
 
 ROOT_URLCONF = 'Clinicbot.urls'
@@ -107,7 +113,7 @@ SILENCED_SYSTEM_CHECKS = [
 
 '''REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'panel.utils.UsuarioService',
+        'Clinicbot.utils.UsuarioService',
     ],
 }'''
 

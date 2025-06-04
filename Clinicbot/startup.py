@@ -1,4 +1,4 @@
-from panel.utils import UsuarioService
+from Clinicbot.utils import UsuarioService
 from django.contrib import messages
 
 def crear_admin():

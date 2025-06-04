@@ -23,6 +23,7 @@ urlpatterns = [
     path('', include('web.urls')),   
     path('panel/', include('panel.urls')), 
     path('api/', include('api.urls')),   
+    path('admin/', include('panel_admin.urls')),   
 ]
 
 '''path('', views.hello), #'' Es la pagin principal, y luego lo que debe cargar

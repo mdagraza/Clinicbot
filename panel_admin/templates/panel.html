@@ -1,0 +1,27 @@
+{% extends 'layout/base1.html' %}
+{% load static %}
+
+{% block title %}Panel admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'formulario/styles-admin.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="admin-panel">
+    <aside class="sidebar">
+        <nav>
+            <ul>
+                <li><a href="">Datos Cuenta</a></li>
+                <li><a href="">Crear Token</a></li>
+                <li><a href="">Ver Usuarios</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <main class="panel-content">
+        <!-- Aquí va el contenido principal del panel de administración -->
+    </main>
+</div>
+
+{% endblock %}

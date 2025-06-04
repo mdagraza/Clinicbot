@@ -7,7 +7,7 @@ import re
 from datetime import datetime
 from panel.decorators import *
 from .tokens import TokenManager
-from panel.utils import UsuarioService
+from Clinicbot.utils import UsuarioService
 from .decorators import token_required
 
 import os

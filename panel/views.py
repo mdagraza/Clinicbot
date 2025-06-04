@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .utils import UsuarioService
+from Clinicbot.utils import UsuarioService
 import bcrypt
 from .decorators import *
 
