@@ -99,15 +99,16 @@
                         <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
                             {% csrf_token %}
                             <input type="hidden" id="muestra_id" name="muestra_id">
-                            <label for="paciente_id">Nombre:</label>
-                            <select id="paciente_id" name="paciente_id" disabled>
+                            <input type="hidden" id="paciente_id" name="paciente_id">
+                            <label for="paciente_id-select">Nombre:</label>
+                            <select id="paciente_id-select" name="paciente_id-select" disabled >
                                 <option value="" disabled selected hidden>- - - - -</option>
                                 {% for usuario in usuarios %}
                                 <option value="{{ usuario.id }}">{{ usuario.apellidos }}, {{ usuario.nombre }}</option>
                                 {% endfor %}
                             </select>
                             <label for="identificador">Identificador:</label>
-                            <input type="text" id="identificador" name="identificador" disabled>
+                            <input type="text" id="identificador" name="identificador" readonly >
                             <label for="color">Color:</label>
                             <input type="text" id="color" name="color" required>
                             <label for="posicion">Posición:</label>
@@ -140,6 +141,7 @@
 
     <script>
         let pacienteSeleccionado; //Se guarda el id del paciente seleccionado
+        let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
         // Función para cargar los datos del usuario al hacer clic en su nombre
         function editarUsuario(id, nombre, apellidos, ident_paciente, edad, email, genero, gr_sanguineo) {
             document.getElementById('usuario_id').value = id;
@@ -172,6 +174,7 @@
                 if (muestras.length > 0) {
                     muestras.forEach(muestra => {
                         let li = document.createElement("li");
+                        li.setAttribute('id', "li" + String(muestra.id));
                         li.setAttribute('data-muestra-id', muestra.id);
                         li.setAttribute('data-usuario-id', id);
                         li.innerText = muestra.identificador + " | " + muestra.color;
@@ -216,6 +219,7 @@
             document.getElementById('muestra_id').value = muestraId;
             document.getElementById('muestra_id2').value = muestraId;
             document.getElementById('paciente_id').value = usuarioId;
+            document.getElementById('paciente_id-select').value = usuarioId;
             document.getElementById('identificador').value = identificador;
             document.getElementById('color').value = color;
             document.getElementById('posicion').value = posicion;
@@ -225,11 +229,19 @@
             document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
 
             document.getElementById('cerrarForm').style.display = 'block'; //Mostrar boton cerrar
+
+            if(muestraSeleccionada){
+                document.getElementById(muestraSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+            }
+            muestraSeleccionada = "li" + String(muestraId);
+            document.getElementById(muestraSeleccionada).style.fontWeight = "bold";
         }
 
         document.getElementById('cerrarForm').addEventListener('click', function() {
             document.getElementById('formulario-muestras').style.display = 'none';
             document.getElementById('cerrarForm').style.display = 'none'; 
+
+            document.getElementById(muestraSeleccionada).style.fontWeight = "normal";
         });
 
         function openTab(evt, tabName) {

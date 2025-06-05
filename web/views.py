@@ -100,9 +100,12 @@ def editar_muestra(request):
         color = request.POST.get("color")
         posicion = request.POST.get("posicion")
         fecha = request.POST.get("fecha")
+
+        print("Datos recibidos:", muestra_id, paciente_id, identificador, color, posicion, fecha)
         
         # Actualizar los datos en MongoDB
         if not muestra_id: #Si no hay ningún usuario cargado, se crea un nuevo con los datos | not... si es none, null o vacio
+            print("Creando nueva muestra")
             nueva_muestra = {
                 "paciente_id": ObjectId(paciente_id),
                 "identificador": identificador,
