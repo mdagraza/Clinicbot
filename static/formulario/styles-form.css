@@ -1,214 +1,301 @@
-/* Reset y estilos base */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f7f6;
     color: #333;
-    line-height: 1.6;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
+    min-height: 100vh;
 }
 
-.container, .container2 {
+.main-container {
     display: flex;
-    width: 100%;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    /*overflow: hidden;*/
-    flex: 1;
+    height: 100vh;
+    overflow: hidden;
 }
 
-/* Estilos para listas */
-.lista, .lista11 {
-    flex: 0 0 30%;
-    background-color: #f9f9f9;
-    border-right: 1px solid #e0e0e0;
+.sidebar {
+    flex: 0 0 250px;
+    min-width: 180px;
+    max-width: 400px;
+    background: #f9f9f9;
     padding: 15px;
-}
-
-.lista2, .lista22 {
     overflow-y: auto;
-    max-height: 60vh;
+    resize: horizontal;
+    overflow: auto;
+    border-right: 1px solid #ddd;
 }
 
-.lista ul, .lista11 ul {
-    list-style-type: none;
+.sidebar h2 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
 }
 
-.lista li, .lista11 li {
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.lista li:hover, .lista11 li:hover {
-    background-color: #e6f3ff;
-    border-color: #4a90e2;
-}
-
-/* Estilos de botones */
-.lista button, .lista11 button {
+.sidebar button {
     width: 100%;
     padding: 10px;
     background-color: #4a90e2;
     color: white;
     border: none;
     border-radius: 4px;
+    margin-bottom: 10px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-size: 14px;
 }
 
-.lista button:hover, .lista11 button:hover {
-    background-color: #357abd;
+.sidebar button:hover {
+    background-color: #3a7bc8;
 }
 
-/* Formularios */
-.formulario, .formulario-muestras {
-    flex: 0 0 70%;
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    padding: 10px;
+    margin-bottom: 5px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar li:hover {
+    background: #e6f3ff;
+    border-color: #4a90e2;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    background: #f8f8f8;
+}
+
+.tab-button {
+    padding: 12px 20px;
+    background: #f1f1f1;
+    border: none;
+    cursor: pointer;
+    border-right: 1px solid #ccc;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.tab-button:hover {
+    background: #e8e8e8;
+}
+
+.tab-button.active {
+    background: #fff;
+    border-bottom: 2px solid #4a90e2;
+    color: #4a90e2;
+    font-weight: 500;
+}
+
+.tab-content {
+    flex: 1;
+    overflow-y: auto;
     padding: 20px;
-    background-color: white;
+    display: none;
 }
 
-.formulario {
-    border-left: 2px solid #4CAF50;
+.tab-content.active {
+    display: block;
 }
 
-.formulario-muestras {
-    border-left: 2px solid #ff6b6b;
+.formulario, .formulario-muestras {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .formulario h2, .formulario-muestras h2 {
     margin-bottom: 20px;
     color: #333;
-    padding-bottom: 10px;
-    border-bottom: 2px solid;
-}
-
-.formulario h2 {
-    border-bottom-color: #4CAF50;
-}
-
-.formulario-muestras h2 {
-    border-bottom-color: #ff6b6b;
-}
-
-/* Estilos de inputs */
-.formulario form, .formulario-muestras form {
-    display: grid;
-    gap: 15px;
+    font-size: 20px;
 }
 
 .formulario label, .formulario-muestras label {
-    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 15px;
+    font-weight: 500;
     color: #555;
 }
 
-.formulario input, 
-.formulario select, 
-.formulario-muestras input, 
-.formulario-muestras select {
+.formulario input, .formulario select, 
+.formulario-muestras input, .formulario-muestras select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    transition: border-color 0.3s ease;
-}
-
-.formulario input:focus, 
-.formulario select:focus, 
-.formulario-muestras input:focus, 
-.formulario-muestras select:focus {
-    outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
-}
-
-/* Botones de submit y eliminar */
-.formulario button[type="submit"], 
-.formulario-muestras button[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.formulario button[type="submit"]:hover, 
-.formulario-muestras button[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-.formulario button#eliminarDatos, 
-.formulario-muestras button#eliminarDatos {
-    background-color: #f44336;
-    color: white;
-}
-
-.formulario button#eliminarDatos:hover, 
-.formulario-muestras button#eliminarDatos:hover {
-    background-color: #d32f2f;
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-    .container, .container2 {
-        flex-direction: column;
-    }
-    
-    .lista, .lista11, 
-    .formulario, .formulario-muestras {
-        flex: 1 0 100%;
-        width: 100%;
-        border-right: none;
-    }
-    
-    .lista, .lista11 {
-        border-bottom: 1px solid #e0e0e0;
-    }
-}
-
-/* Estilos para mensajes de error */
-#Men_error {
-    color: #f44336;
-    font-size: 0.9em;
-    margin-top: -10px;
+    font-size: 14px;
     margin-bottom: 10px;
 }
 
-
-/* Contenedor del texto y el botón */
-.texto-boton {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Espacio entre el texto y el botón */
+.formulario input:focus, .formulario select:focus,
+.formulario-muestras input:focus, .formulario-muestras select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
 }
 
-/* Estilo para el botón */
-.texto-boton button {
-    background-color: #4a90e2;
+.formulario button, .formulario-muestras button {
+    background: #4a90e2;
     color: white;
     border: none;
     border-radius: 4px;
+    padding: 12px 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: auto;
-    margin-left: auto;
+    font-size: 14px;
+    margin-top: 15px;
+    margin-right: 10px;
+}
+
+.formulario button:hover, .formulario-muestras button:hover {
+    background: #3a7bc8;
+}
+
+.formulario button[type="submit"]:last-of-type {
+    background: #dc3545;
+}
+
+.formulario button[type="submit"]:last-of-type:hover {
+    background: #c82333;
+}
+
+.container2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    height: 100%;
+}
+
+.lista11 {
+    flex: 0 0 250px;
+    min-width: 200px;
+    max-width: 350px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-right: 1px solid #ddd;
+    border-radius: 8px;
+    resize: horizontal;
+    overflow: auto;
+}
+
+.lista11 h2 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+}
+
+.lista11 ul {
+    list-style: none;
+}
+
+.lista11 li {
+    padding: 10px;
+    margin-bottom: 5px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+}
+
+.lista11 li:hover {
+    background: #e6f3ff;
+    border-color: #4a90e2;
+}
+
+.texto-boton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.texto-boton button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .texto-boton button:hover {
-    background-color: #357abd;
+    background: #c82333;
+}
+
+.formulario-muestras {
+    flex: 1;
+    min-width: 300px;
+}
+
+.petri-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.petri-content h3 {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.petri-content p {
+    color: #888;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        flex: 0 0 auto;
+        max-width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        resize: none;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .container2 {
+        flex-direction: column;
+    }
+
+    .lista11 {
+        flex: 0 0 auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        resize: none;
+    }
 }
