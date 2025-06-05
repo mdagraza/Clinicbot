@@ -152,13 +152,21 @@ h1 {
     margin-right: 10px;
 }
 
-.login-btn, .logout-btn, .register-btn {
+.login-btn, .logout-btn, .register-btn, .panel-btn {
     color: white;
     text-decoration: none;
     padding: 8px 12px;
     border-radius: 5px;
     transition: 0.3s;
     background-color: #02942e;
+}
+
+.panel-btn {
+    background-color: #969696;
+}
+
+.panel-btn:hover {
+    background-color: #242424;
 }
 
 .login-btn:hover, .register-btn:hover {
