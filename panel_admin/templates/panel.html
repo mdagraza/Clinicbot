@@ -15,7 +15,9 @@
             <ul>
                 <li><a href="">Datos Cuenta</a></li>
                 <li><a href="">Crear Token</a></li>
+                {% if 'superuser' in request.user.permisos %}
                 <li><a href="">Ver Usuarios</a></li>
+                {% endif %}
             </ul>
         </nav>
     </aside>

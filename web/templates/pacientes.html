@@ -20,7 +20,7 @@
                     <li>No hay pacientes registrados</li>
                     {% endif %}
                     {% for usuario in usuarios %}
-                    <li onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_paciente }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
+                    <li id="li{{ usuario.id }}" onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_paciente }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
                         {{ usuario.apellidos }}, {{ usuario.nombre }}
                     </li>
                     {% endfor %}
@@ -139,6 +139,7 @@
     <!---->
 
     <script>
+        let pacienteSeleccionado; //Se guarda el id del paciente seleccionado
         // Función para cargar los datos del usuario al hacer clic en su nombre
         function editarUsuario(id, nombre, apellidos, ident_paciente, edad, email, genero, gr_sanguineo) {
             document.getElementById('usuario_id').value = id;
@@ -155,7 +156,13 @@
             document.getElementById('formulario-muestras').style.display = 'none';
             document.getElementById('cerrarForm').style.display = 'none'; 
 
-             // Obtener muestras del usuario seleccionado
+            if(pacienteSeleccionado){
+                document.getElementById(pacienteSeleccionado).style.fontWeight = "normal"; //Se pone normal el paciente previamente seleccionado
+            }
+            pacienteSeleccionado = "li" + String(id);
+            document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
+
+            // Obtener muestras del usuario seleccionado
             fetch(`/obtener_muestras/${id}/`)
             .then(response => response.json())
             .then(muestras => {
@@ -201,6 +208,8 @@
 
             document.getElementById('formulario-muestras').style.display = 'none';
             document.getElementById('cerrarForm').style.display = 'none'; 
+
+            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
         }
 
         function editarMuestra(muestraId, usuarioId, identificador, color, posicion, fecha) {

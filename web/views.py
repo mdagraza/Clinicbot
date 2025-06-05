@@ -69,7 +69,7 @@ def editar_usuario(request):
 
 
     # Renderizar la página con la lista de usuarios y el formulario de edición
-    return render(request, "editar_usuario.html", {"usuarios": usuarios})
+    return render(request, "pacientes.html", {"usuarios": usuarios})
 
 def borrar_usuario(request):
     if request.method == 'POST':

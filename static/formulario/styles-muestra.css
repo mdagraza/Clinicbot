@@ -1,0 +1,214 @@
+/* Reset y estilos base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container, .container2 {
+    display: flex;
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    /*overflow: hidden;*/
+    flex: 1;
+}
+
+/* Estilos para listas */
+.lista, .lista11 {
+    flex: 0 0 30%;
+    background-color: #f9f9f9;
+    border-right: 1px solid #e0e0e0;
+    padding: 15px;
+}
+
+.lista2, .lista22 {
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.lista ul, .lista11 ul {
+    list-style-type: none;
+}
+
+.lista li, .lista11 li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.lista li:hover, .lista11 li:hover {
+    background-color: #e6f3ff;
+    border-color: #4a90e2;
+}
+
+/* Estilos de botones */
+.lista button, .lista11 button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.lista button:hover, .lista11 button:hover {
+    background-color: #357abd;
+}
+
+/* Formularios */
+.formulario, .formulario-muestras {
+    flex: 0 0 70%;
+    padding: 20px;
+    background-color: white;
+}
+
+.formulario {
+    border-left: 2px solid #4CAF50;
+}
+
+.formulario-muestras {
+    border-left: 2px solid #ff6b6b;
+}
+
+.formulario h2, .formulario-muestras h2 {
+    margin-bottom: 20px;
+    color: #333;
+    padding-bottom: 10px;
+    border-bottom: 2px solid;
+}
+
+.formulario h2 {
+    border-bottom-color: #4CAF50;
+}
+
+.formulario-muestras h2 {
+    border-bottom-color: #ff6b6b;
+}
+
+/* Estilos de inputs */
+.formulario form, .formulario-muestras form {
+    display: grid;
+    gap: 15px;
+}
+
+.formulario label, .formulario-muestras label {
+    font-weight: 600;
+    color: #555;
+}
+
+.formulario input, 
+.formulario select, 
+.formulario-muestras input, 
+.formulario-muestras select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.formulario input:focus, 
+.formulario select:focus, 
+.formulario-muestras input:focus, 
+.formulario-muestras select:focus {
+    outline: none;
+    border-color: #4a90e2;
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+/* Botones de submit y eliminar */
+.formulario button[type="submit"], 
+.formulario-muestras button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.formulario button[type="submit"]:hover, 
+.formulario-muestras button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.formulario button#eliminarDatos, 
+.formulario-muestras button#eliminarDatos {
+    background-color: #f44336;
+    color: white;
+}
+
+.formulario button#eliminarDatos:hover, 
+.formulario-muestras button#eliminarDatos:hover {
+    background-color: #d32f2f;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .container, .container2 {
+        flex-direction: column;
+    }
+    
+    .lista, .lista11, 
+    .formulario, .formulario-muestras {
+        flex: 1 0 100%;
+        width: 100%;
+        border-right: none;
+    }
+    
+    .lista, .lista11 {
+        border-bottom: 1px solid #e0e0e0;
+    }
+}
+
+/* Estilos para mensajes de error */
+#Men_error {
+    color: #f44336;
+    font-size: 0.9em;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+
+/* Contenedor del texto y el botón */
+.texto-boton {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre el texto y el botón */
+}
+
+/* Estilo para el botón */
+.texto-boton button {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto;
+    margin-left: auto;
+}
+
+.texto-boton button:hover {
+    background-color: #357abd;
+}
