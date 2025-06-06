@@ -135,7 +135,7 @@ body {
 }
 
 .formulario input, .formulario select, 
-.formulario-muestras input, .formulario-muestras select {
+.formulario-muestras input, .formulario-muestras select, #buscarPaciente {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -163,16 +163,42 @@ body {
     margin-right: 10px;
 }
 
-.formulario button:hover, .formulario-muestras button:hover {
-    background: #3a7bc8;
+.formulario #guardarDatos, .formulario-muestras #guardarDatos{
+    background: #81C784;
 }
 
-.formulario button[type="submit"]:last-of-type {
-    background: #dc3545;
+.formulario #guardarDatos:hover, .formulario-muestras #guardarDatos:hover{
+    background: #66BB6A;
 }
 
-.formulario button[type="submit"]:last-of-type:hover {
-    background: #c82333;
+.formulario #eliminarDatos, .formulario-muestras #eliminarDatos{
+    background: #FF8A80;
+}
+
+.formulario #eliminarDatos:hover, .formulario-muestras #eliminarDatos:hover{
+    background: #E57373;
+}
+
+.busquedaPaciente{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#limpiarBuscar{
+    background: #FF8A80;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: auto;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    width: inherit;
+}
+
+#limpiarBuscar:hover {
+    background: #E57373;
 }
 
 .container2 {

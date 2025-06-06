@@ -14,6 +14,11 @@
         <div class="sidebar" id="sidebar">
             <h2>Pacientes</h2>
             <button onclick="nuevoUser()">Nuevo paciente</button>
+            <div class="busquedaPaciente">
+                <input type="search" id="buscarPaciente" placeholder="Buscar paciente..." onkeyup="filtrarPaciente()">
+                <button type="button" id="limpiarBuscar" onclick="borrarBuscador()">X</button>
+            </div>
+            
             <div class="lista2">
                 <ul>
                     {% if not usuarios %}
@@ -115,7 +120,7 @@
                             <input type="number" id="posicion" name="posicion" required>
                             <label for="fecha">Fecha:</label>
                             <input type="datetime-local" id="fecha" name="fecha">
-                            <button type="submit">Guardar muestra</button>
+                            <button type="submit" id="guardarDatos">Guardar muestra</button>
                         </form>
                         <br>
                         <form method="POST" action="{% url 'borrar_muestra' %}">
@@ -259,6 +264,29 @@
 
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
+        }
+
+        function borrarBuscador() {
+            document.getElementById("buscarPaciente").value = "";
+            filtrarPaciente();
+        }
+
+        function filtrarPaciente() {
+            var input, filter, ul, li, a, i, txtValue;
+            input = document.getElementById('buscarPaciente');
+            filter = input.value.toUpperCase();
+            ul = document.querySelector('.lista2 ul');
+            li = ul.getElementsByTagName('li');
+
+            for (i = 0; i < li.length; i++) {
+                a = li[i];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    a.style.display = "";
+                } else {
+                    a.style.display = "none";
+                }
+            }
         }
     </script>
 
