@@ -36,13 +36,12 @@
         <div class="content">
             <div class="tabs">
                 <button class="tab-button active" onclick="openTab(event, 'datos-paciente')">Datos Paciente</button>
-                <button class="tab-button" onclick="openTab(event, 'datos-sangre')">Datos Sangre</button>
-                <button class="tab-button" onclick="openTab(event, 'datos-petri')">Datos Petri</button>
+                <button class="tab-button" onclick="openTab(event, 'datos-sangre')">Muestras de Sangre</button>
+                <button class="tab-button" onclick="openTab(event, 'datos-petri')">Análisis de placas petri</button>
             </div>
 
             <div id="datos-paciente" class="tab-content active">
                 <div class="formulario">
-                    <h2>Formulario:</h2>
                     <form method="POST" action="{% url 'editar_usuario' %}">
                         {% csrf_token %}
                         <input type="hidden" id="usuario_id" name="usuario_id">
@@ -100,18 +99,10 @@
                         </div>
                     </div>
                     <div class="formulario-muestras" id="formulario-muestras" style="display:none;">
-                        <h2>Edición muestra:</h2>
                         <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
                             {% csrf_token %}
                             <input type="hidden" id="muestra_id" name="muestra_id">
                             <input type="hidden" id="paciente_id" name="paciente_id">
-                            <label for="paciente_id-select">Nombre:</label>
-                            <select id="paciente_id-select" name="paciente_id-select" disabled >
-                                <option value="" disabled selected hidden>- - - - -</option>
-                                {% for usuario in usuarios %}
-                                <option value="{{ usuario.id }}">{{ usuario.apellidos }}, {{ usuario.nombre }}</option>
-                                {% endfor %}
-                            </select>
                             <label for="identificador">Identificador:</label>
                             <input type="text" id="identificador" name="identificador" readonly >
                             <label for="color">Color:</label>
@@ -224,7 +215,6 @@
             document.getElementById('muestra_id').value = muestraId;
             document.getElementById('muestra_id2').value = muestraId;
             document.getElementById('paciente_id').value = usuarioId;
-            document.getElementById('paciente_id-select').value = usuarioId;
             document.getElementById('identificador').value = identificador;
             document.getElementById('color').value = color;
             document.getElementById('posicion').value = posicion;

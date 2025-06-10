@@ -18,3 +18,6 @@ application = get_wsgi_application()
 ##Crear usuario admin
 from .startup import *
 crear_admin()
+
+## Datos de prueba
+datos_prueba()
