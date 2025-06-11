@@ -218,8 +218,11 @@ class Save_Images(APIView):
         for field_name, file_obj in request.FILES.items():         
             # Validar que sea PNG o JPG
             if 'png' not in file_obj.content_type.lower() and 'jpg' not in file_obj.content_type.lower() and 'jpeg' not in file_obj.content_type.lower():
-                #return Response({"error": "Solo se permiten archivos PNG, JPG o JPEG"}, status=status.HTTP_400_BAD_REQUEST)
-                break #Se pasa al siguiente archivo
+                return Response({'error': f"{file_obj.name}: Solo se permiten archivos PNG, JPG o JPEG"}, status=status.HTTP_400_BAD_REQUEST)
+                #break #Se pasa al siguiente archivo
+
+            if file_obj.size > settings.DATA_UPLOAD_MAX_MEMORY_SIZE: 
+                return Response({'error': f"La imagen '{file_obj.name}' es demasiado grande. Enviado: {file_obj.size/1048576}MB | Máximo: {settings.DATA_UPLOAD_MAX_MEMORY_SIZE/1048576}MB"}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 # Resetear posición del archivo

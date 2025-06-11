@@ -159,6 +159,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"] #Añadido para que lea la carpeta stati
 # Configuración para guardar las imagenes de REST API
 MEDIA_URL = '/imagenes/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'imagenes')
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5 MB
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
