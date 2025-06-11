@@ -9,9 +9,10 @@ usuario_service = UsuarioService()
 
 def registro(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').strip()
         email = request.POST.get('email')
         password = request.POST.get('password')
+        nombre_completo = request.POST.get('nombre_completo').strip()
 
         # Validar datos
         if not username or not email or not password:
@@ -23,7 +24,9 @@ def registro(request):
             usuario_service.crear_usuario(
                 username, 
                 email, 
-                password
+                password,
+                False, #Por defecto no es superusuario
+                nombre_completo
             )
             messages.success(request, 'Usuario registrado exitosamente')
             return redirect('login')

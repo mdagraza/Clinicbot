@@ -13,6 +13,9 @@ collection = get_db_pacientes()
 collection2 = get_db_muestras()
 
 def home2(request):
+    if request.user:
+        print("Usuario autenticado:", request.user["username"])
+        print("Id del usuario:", request.user.get("idUsuario"))
     return render(request, "home2.html")
 
 # Vista para mostrar la lista de usuarios y el formulario de edición

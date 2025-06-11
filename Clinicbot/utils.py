@@ -10,7 +10,7 @@ class UsuarioService:
         self.collection = self.db['usuarios']
 
     def crear_usuario(self, username, email, password, 
-                      es_superuser=False): 
+                      es_superuser=False, nombre_completo=''): 
         
         ##Formatear datos
         email = email.lower()
@@ -37,6 +37,7 @@ class UsuarioService:
 
         usuario = {
             'username': username,
+            'nombre_completo': nombre_completo, 
             'email': email,
             'password': hashed_password,
             'es_superuser': es_superuser, 
@@ -68,6 +69,10 @@ class UsuarioService:
         usuario = self.obtener_usuario(username)
         return usuario.get('permisos', []) if usuario else []
     
+    def obtener_idUsuario(self, username):
+        usuario = self.obtener_usuario(username)
+        return str(usuario['_id']) if usuario else None
+    
 
 class AuthMiddleware:
     def __init__(self, get_response):
@@ -81,7 +86,8 @@ class AuthMiddleware:
             request.user = {
                 'username': username,
                 'es_superuser': self.usuario_service.es_superuser(username),
-                'permisos': self.usuario_service.obtener_permisos(username)
+                'permisos': self.usuario_service.obtener_permisos(username),
+                'idUsuario': self.usuario_service.obtener_idUsuario(username)
             }
         else:
             request.user = None

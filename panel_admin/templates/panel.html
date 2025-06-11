@@ -13,17 +13,240 @@
     <aside class="sidebar">
         <nav>
             <ul>
-                <li><a href="">Datos Cuenta</a></li>
-                <li><a href="">Crear Token</a></li>
+                <li><a href="#" data-section="datos-cuenta" class="nav-link active">Datos Cuenta</a></li>
+                <li><a href="#" data-section="crear-token" class="nav-link">Crear Token</a></li>
                 {% if 'superuser' in request.user.permisos %}
-                <li><a href="">Ver Usuarios</a></li>
+                <li><a href="#" data-section="ver-usuarios" class="nav-link">Ver Usuarios</a></li>
                 {% endif %}
             </ul>
         </nav>
     </aside>
-    <main class="panel-content">
-        <!-- Aquí va el contenido principal del panel de administración -->
-    </main>
+     <main class="panel-content">
+            <!-- Sección Datos Cuenta -->
+            <div id="datos-cuenta" class="content-section active">
+                <h2 class="section-title">Datos de la Cuenta</h2>
+                
+                <div class="form-container">
+                    <form id="account-form" method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="usuario" class="form-label">Nombre de usuario</label>
+                            <input type="text" id="usuario" name="usuario" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre" class="form-label">Nombre completo</label>
+                            <input type="text" id="nombre" name="nombre" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Correo electrónico</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Actualizar Datos</button>
+                    </form>
+                    
+                    <!-- Sección para cambiar contraseña -->
+                    <div class="password-section">
+                        <h3>Cambiar Contraseña</h3>
+                        <form id="password-form" method="post">
+                            <!-- {% csrf_token %} -->
+                            
+                            <div class="form-group">
+                                <label for="current-password" class="form-label">Contraseña actual</label>
+                                <input type="password" id="current-password" name="current_password" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-password" class="form-label">Nueva contraseña</label>
+                                <input type="password" id="new-password" name="new_password" class="form-input" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirm-password" class="form-label">Confirmar nueva contraseña</label>
+                                <input type="password" id="confirm-password" name="confirm_password" class="form-input" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-secondary">Cambiar Contraseña</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección Crear Token -->
+            <div id="crear-token" class="content-section">
+                <h2 class="section-title">Gestión de Tokens</h2>
+                
+                <div class="token-creator">
+                    <h3>Crear Nuevo Token</h3>
+                    <form id="token-form" method="post">
+                        <!-- {% csrf_token %} -->
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="token-duration" class="form-label">Duración del token (días)</label>
+                                <select id="token-duration" name="duration" class="form-input">
+                                    <option value="1">1 día</option>
+                                    <option value="7">7 días</option>
+                                    <option value="30" selected>30 días</option>
+                                    <option value="90">90 días</option>
+                                    <option value="365">1 año</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Crear Token</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="token-list">
+                    <h3>Tokens Activos</h3>
+                    
+                    <!-- Ejemplo de tokens - Django los cargará dinámicamente -->
+                    <div class="token-item">
+                        <div class="token-code">tk_1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t</div>
+                        <div class="token-expiry">Expira: 15/07/2025</div>
+                    </div>
+                    
+                    <div class="token-item">
+                        <div class="token-code">tk_9z8y7x6w5v4u3t2s1r0q9p8o7n6m5l4k3j2i1h0g</div>
+                        <div class="token-expiry">Expira: 20/06/2025</div>
+                    </div>
+                    
+                    <!-- Django loop aquí -->
+                    <!-- {% for token in user_tokens %}
+                    <div class="token-item">
+                        <div class="token-code">{{ token.code }}</div>
+                        <div class="token-expiry">Expira: {{ token.expiry_date|date:"d/m/Y" }}</div>
+                    </div>
+                    {% endfor %} -->
+                </div>
+            </div>
+            
+            <!-- Sección Ver Usuarios -->
+            <div id="ver-usuarios" class="content-section">
+                <h2 class="section-title">Lista de Usuarios</h2>
+                
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Nombre de Usuario</th>
+                            <th>Email</th>
+                            <th>Tipo de Cuenta</th>
+                            <th>Fecha de Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplos de usuarios - Django los cargará dinámicamente -->
+                        <tr>
+                            <td>Juan Pérez</td>
+                            <td>juanperez</td>
+                            <td>juan@example.com</td>
+                            <td><span class="user-type admin">Admin</span></td>
+                            <td>10/05/2025</td>
+                        </tr>
+                        <tr>
+                            <td>María García</td>
+                            <td>mariagarcia</td>
+                            <td>maria@example.com</td>
+                            <td><span class="user-type user">Usuario</span></td>
+                            <td>12/05/2025</td>
+                        </tr>
+                        <tr>
+                            <td>Admin Sistema</td>
+                            <td>admin</td>
+                            <td>admin@example.com</td>
+                            <td><span class="user-type superuser">Superuser</span></td>
+                            <td>01/01/2025</td>
+                        </tr>
+                        
+                        <!-- Django loop aquí -->
+                        <!-- {% for user in usuarios %}
+                        <tr>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td><span class="user-type {{ user.user_type }}">{{ user.get_user_type_display }}</span></td>
+                            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %} -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
 </div>
 
+    <script>
+        // Script para navegación entre secciones del panel de administración
+        document.addEventListener('DOMContentLoaded', function() {
+            // Solo seleccionar enlaces del sidebar del admin panel
+            const adminNavLinks = document.querySelectorAll('.sidebar .nav-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            // Función para mostrar una sección específica
+            function showSection(sectionId) {
+                // Ocultar todas las secciones
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Mostrar la sección seleccionada
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                
+                // Actualizar estado activo en navegación del sidebar
+                adminNavLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Marcar como activo el enlace correspondiente
+                const activeLink = document.querySelector('.sidebar [data-section="' + sectionId + '"]');
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+            
+            // Agregar event listeners SOLO a los enlaces del sidebar del admin
+            adminNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Solo prevenir el comportamiento por defecto si tiene data-section
+                    if (this.getAttribute('data-section')) {
+                        e.preventDefault();
+                        const sectionId = this.getAttribute('data-section');
+                        showSection(sectionId);
+                    }
+                });
+            });
+            
+            // Manejar envío de formularios del panel de administración
+            const adminForms = document.querySelectorAll('.panel-content form');
+            adminForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    // Aquí puedes agregar validación o envío AJAX
+                    // e.preventDefault(); // Descomenta para prevenir envío normal
+                    console.log('Formulario del admin enviado:', this.id);
+                });
+            });
+            
+            // Validación para cambio de contraseña
+            const passwordForm = document.getElementById('password-form');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', function(e) {
+                    const newPassword = document.getElementById('new-password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+                    
+                    if (newPassword !== confirmPassword) {
+                        e.preventDefault();
+                        alert('Las contraseñas no coinciden');
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}
