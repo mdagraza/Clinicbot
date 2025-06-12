@@ -55,21 +55,21 @@ def datos_prueba():
     collection.insert_many(pacientes)
 
     muestras = [{
-                "paciente_id": collection.find_one({"ident_paciente": "1234567"})["_id"],
+                #"paciente_id": collection.find_one({"ident_paciente": "1234567"})["_id"],
                 "identificador": "YY.1234567",
                 "color": "Rojo",
                 "posicion": 123123,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
             },
             {
-                "paciente_id": collection.find_one({"ident_paciente": "2345678"})["_id"],
+                #"paciente_id": collection.find_one({"ident_paciente": "2345678"})["_id"],
                 "identificador": "YY.2345678",
                 "color": "Azul",
                 "posicion": 234234,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
             },
             {
-                "paciente_id": collection.find_one({"ident_paciente": "3456789"})["_id"],
+                #"paciente_id": collection.find_one({"ident_paciente": "3456789"})["_id"],
                 "identificador": "YY.3456789",
                 "color": "Verde",
                 "posicion": 345345,
