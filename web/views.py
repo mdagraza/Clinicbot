@@ -180,13 +180,11 @@ def borrar_muestra(request):
     #return HttpResponse("Page not found", status=404)
     raise Http404
 
-def obtener_muestras(request, usuario_id):
-    try:
-        # Convertir usuario_id a ObjectId
-        usuario_object_id = ObjectId(usuario_id)
-        
-        # Filtrar solo las muestras del usuario en MongoDB
-        muestras = collection2.find({"paciente_id": usuario_object_id})
+def obtener_muestras(request, identificador_paciente):
+    try:        
+        patron_id_paciente = {"$regex" : f"{identificador_paciente}$"} # Se convierte el id a un patron que busca solo el string pasado solo en la parte derecha ($ Significa final del string)
+        # Filtrar solo las muestras del paciente en MongoDB
+        muestras = collection2.find({"identificador": patron_id_paciente})
         
         # Convertir los datos a una lista con los IDs como strings
         muestras_lista = [

@@ -160,8 +160,8 @@
             pacienteSeleccionado = "li" + String(id);
             document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
 
-            // Obtener muestras del usuario seleccionado
-            fetch(`/obtener_muestras/${id}/`)
+            // Obtener muestras del paciente seleccionado
+            fetch(`/obtener_muestras/${ident_paciente}/`)
             .then(response => response.json())
             .then(muestras => {
                 let listaMuestras = document.getElementById("muestras-lista");

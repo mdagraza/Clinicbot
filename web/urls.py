@@ -8,5 +8,5 @@ urlpatterns = [
     path('borrar_usuario/', borrar_usuario, name='borrar_usuario'),
     path('muestras/', editar_muestra, name='editar_muestra'),
     path('borrar_muestra/', borrar_muestra, name='borrar_muestra'),
-    path('obtener_muestras/<str:usuario_id>/', obtener_muestras, name='obtener_muestras'),
+    path('obtener_muestras/<str:identificador_paciente>/', obtener_muestras, name='obtener_muestras'),
 ]
