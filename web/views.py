@@ -204,6 +204,14 @@ def obtener_muestras(request, identificador_paciente):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+def obtener_petri(request, identificador_paciente):
+    try:
+
+        # Devolver los datos en formato JSON
+        return JsonResponse('', safe=False)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 
@@ -212,5 +220,6 @@ def obtener_muestras(request, identificador_paciente):
 
  Datos de persona (Nombre, Apellidos, Edad, Genero, grupo sanguineo)
  Datos de muestra (Identificador(Formato: XY.1234567 [2 primeros caracteres es tipo de análisis, 7 siguientes caracteres es el identificador de la muestra]), color, posicion)
-
+ Datos petri: Identificador: PPPP.ddmmtttTT (PPPP identificador de paciente, dd día, mm mes, ttt horas, TT temperatura)
+ 
 '''
