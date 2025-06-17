@@ -1,0 +1,58 @@
+{% extends "panel.html" %}
+{% load static %}
+
+{% block contenido %}
+
+<div id="datos-cuenta" class="content-section active">
+    <h2 class="section-title">Datos de la Cuenta</h2>
+
+    <div class="form-container">
+        <form id="account-form" method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="usuario" class="form-label">Nombre de usuario</label>
+                <input type="text" id="usuario" name="usuario" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre" class="form-label">Nombre completo</label>
+                <input type="text" id="nombre" name="nombre" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Correo electrónico</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Actualizar Datos</button>
+        </form>
+
+        <!-- Sección para cambiar contraseña -->
+        <div class="password-section">
+            <h3>Cambiar Contraseña</h3>
+            <form id="password-form" method="post">
+                <!-- {% csrf_token %} -->
+
+                <div class="form-group">
+                    <label for="current-password" class="form-label">Contraseña actual</label>
+                    <input type="password" id="current-password" name="current_password" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="new-password" class="form-label">Nueva contraseña</label>
+                    <input type="password" id="new-password" name="new_password" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm-password" class="form-label">Confirmar nueva contraseña</label>
+                    <input type="password" id="confirm-password" name="confirm_password" class="form-input" required>
+                </div>
+
+                <button type="submit" class="btn btn-secondary">Cambiar Contraseña</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

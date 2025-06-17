@@ -4,164 +4,81 @@
 {% block title %}Datos Pacientes{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'formulario/styles-form.css' %}">
+<link rel="stylesheet" href="{% static 'formulario/styles-form.css' %}">
 {% endblock %}
 
 
 {% block content %}
 
 <div class="main-container">
-        <div class="sidebar" id="sidebar">
-            <h2>Pacientes</h2>
-            <button onclick="nuevoUser()">Nuevo paciente</button>
-            <div class="busquedaPaciente">
-                <input type="search" id="buscarPaciente" placeholder="Buscar paciente..." onkeyup="filtrarPaciente()">
-                <button type="button" id="limpiarBuscar" onclick="borrarBuscador()">X</button>
-            </div>
-            
-            <div class="lista2">
-                <ul>
-                    {% if not usuarios %}
-                    <li>No hay pacientes registrados</li>
-                    {% endif %}
-                    {% for usuario in usuarios %}
-                    <li id="li{{ usuario.id }}" onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_paciente }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
-                        {{ usuario.apellidos }}, {{ usuario.nombre }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+    <div class="sidebar" id="sidebar">
+        <h2>Pacientes</h2>
+        <button onclick="nuevoUser()">Nuevo paciente</button>
+        <div class="busquedaPaciente">
+            <input type="search" id="buscarPaciente" placeholder="Buscar paciente..." onkeyup="filtrarPaciente()">
+            <button type="button" id="limpiarBuscar" onclick="borrarBuscador()">X</button>
         </div>
 
-        <div class="content">
-            <div class="tabs">
-                <button class="tab-button active" onclick="openTab(event, 'datos-paciente')">Datos Paciente</button>
-                <button class="tab-button" onclick="openTab(event, 'datos-sangre')">Muestras de Sangre</button>
-                <button class="tab-button" onclick="openTab(event, 'datos-petri')">Análisis de placas petri</button>
-            </div>
-
-            <div id="datos-paciente" class="tab-content active">
-                <div class="formulario">
-                    <form method="POST" action="{% url 'editar_usuario' %}">
-                        {% csrf_token %}
-                        <input type="hidden" id="usuario_id" name="usuario_id">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" required>
-                        <label for="apellidos">Apellidos:</label>
-                        <input type="text" id="apellidos" name="apellidos" required>
-                        <label for="ident_paciente">Identificador paciente:</label>
-                        <input type="text" id="ident_paciente" name="ident_paciente" required>
-                        <label for="edad">Edad:</label>
-                        <input type="number" id="edad" name="edad" required>
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
-                        <label for="genero">Género:</label>
-                        <select id="genero" name="genero" required>
-                            <option value="" disabled selected hidden>- - - - -</option>
-                            <option value="Hombre">Hombre</option>
-                            <option value="Mujer">Mujer</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                        <label for="gr_sanguineo">Grupo sanguíneo:</label>
-                        <select id="gr_sanguineo" name="gr_sanguineo" required>
-                            <option value="" disabled selected hidden>- - - - -</option>
-                            <option value="0-">0-</option>
-                            <option value="0+">0+</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                        </select>
-                        <button type="submit" id="guardarDatos">Guardar paciente</button>
-                    </form>
-                    <br>
-                    <form method="POST" action="{% url 'borrar_usuario' %}">
-                        {% csrf_token %}
-                        <input type="hidden" id="usuario_id2" name="usuario_id2">
-                        <button type="submit" id="eliminarDatos">Eliminar paciente</button>
-                    </form>
-                </div>
-            </div>
-
-            <div id="datos-sangre" class="tab-content">
-                <div class="container2">
-                    <div class="lista11">
-                        <div class="texto-boton">
-                            <h2>Muestras</h2>
-                            <button id="cerrarForm" style="display:none;">×</button>
-                        </div>
-                        <div class="lista22">
-                            <ul id="muestras-lista">
-                                <li>No hay muestras asociadas</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="formulario-muestras" id="formulario-muestras" style="display:none;">
-                        <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
-                            {% csrf_token %}
-                            <input type="hidden" id="muestra_id" name="muestra_id">
-                            <input type="hidden" id="paciente_id" name="paciente_id">
-                            <label for="identificador">Identificador:</label>
-                            <input type="text" id="identificador" name="identificador" readonly >
-                            <label for="color">Color:</label>
-                            <input type="text" id="color" name="color" required>
-                            <label for="posicion">Posición:</label>
-                            <input type="number" id="posicion" name="posicion" required>
-                            <label for="fecha">Fecha:</label>
-                            <input type="datetime-local" id="fecha" name="fecha">
-                            <button type="submit" id="guardarDatos">Guardar muestra</button>
-                        </form>
-                        <br>
-                        <form method="POST" action="{% url 'borrar_muestra' %}">
-                            {% csrf_token %}
-                            <input type="hidden" id="muestra_id2" name="muestra_id2">
-                            <button type="submit" id="eliminarDatos">Eliminar muestra</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <div id="datos-petri" class="tab-content">
-                <div class="petri-content">
-                    <h3>Datos Petri</h3>
-                    <p>Pendiente de implementar.</p>
-                </div>
-            </div>
+        <div class="lista2">
+            <ul>
+                {% if not usuarios %}
+                <li>No hay pacientes registrados</li>
+                {% endif %}
+                {% for usuario in usuarios %}
+                <li id="li{{ usuario.id }}"
+                    onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_paciente }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
+                    {{ usuario.apellidos }}, {{ usuario.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
-    
-    
-    <!---->
 
-    <script>
-        let pacienteSeleccionado; //Se guarda el id del paciente seleccionado
-        let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
-        // Función para cargar los datos del usuario al hacer clic en su nombre
-        function editarUsuario(id, nombre, apellidos, ident_paciente, edad, email, genero, gr_sanguineo) {
-            document.getElementById('usuario_id').value = id;
-            document.getElementById('usuario_id2').value = id;
-            document.getElementById('nombre').value = nombre;
-            document.getElementById('apellidos').value = apellidos;
-            document.getElementById('ident_paciente').value = ident_paciente;
-            document.getElementById('edad').value = edad;
-            document.getElementById('email').value = email;
-            document.getElementById('genero').value = genero;
-            document.getElementById('gr_sanguineo').value = gr_sanguineo;
-            document.getElementById('guardarDatos').innerText = "Actualizar paciente";
+    <div class="content">
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'datos-paciente')">Datos Paciente</button>
+            <button class="tab-button" onclick="openTab(event, 'datos-muestras')">Muestras de Sangre</button>
+            <button class="tab-button" onclick="openTab(event, 'datos-petri')">Análisis de placas petri</button>
+        </div>
 
-            document.getElementById('formulario-muestras').style.display = 'none';
-            document.getElementById('cerrarForm').style.display = 'none'; 
+        {% include "pacientes-datos.html" %}
 
-            if(pacienteSeleccionado){
-                document.getElementById(pacienteSeleccionado).style.fontWeight = "normal"; //Se pone normal el paciente previamente seleccionado
-            }
-            pacienteSeleccionado = "li" + String(id);
-            document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
+        {% include "pacientes-muestras.html" %}
 
-            // Obtener muestras del paciente seleccionado
-            fetch(`/obtener_muestras/${ident_paciente}/`)
+        {% include "pacientes-petri.html" %}
+    </div>
+</div>
+
+
+<!---->
+
+<script>
+    let pacienteSeleccionado; //Se guarda el id del paciente seleccionado
+    let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
+    // Función para cargar los datos del usuario al hacer clic en su nombre
+    function editarUsuario(id, nombre, apellidos, ident_paciente, edad, email, genero, gr_sanguineo) {
+        document.getElementById('usuario_id').value = id;
+        document.getElementById('usuario_id2').value = id;
+        document.getElementById('nombre').value = nombre;
+        document.getElementById('apellidos').value = apellidos;
+        document.getElementById('ident_paciente').value = ident_paciente;
+        document.getElementById('edad').value = edad;
+        document.getElementById('email').value = email;
+        document.getElementById('genero').value = genero;
+        document.getElementById('gr_sanguineo').value = gr_sanguineo;
+        document.getElementById('guardarDatos').innerText = "Actualizar paciente";
+
+        document.getElementById('formulario-muestras').style.display = 'none';
+        document.getElementById('cerrarForm').style.display = 'none';
+
+        if (pacienteSeleccionado) {
+            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal"; //Se pone normal el paciente previamente seleccionado
+        }
+        pacienteSeleccionado = "li" + String(id);
+        document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
+
+        // Obtener muestras del paciente seleccionado
+        fetch(`/obtener_muestras/${ident_paciente}/`)
             .then(response => response.json())
             .then(muestras => {
                 let listaMuestras = document.getElementById("muestras-lista");
@@ -174,7 +91,7 @@
                         li.setAttribute('data-muestra-id', muestra.id);
                         li.setAttribute('data-usuario-id', id);
                         li.innerText = muestra.identificador + " | " + muestra.color;
-                        li.onclick = function() {
+                        li.onclick = function () {
                             editarMuestra(muestra.id, id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
                         };
                         listaMuestras.appendChild(li);
@@ -186,98 +103,98 @@
                 }
             })
             .catch(error => console.error("Error al obtener las muestras:", error));
+    }
+
+    function nuevoUser() {
+        document.getElementById('usuario_id').value = "";
+        document.getElementById('usuario_id2').value = "";
+        document.getElementById('nombre').value = "";
+        document.getElementById('apellidos').value = "";
+        document.getElementById('ident_paciente').value = "";
+        document.getElementById('edad').value = "";
+        document.getElementById('email').value = "";
+        document.getElementById('genero').value = "";
+        document.getElementById('gr_sanguineo').value = "";
+        document.getElementById('guardarDatos').innerText = "Guardar paciente";
+
+        document.getElementById("muestras-lista").innerHTML = "";
+        let li = document.createElement("li");
+        li.innerText = "No hay muestras asociadas";
+        document.getElementById("muestras-lista").appendChild(li);
+
+        document.getElementById('formulario-muestras').style.display = 'none';
+        document.getElementById('cerrarForm').style.display = 'none';
+
+        document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
+    }
+
+    function editarMuestra(muestraId, usuarioId, identificador, color, posicion, fecha) {
+        document.getElementById('muestra_id').value = muestraId;
+        document.getElementById('muestra_id2').value = muestraId;
+        document.getElementById('paciente_id').value = usuarioId;
+        document.getElementById('identificador').value = identificador;
+        document.getElementById('color').value = color;
+        document.getElementById('posicion').value = posicion;
+        document.getElementById('fecha').value = fecha;
+
+        document.getElementById('formulario-muestras').style.display = 'block';
+        document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
+
+        document.getElementById('cerrarForm').style.display = 'block'; //Mostrar boton cerrar
+
+        if (muestraSeleccionada) {
+            document.getElementById(muestraSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+        }
+        muestraSeleccionada = "li" + String(muestraId);
+        document.getElementById(muestraSeleccionada).style.fontWeight = "bold";
+    }
+
+    document.getElementById('cerrarForm').addEventListener('click', function () {
+        document.getElementById('formulario-muestras').style.display = 'none';
+        document.getElementById('cerrarForm').style.display = 'none';
+
+        document.getElementById(muestraSeleccionada).style.fontWeight = "normal";
+    });
+
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons;
+
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
         }
 
-        function nuevoUser(){
-            document.getElementById('usuario_id').value = "";
-            document.getElementById('usuario_id2').value = "";
-            document.getElementById('nombre').value = "";
-            document.getElementById('apellidos').value = "";
-            document.getElementById('ident_paciente').value = "";
-            document.getElementById('edad').value = "";
-            document.getElementById('email').value = "";
-            document.getElementById('genero').value = "";
-            document.getElementById('gr_sanguineo').value = "";
-            document.getElementById('guardarDatos').innerText = "Guardar paciente";
-
-            document.getElementById("muestras-lista").innerHTML = "";
-            let li = document.createElement("li");
-            li.innerText = "No hay muestras asociadas";
-            document.getElementById("muestras-lista").appendChild(li);
-
-            document.getElementById('formulario-muestras').style.display = 'none';
-            document.getElementById('cerrarForm').style.display = 'none'; 
-
-            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
+        tabbuttons = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active");
         }
 
-        function editarMuestra(muestraId, usuarioId, identificador, color, posicion, fecha) {
-            document.getElementById('muestra_id').value = muestraId;
-            document.getElementById('muestra_id2').value = muestraId;
-            document.getElementById('paciente_id').value = usuarioId;
-            document.getElementById('identificador').value = identificador;
-            document.getElementById('color').value = color;
-            document.getElementById('posicion').value = posicion;
-            document.getElementById('fecha').value = fecha;
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
 
-            document.getElementById('formulario-muestras').style.display = 'block';
-            document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
+    function borrarBuscador() {
+        document.getElementById("buscarPaciente").value = "";
+        filtrarPaciente();
+    }
 
-            document.getElementById('cerrarForm').style.display = 'block'; //Mostrar boton cerrar
+    function filtrarPaciente() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById('buscarPaciente');
+        filter = input.value.toUpperCase();
+        ul = document.querySelector('.lista2 ul');
+        li = ul.getElementsByTagName('li');
 
-            if(muestraSeleccionada){
-                document.getElementById(muestraSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+        for (i = 0; i < li.length; i++) {
+            a = li[i];
+            txtValue = a.textContent || a.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                a.style.display = "";
+            } else {
+                a.style.display = "none";
             }
-            muestraSeleccionada = "li" + String(muestraId);
-            document.getElementById(muestraSeleccionada).style.fontWeight = "bold";
         }
-
-        document.getElementById('cerrarForm').addEventListener('click', function() {
-            document.getElementById('formulario-muestras').style.display = 'none';
-            document.getElementById('cerrarForm').style.display = 'none'; 
-
-            document.getElementById(muestraSeleccionada).style.fontWeight = "normal";
-        });
-
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-            }
-
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        function borrarBuscador() {
-            document.getElementById("buscarPaciente").value = "";
-            filtrarPaciente();
-        }
-
-        function filtrarPaciente() {
-            var input, filter, ul, li, a, i, txtValue;
-            input = document.getElementById('buscarPaciente');
-            filter = input.value.toUpperCase();
-            ul = document.querySelector('.lista2 ul');
-            li = ul.getElementsByTagName('li');
-
-            for (i = 0; i < li.length; i++) {
-                a = li[i];
-                txtValue = a.textContent || a.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    a.style.display = "";
-                } else {
-                    a.style.display = "none";
-                }
-            }
-        }
-    </script>
+    }
+</script>
 
 {% endblock %}

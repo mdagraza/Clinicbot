@@ -1,0 +1,44 @@
+<div id="datos-paciente" class="tab-content active">
+    <div class="formulario">
+        <form method="POST" action="{% url 'editar_usuario' %}">
+            {% csrf_token %}
+            <input type="hidden" id="usuario_id" name="usuario_id">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" id="apellidos" name="apellidos" required>
+            <label for="ident_paciente">Identificador paciente:</label>
+            <input type="text" id="ident_paciente" name="ident_paciente" required>
+            <label for="edad">Edad:</label>
+            <input type="number" id="edad" name="edad" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="genero">Género:</label>
+            <select id="genero" name="genero" required>
+                <option value="" disabled selected hidden>- - - - -</option>
+                <option value="Hombre">Hombre</option>
+                <option value="Mujer">Mujer</option>
+                <option value="Otro">Otro</option>
+            </select>
+            <label for="gr_sanguineo">Grupo sanguíneo:</label>
+            <select id="gr_sanguineo" name="gr_sanguineo" required>
+                <option value="" disabled selected hidden>- - - - -</option>
+                <option value="0-">0-</option>
+                <option value="0+">0+</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+            </select>
+            <button type="submit" id="guardarDatos">Guardar paciente</button>
+        </form>
+        <br>
+        <form method="POST" action="{% url 'borrar_usuario' %}">
+            {% csrf_token %}
+            <input type="hidden" id="usuario_id2" name="usuario_id2">
+            <button type="submit" id="eliminarDatos">Eliminar paciente</button>
+        </form>
+    </div>
+</div>
