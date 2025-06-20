@@ -26,7 +26,7 @@
                 {% endif %}
                 {% for usuario in usuarios %}
                 <li id="li{{ usuario.id }}"
-                    onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_paciente }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
+                    onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_muestra }}', '{{ usuario.ident_petri }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
                     {{ usuario.apellidos }}, {{ usuario.nombre }}
                 </li>
                 {% endfor %}
@@ -55,13 +55,16 @@
 <script>
     let pacienteSeleccionado; //Se guarda el id del paciente seleccionado
     let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
+    let petriSeleccionada; //Se guarda el id de la petri seleccionada
+    let placas_petri; //Se guarda las placas petri del paciente seleccionado
     // Función para cargar los datos del usuario al hacer clic en su nombre
-    function editarUsuario(id, nombre, apellidos, ident_paciente, edad, email, genero, gr_sanguineo) {
+    function editarUsuario(id, nombre, apellidos, ident_muestra, ident_petri, edad, email, genero, gr_sanguineo) {
         document.getElementById('usuario_id').value = id;
         document.getElementById('usuario_id2').value = id;
         document.getElementById('nombre').value = nombre;
         document.getElementById('apellidos').value = apellidos;
-        document.getElementById('ident_paciente').value = ident_paciente;
+        document.getElementById('ident_muestra').value = ident_muestra;
+        document.getElementById('ident_petri').value = ident_petri;
         document.getElementById('edad').value = edad;
         document.getElementById('email').value = email;
         document.getElementById('genero').value = genero;
@@ -69,16 +72,21 @@
         document.getElementById('guardarDatos').innerText = "Actualizar paciente";
 
         document.getElementById('formulario-muestras').style.display = 'none';
-        document.getElementById('cerrarForm').style.display = 'none';
+        document.getElementById('cerrarFormMuestra').style.display = 'none';
+
+        document.getElementById('formulario-petri').style.display = 'none';
+        document.getElementById('cerrarFormPetri').style.display = 'none';
 
         if (pacienteSeleccionado) {
-            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal"; //Se pone normal el paciente previamente seleccionado
+            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal"; //Se pone no35503550rmal el paciente previamente seleccionado
+            muestraSeleccionada = null; // Resetea la muestra seleccionada
+            petriSeleccionada = null; // Resetea la petri seleccionada
         }
         pacienteSeleccionado = "li" + String(id);
         document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
 
         // Obtener muestras del paciente seleccionado
-        fetch(`/obtener_muestras/${ident_paciente}/`)
+        fetch(`/obtener_muestras/${ident_muestra}/`)
             .then(response => response.json())
             .then(muestras => {
                 let listaMuestras = document.getElementById("muestras-lista");
@@ -92,7 +100,7 @@
                         li.setAttribute('data-usuario-id', id);
                         li.innerText = muestra.identificador + " | " + muestra.color;
                         li.onclick = function () {
-                            editarMuestra(muestra.id, id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
+                            editarMuestra(muestra.id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
                         };
                         listaMuestras.appendChild(li);
                     });
@@ -103,6 +111,33 @@
                 }
             })
             .catch(error => console.error("Error al obtener las muestras:", error));
+
+        // Obtener petri del paciente seleccionado
+        fetch(`/obtener_petri/${ident_petri}/`)
+            .then(response => response.json())
+            .then(petris => {
+                let listaPetri = document.getElementById("petri-lista");
+                listaPetri.innerHTML = ""; // Limpiar la lista
+                placas_petri = petris; // Guardar las placas petri en una variable global
+                if (petris.length > 0) {
+                    petris.forEach((petri, i) => {
+                        let li = document.createElement("li");
+                        li.setAttribute('id', "li" + String(petri.id));
+                        li.setAttribute('data-petri-id', petri.id);
+                        li.setAttribute('data-usuario-id', id);
+                        li.innerText = petri.identificador + " | " + petri.datos_muestra.tipo;
+                        li.onclick = function () {
+                            editarPetri(i);
+                        };
+                        listaPetri.appendChild(li);
+                    });
+                } else {
+                    let li = document.createElement("li");
+                    li.innerText = "No hay análisis de placas petri asociadas";
+                    listaPetri.appendChild(li);
+                }
+            })
+            .catch(error => console.error("Error al obtener las placas petri:", error));
     }
 
     function nuevoUser() {
@@ -110,7 +145,8 @@
         document.getElementById('usuario_id2').value = "";
         document.getElementById('nombre').value = "";
         document.getElementById('apellidos').value = "";
-        document.getElementById('ident_paciente').value = "";
+        document.getElementById('ident_muestra').value = "";
+        document.getElementById('ident_petri').value = "";
         document.getElementById('edad').value = "";
         document.getElementById('email').value = "";
         document.getElementById('genero').value = "";
@@ -123,15 +159,17 @@
         document.getElementById("muestras-lista").appendChild(li);
 
         document.getElementById('formulario-muestras').style.display = 'none';
-        document.getElementById('cerrarForm').style.display = 'none';
+        document.getElementById('cerrarFormMuestra').style.display = 'none';
+
+        document.getElementById('formulario-petri').style.display = 'none';
+        document.getElementById('cerrarFormPetri').style.display = 'none';
 
         document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
     }
 
-    function editarMuestra(muestraId, usuarioId, identificador, color, posicion, fecha) {
+    function editarMuestra(muestraId, identificador, color, posicion, fecha) {
         document.getElementById('muestra_id').value = muestraId;
         document.getElementById('muestra_id2').value = muestraId;
-        document.getElementById('paciente_id').value = usuarioId;
         document.getElementById('identificador').value = identificador;
         document.getElementById('color').value = color;
         document.getElementById('posicion').value = posicion;
@@ -140,7 +178,7 @@
         document.getElementById('formulario-muestras').style.display = 'block';
         document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
 
-        document.getElementById('cerrarForm').style.display = 'block'; //Mostrar boton cerrar
+        document.getElementById('cerrarFormMuestra').style.display = 'block'; //Mostrar boton cerrar
 
         if (muestraSeleccionada) {
             document.getElementById(muestraSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
@@ -149,11 +187,70 @@
         document.getElementById(muestraSeleccionada).style.fontWeight = "bold";
     }
 
-    document.getElementById('cerrarForm').addEventListener('click', function () {
+    function editarPetri(petriIndex) {
+        const divPestana = document.getElementById('datos-petri');
+
+        divPestana.querySelector('#petri_id').value = placas_petri[petriIndex].id;
+
+        divPestana.querySelector('#identificador').value = placas_petri[petriIndex].identificador;
+
+        divPestana.querySelector('#placa').value = placas_petri[petriIndex].placa;
+        //datos_muestra
+        divPestana.querySelector('#tipo').value = placas_petri[petriIndex].datos_muestra.tipo;
+        divPestana.querySelector('#fecha').value = placas_petri[petriIndex].datos_muestra.fecha;
+        divPestana.querySelector('#hora').value = placas_petri[petriIndex].datos_muestra.hora;
+        divPestana.querySelector('#metodo_siembra').value = placas_petri[petriIndex].datos_muestra.metodo_siembra;
+        divPestana.querySelector('#tipo_medio').value = placas_petri[petriIndex].datos_muestra.tipo_medio;
+        divPestana.querySelector('#volumen').value = placas_petri[petriIndex].datos_muestra.volumen;
+        divPestana.querySelector('#dilucion').value = placas_petri[petriIndex].datos_muestra.dilucion;
+        divPestana.querySelector('#tiempo_incubacion').value = placas_petri[petriIndex].datos_muestra.tiempo_incubacion;
+        divPestana.querySelector('#temperatura').value = placas_petri[petriIndex].datos_muestra.temperatura;
+        //imagen
+        divPestana.querySelector('#id_imagen').value = placas_petri[petriIndex].datos_imagen.id_imagen;
+        divPestana.querySelector('#extension').value = placas_petri[petriIndex].datos_imagen.extension;
+        divPestana.querySelector('#resolucion').value = placas_petri[petriIndex].datos_imagen.resolucion;
+        divPestana.querySelector('#umbral_color').value = placas_petri[petriIndex].datos_imagen.umbral_color;
+        divPestana.querySelector('#r').value = placas_petri[petriIndex].datos_imagen.rgb.r;
+        divPestana.querySelector('#g').value = placas_petri[petriIndex].datos_imagen.rgb.g;
+        divPestana.querySelector('#b').value = placas_petri[petriIndex].datos_imagen.rgb.b;
+        divPestana.querySelector('#h').value = placas_petri[petriIndex].datos_imagen.hsv.h;
+        divPestana.querySelector('#s').value = placas_petri[petriIndex].datos_imagen.hsv.s;
+        divPestana.querySelector('#v').value = placas_petri[petriIndex].datos_imagen.hsv.v;
+        //datos_analisis
+        divPestana.querySelector('#radio_min').value = placas_petri[petriIndex].datos_analisis.radio_min;
+        divPestana.querySelector('#radio_max').value = placas_petri[petriIndex].datos_analisis.radio_max;
+        //resultados
+        divPestana.querySelector('#colonias_placa').value = placas_petri[petriIndex].resultados.colonias_placa;
+        divPestana.querySelector('#colonias_muestra').value = placas_petri[petriIndex].resultados.colonias_muestra;
+        divPestana.querySelector('#objetos_no_validos').value = placas_petri[petriIndex].resultados.objetos_no_validos;
+
+
+        divPestana.querySelector('#formulario-petri').style.display = 'block';
+        divPestana.querySelector('#formulario-petri').scrollIntoView({ behavior: 'smooth' });
+
+        divPestana.querySelector('#cerrarFormPetri').style.display = 'block'; //Mostrar boton cerrar
+
+        if (petriSeleccionada) {
+            divPestana.querySelector('#'+petriSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+        }
+        petriSeleccionada = "li" + String(placas_petri[petriIndex].id);
+        divPestana.querySelector('#'+petriSeleccionada).style.fontWeight = "bold";
+    }
+
+    //Evento botón para cerrar el formulario de Muestra abierta
+    document.getElementById('cerrarFormMuestra').addEventListener('click', function () {
         document.getElementById('formulario-muestras').style.display = 'none';
-        document.getElementById('cerrarForm').style.display = 'none';
+        document.getElementById('cerrarFormMuestra').style.display = 'none';
 
         document.getElementById(muestraSeleccionada).style.fontWeight = "normal";
+    });
+
+    //Evento botón para cerrar el formulario de Petri abierta
+    document.getElementById('cerrarFormPetri').addEventListener('click', function () {
+        document.getElementById('formulario-petri').style.display = 'none';
+        document.getElementById('cerrarFormPetri').style.display = 'none';
+
+        document.getElementById(petriSeleccionada).style.fontWeight = "normal";
     });
 
     function openTab(evt, tabName) {

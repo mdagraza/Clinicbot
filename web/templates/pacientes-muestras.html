@@ -3,7 +3,7 @@
         <div class="lista11">
             <div class="texto-boton">
                 <h2>Muestras</h2>
-                <button id="cerrarForm" style="display:none;">×</button>
+                <button id="cerrarFormMuestra" style="display:none;">×</button>
             </div>
             <div class="lista22">
                 <ul id="muestras-lista">
@@ -12,25 +12,42 @@
             </div>
         </div>
         <div class="formulario-muestras" id="formulario-muestras" style="display:none;">
+            <h2>Datos de la Muestra</h2>
             <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id" name="muestra_id">
-                <input type="hidden" id="paciente_id" name="paciente_id">
-                <label for="identificador">Identificador:</label>
-                <input type="text" id="identificador" name="identificador" readonly>
-                <label for="color">Color:</label>
-                <input type="text" id="color" name="color" required>
-                <label for="posicion">Posición:</label>
-                <input type="number" id="posicion" name="posicion" required>
-                <label for="fecha">Fecha:</label>
-                <input type="datetime-local" id="fecha" name="fecha">
-                <button type="submit" id="guardarDatos">Guardar muestra</button>
+                
+                <div class="form-group">
+                    <label for="identificador">Identificador:</label>
+                    <input type="text" id="identificador" name="identificador" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="color">Color:</label>
+                    <input type="text" id="color" name="color" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="posicion">Posición:</label>
+                    <input type="number" id="posicion" name="posicion" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fecha">Fecha:</label>
+                    <input type="datetime-local" id="fecha" name="fecha">
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" id="guardarDatos">Guardar muestra</button>
+                </div>
             </form>
-            <br>
+            
             <form method="POST" action="{% url 'borrar_muestra' %}">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id2" name="muestra_id2">
-                <button type="submit" id="eliminarDatos">Eliminar muestra</button>
+                <div class="form-buttons">
+                    <button type="submit" id="eliminarDatos">Eliminar muestra</button>
+                </div>
             </form>
         </div>
     </div>

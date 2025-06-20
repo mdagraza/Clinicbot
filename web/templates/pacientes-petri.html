@@ -1,6 +1,148 @@
 <div id="datos-petri" class="tab-content">
-    <div class="petri-content">
-        <h3>Datos Petri</h3>
-        <p>Pendiente de implementar..</p>
+    <div class="container2">
+        <div class="lista11">
+            <div class="texto-boton">
+                <h2>Placas petri</h2>
+                <button id="cerrarFormPetri" style="display:none;">×</button>
+            </div>
+            <div class="lista22">
+                <ul id="petri-lista">
+                    <li>No hay análisis de placas petri asociadas</li>
+                </ul>
+            </div>
+        </div>
+        <div class="formulario-petri" id="formulario-petri" style="display:visible;">
+            <h2>Análisis de Placas Petri</h2>
+            <form id="formularioDatos" method="POST" action="{% url 'editar_petri' %}">
+                {% csrf_token %}
+
+                <input type="hidden" id="petri_id" name="petri_id">
+
+                <fieldset>
+                    <legend>Datos generales</legend>
+                    <label for="identificador">Identificador:</label>
+                    <input type="text" id="identificador" name="identificador" readonly>
+
+                    <label for="placa">Placa:</label>
+                    <input type="number" id="placa" name="placa" required>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos muestra</legend>
+                    <label for="tipo">Tipo:</label>
+                    <input type="text" id="tipo" name="datos_muestra.tipo" required>
+
+                    <label for="fecha">Fecha:</label>
+                    <input type="text" id="fecha" name="datos_muestra.fecha" placeholder="MM/YY" required>
+
+                    <label for="hora">Hora:</label>
+                    <input type="time" id="hora" name="datos_muestra.hora" required>
+
+                    <label for="metodo_siembra">Método de siembra:</label>
+                    <input type="text" id="metodo_siembra" name="datos_muestra.metodo_siembra" required>
+
+                    <label for="tipo_medio">Tipo de medio:</label>
+                    <input type="text" id="tipo_medio" name="datos_muestra.tipo_medio" required>
+
+                    <label for="volumen">Volumen (µl):</label>
+                    <input type="number" step="0.01" id="volumen" name="datos_muestra.volumen" required>
+
+                    <label for="dilucion">Dilución:</label>
+                    <input type="number" id="dilucion" name="datos_muestra.dilucion" required>
+
+                    <label for="tiempo_incubacion">Tiempo de incubación (h):</label>
+                    <input type="number" id="tiempo_incubacion" name="datos_muestra.tiempo_incubacion" required>
+
+                    <label for="temperatura">Temperatura (°C):</label>
+                    <input type="number" id="temperatura" name="datos_muestra.temperatura" required>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos imagen</legend>
+                    <label for="id_imagen">ID Imagen:</label>
+                    <input type="text" id="id_imagen" name="datos_imagen.id_imagen" required>
+
+                    <label for="extension">Extensión:</label>
+                    <input type="text" id="extension" name="datos_imagen.extension" required>
+
+                    <label for="resolucion">Resolución (MP):</label>
+                    <input type="number" step="0.01" id="resolucion" name="datos_imagen.resolucion" required>
+
+                    <label for="umbral_color">Umbral color:</label>
+                    <input type="number" id="umbral_color" name="datos_imagen.umbral_color" required>
+
+                    <div class="rgb-hsv-container">
+                        <fieldset>
+                            <legend>RGB</legend>
+                            <label for="r">R:
+                                <input type="number" id="r" name="datos_imagen.rgb.r" min="0" max="255" required>
+                            </label>
+                            
+
+                            <label for="g">G:
+                                <input type="number" id="g" name="datos_imagen.rgb.g" min="0" max="255" required>
+                            </label>
+                            
+
+                            <label for="b">B:
+                                <input type="number" id="b" name="datos_imagen.rgb.b" min="0" max="255" required>
+                            </label>
+                            
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>HSV</legend>
+                            <label for="h">H:
+                                <input type="number" id="h" name="datos_imagen.hsv.h" required>
+                            </label>
+                            
+
+                            <label for="s">S:
+                                <input type="number" id="s" name="datos_imagen.hsv.s" required>
+                            </label>
+                            
+
+                            <label for="v">V:
+                                <input type="number" id="v" name="datos_imagen.hsv.v" required>
+                            </label>
+                            
+                        </fieldset>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos análisis</legend>
+                    <label for="radio_min">Radio mínimo:</label>
+                    <input type="number" step="0.01" id="radio_min" name="datos_analisis.radio_min" required>
+
+                    <label for="radio_max">Radio máximo:</label>
+                    <input type="number" step="0.01" id="radio_max" name="datos_analisis.radio_max" required>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Resultados</legend>
+                    <label for="colonias_placa">Colonias por placa:</label>
+                    <input type="number" id="colonias_placa" name="resultados.colonias_placa" required>
+
+                    <label for="colonias_muestra">Colonias por muestra:</label>
+                    <input type="number" id="colonias_muestra" name="resultados.colonias_muestra" required>
+
+                    <label for="objetos_no_validos">Objetos no válidos:</label>
+                    <input type="number" id="objetos_no_validos" name="resultados.objetos_no_validos" required>
+                </fieldset>
+
+                <div class="form-buttons">
+                    <button type="submit" id="guardarDatos">Guardar análisis</button>
+                </div>
+            </form>
+            
+            <form method="POST" action="{% url 'borrar_petri' %}">
+                {% csrf_token %}
+                <input type="hidden" id="muestra_id2" name="muestra_id2">
+                <div class="form-buttons">
+                    <button type="submit" id="eliminarDatos">Eliminar análisis</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

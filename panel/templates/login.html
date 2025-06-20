@@ -11,10 +11,11 @@
 
 <form method="post">
     {% csrf_token %}
+    <h1>Login</h1>
     {% if error %}
     <p id="Men_error" style="color: red;">{{ error }}</p>
     {% endif %}
-    <input type="text" name="username" placeholder="user" required>
+    <input type="text" name="username" placeholder="user" autofocus required>
     <input type="password" name="password" placeholder="password" required>
     <button type="submit">Iniciar Sesión</button>
 </form>
