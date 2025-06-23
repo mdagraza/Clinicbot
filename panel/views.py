@@ -7,6 +7,7 @@ from .decorators import *
 # Inicializar servicio
 usuario_service = UsuarioService()
 
+@solo_superusuarios
 def registro(request):
     if request.method == 'POST':
         username = request.POST.get('username').strip()
