@@ -5,4 +5,4 @@ from panel.decorators import *
 @login_required
 def general(request):
 
-    return render(request, 'datos.html')
+    return render(request, 'panel copy.html') #datos

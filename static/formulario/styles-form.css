@@ -281,88 +281,208 @@ body {
   background: #c82333;
 }
 
+/* --- REVERTIR CAMBIOS Y AJUSTAR SIDEBAR INTERNO --- */
+
 .container2 {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  height: 100%;
+  align-items: flex-start;
+  /* El alto lo da el contenido/tab, no forzamos height */
 }
 
 .lista11 {
-  flex: 0 0 280px;
-  min-width: 280px;
-  max-width: 280px;
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
   background: #f9f9f9;
-  padding: 20px;
   border-right: 1px solid #ddd;
-  border-radius: 8px;
-  overflow-y: auto;
-  max-height: calc(100vh - 120px);
-}
-
-.lista11 h2 {
-  margin-bottom: 15px;
-  color: #333;
-  font-size: 18px;
-}
-
-.lista11 ul {
-  list-style: none;
-}
-
-.lista11 li {
-  padding: 12px;
-  margin-bottom: 8px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
-}
-
-.lista11 li:hover {
-  background: #e6f3ff;
-  border-color: #4a90e2;
-  transform: translateX(3px);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-height: 80vh;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.03);
+  z-index: 2;
+  border-radius: 0 8px 8px 0;
 }
 
 .texto-boton {
+  padding: 15px 15px 10px 15px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 15px;
+  align-items: center;
+  background: #f9f9f9;
+  z-index: 3;
+  border-bottom: 1px solid #eee;
 }
 
-.texto-boton button {
-  background: #dc3545;
-  color: white;
+.texto-boton h2 {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+#cerrarFormMuestra, #cerrarFormPetri {
+  background: #e74c3c;
+  color: #fff;
   border: none;
   border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
   cursor: pointer;
-  font-size: 16px;
-  width: 32px;
-  height: 32px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  margin-left: 10px;
+  outline: none;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#cerrarFormMuestra:hover, #cerrarFormPetri:hover {
+  background: #c0392b;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.15);
+}
+
+.lista22 {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 15px 15px 15px;
+}
+
+.lista22 ul {
+  list-style: none;
+}
+
+.lista22 li {
+  padding: 10px;
+  margin-bottom: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.texto-boton button:hover {
-  background: #c82333;
-  transform: scale(1.1);
+.lista22 li:hover {
+  background: #e6f3ff;
+  border-color: #4a90e2;
 }
 
-.formulario-muestras, .formulario-petri {
+.formulario-muestras {
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fff;
+  box-sizing: border-box;
+  max-height: 80vh;
+}
+
+/* --- AJUSTE FINAL PARA SIDEBAR INTERNO Y FORMULARIO --- */
+
+.container2 {
+  display: flex;
+  align-items: flex-start;
+  /* El alto lo da el contenido/tab, no forzamos height */
+}
+
+.lista11 {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+  background: #f9f9f9;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  /* Sticky solo dentro del contenedor padre */
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  max-height: 80vh; /* Solo ocupa el área visible del formulario */
+  box-shadow: 2px 0 4px rgba(0,0,0,0.03);
+  z-index: 2;
+}
+
+.texto-boton {
+  padding: 15px 15px 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  z-index: 3;
+  border-bottom: 1px solid #eee;
+}
+
+.texto-boton h2 {
+  font-size: 18px;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+#cerrarFormMuestra, #cerrarFormPetri {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  margin-left: 10px;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#cerrarFormMuestra:hover, #cerrarFormPetri:hover {
+  background: #c0392b;
+  box-shadow: 0 2px 8px rgba(231,76,60,0.15);
+}
+
+.lista22 {
   flex: 1;
-  min-width: 350px;
+  overflow-y: auto;
+  padding: 0 15px 15px 15px;
 }
 
-input[readonly], select[disabled] {
-  color: #555;
-  background-color: #f8f9fa;
-  border-color: #dee2e6;
+.lista22 ul {
+  list-style: none;
+}
+
+.lista22 li {
+  padding: 10px;
+  margin-bottom: 5px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lista22 li:hover {
+  background: #e6f3ff;
+  border-color: #4a90e2;
+}
+
+.formulario-muestras {
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: 20px;
+  overflow-y: auto;
+  background: #fff;
+  box-sizing: border-box;
+  max-height: 80vh;
 }
 
 /* Fieldsets mejorados */
