@@ -27,8 +27,8 @@ def datos_prueba():
         return  # Si ya hay pacientes, no se añaden más
 
     pacientes = [{
-            "nombre": "Nombre_1",
-            "apellidos": "Apellidos_1",
+            "nombre": "Miguel",
+            "apellidos": "Dagraza Alonso",
             "ident_muestra": "1234567",
             "ident_petri": "1234",
             "edad": 30,
@@ -37,8 +37,8 @@ def datos_prueba():
             "gr_sanguineo": "A+"
             },
             {
-            "nombre": "Nombre_2",
-            "apellidos": "Apellidos_2",
+            "nombre": "Antonio Manuel",
+            "apellidos": "Zacarias Del Río Parísimo de la Vega Fernandez",
             "ident_muestra": "2345678",
             "ident_petri": "1235",
             "edad": 25,
@@ -47,10 +47,20 @@ def datos_prueba():
             "gr_sanguineo": "B-"
             },
             {
-            "nombre": "Nombre_3",
-            "apellidos": "Apellidos_3",
+            "nombre": "Jesús",
+            "apellidos": "Nazareno de la Cruz",
             "ident_muestra": "3456789",
             "ident_petri": "1236",
+            "edad": 40,
+            "email": "nombre_3@test.com",
+            "genero": "Hombre",
+            "gr_sanguineo": "0+"
+            },
+            {
+            "nombre": "Jesús",
+            "apellidos": "Nazareno de la Cruz",
+            "ident_muestra": "356984",
+            "ident_petri": "2654",
             "edad": 40,
             "email": "nombre_3@test.com",
             "genero": "Hombre",

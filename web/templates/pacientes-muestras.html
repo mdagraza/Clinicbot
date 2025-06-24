@@ -16,37 +16,36 @@
             <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id" name="muestra_id">
-                
-                <div class="form-group">
+
+                <fieldset>
+                    <legend>Datos generales</legend>
                     <label for="identificador">Identificador:</label>
                     <input type="text" id="identificador" name="identificador" readonly>
-                </div>
-                
-                <div class="form-group">
-                    <label for="color">Color:</label>
-                    <input type="text" id="color" name="color" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="posicion">Posición:</label>
-                    <input type="number" id="posicion" name="posicion" required>
-                </div>
-                
-                <div class="form-group">
+
                     <label for="fecha">Fecha:</label>
                     <input type="datetime-local" id="fecha" name="fecha">
-                </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Datos máquina</legend>
+                    <label for="color">Color:</label>
+                    <input type="text" id="color" name="color" required>
+
+                    <label for="posicion">Posición:</label>
+                    <input type="number" id="posicion" name="posicion" required>
+                </fieldset>
                 
                 <div class="form-buttons">
                     <button type="submit" id="guardarDatos">Guardar muestra</button>
+                    <button type="button" id="eliminarDatos" onclick="if(confirm('¿Seguro que quieres eliminar esta muestra?')) document.getElementById('form-borrar-muestra').submit();">Eliminar muestra</button>
                 </div>
             </form>
             
-            <form method="POST" action="{% url 'borrar_muestra' %}">
+            <form id="form-borrar-muestra" method="POST" action="{% url 'borrar_muestra' %}" style="display: none;">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id2" name="muestra_id2">
                 <div class="form-buttons">
-                    <button type="submit" id="eliminarDatos">Eliminar muestra</button>
+                    {# <button type="submit" id="eliminarDatos">Eliminar muestra</button> #}
                 </div>
             </form>
         </div>

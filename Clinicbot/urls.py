@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     #path('admin/', admin.site.urls),
     
@@ -25,6 +28,11 @@ urlpatterns = [
     path('api/', include('api.urls')),   
     path('panel-u/', include('panel_admin.urls')),   
 ]
+
+#Para mostrar las imagenes de MEDIA en modo DEBUG
+# Esto es necesario para que Django sirva archivos estáticos y de medios durante el desarrollo.
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 '''path('', views.hello), #'' Es la pagin principal, y luego lo que debe cargar
     path('', include('projects.urls')), #Traer al principal, las urls creadas en la app

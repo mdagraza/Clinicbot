@@ -30,7 +30,7 @@ def registro(request):
                 nombre_completo
             )
             messages.success(request, 'Usuario registrado exitosamente')
-            return redirect('login')
+            return redirect('home')
         except Exception as e:
             messages.error(request, f'Error al registrar: {str(e)}')
             return render(request, 'registro.html', {"error": str(e), "user": username, "email": email})
@@ -40,7 +40,7 @@ def registro(request):
 def login_view(request):
     if request.user and request.user.get('username'):
         messages.info(request, "Ya estas autenticado")
-        return redirect('home2')
+        return redirect('home')
         #return redirect(request.path)
 
     if request.method == 'POST':
@@ -48,13 +48,17 @@ def login_view(request):
         password = request.POST.get('password')
 
         if usuario_service.autenticar_usuario(username, password):
+            #Verificar usuario activo
+            if not usuario_service.usuario_activo(username):
+                messages.error(request, 'Usuario inactivo. Contacta al administrador.')
+                return render(request, 'home.html', {"error": 'Usuario inactivo. Contacta al administrador.'})
             # Guardar en sesión
             request.session['username'] = username
             messages.success(request, 'Inicio de sesión exitoso')
-            return redirect('home2')
+            return redirect('home')
         else:
             messages.error(request, 'Credenciales inválidas')
-            return render(request, 'login.html', {"error": 'Credenciales inválidas'})
+            return render(request, 'home.html', {"error": 'Credenciales inválidas'})
 
     return render(request, 'login.html')
 
@@ -68,13 +72,13 @@ def logout_view(request):
     # Limpiar sesión
     request.session.flush()
     messages.success(request, 'Sesión cerrada exitosamente')
-    return redirect('home2')
+    return redirect('home')
 
 @login_required
 def cambiar_contrasena(request):
     if not request.user:
         messages.error(request, 'Debes iniciar sesión')
-        return redirect('login')
+        return redirect('home')
     
     if request.method == 'POST':
         clave_actual = request.POST.get('clave_actual')

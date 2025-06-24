@@ -1,6 +1,7 @@
 {% extends 'layout/base1.html' %}
 {% load static %}
 
+
 {% block title %}Datos Pacientes{% endblock %}
 
 {% block extra_css %}
@@ -36,9 +37,12 @@
 
     <div class="content">
         <div class="tabs">
-            <button class="tab-button active" onclick="openTab(event, 'datos-paciente')">Datos Paciente</button>
-            <button class="tab-button" onclick="openTab(event, 'datos-muestras')">Muestras de Sangre</button>
-            <button class="tab-button" onclick="openTab(event, 'datos-petri')">Análisis de placas petri</button>
+            <button class="tab-button active" onclick="openTab(event, 'datos-paciente')"><i
+                    class="fa-solid fa-user"></i>Datos Paciente</button>
+            <button class="tab-button" onclick="openTab(event, 'datos-muestras')"><i
+                    class="fa-solid fa-vial"></i>Muestras de Sangre</button>
+            <button class="tab-button" onclick="openTab(event, 'datos-petri')"><i
+                    class="fa-solid fa-microscope"></i>Análisis de placas petri</button>
         </div>
 
         {% include "pacientes-datos.html" %}
@@ -188,6 +192,13 @@
     }
 
     function editarPetri(petriIndex) {
+        // Ocultar ventana de imagen si estaba visible
+        document.getElementById('imageViewerContent').style.display = 'none';
+        document.getElementById('toggleImageViewer').querySelector('.toggle-icon').classList.remove('rotated');
+        document.getElementById('toggleImageViewer').querySelector('.toggle-text').textContent = 'Mostrar imagen';
+        document.getElementById('petriImage').style.display = 'none';
+        document.getElementById('petriImage').src = '';
+
         const divPestana = document.getElementById('datos-petri');
 
         divPestana.querySelector('#petri_id').value = placas_petri[petriIndex].id;
@@ -231,10 +242,10 @@
         divPestana.querySelector('#cerrarFormPetri').style.display = 'block'; //Mostrar boton cerrar
 
         if (petriSeleccionada) {
-            divPestana.querySelector('#'+petriSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+            divPestana.querySelector('#' + petriSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
         }
         petriSeleccionada = "li" + String(placas_petri[petriIndex].id);
-        divPestana.querySelector('#'+petriSeleccionada).style.fontWeight = "bold";
+        divPestana.querySelector('#' + petriSeleccionada).style.fontWeight = "bold";
     }
 
     //Evento botón para cerrar el formulario de Muestra abierta
@@ -275,23 +286,113 @@
         filtrarPaciente();
     }
 
+    // Función para eliminar tildes/acentos de un texto
+    function quitarTildes(texto) {
+        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
     function filtrarPaciente() {
         var input, filter, ul, li, a, i, txtValue;
         input = document.getElementById('buscarPaciente');
-        filter = input.value.toUpperCase();
+        filter = quitarTildes(input.value.toUpperCase());
         ul = document.querySelector('.lista2 ul');
         li = ul.getElementsByTagName('li');
 
         for (i = 0; i < li.length; i++) {
             a = li[i];
             txtValue = a.textContent || a.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            // Quitar tildes antes de comparar
+            if (quitarTildes(txtValue.toUpperCase()).indexOf(filter) > -1) {
                 a.style.display = "";
             } else {
                 a.style.display = "none";
             }
         }
     }
+ 
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('toggleImageViewer');
+        const openTabBtn = document.getElementById('petriImage');
+        const viewerContent = document.getElementById('imageViewerContent');
+        const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+        const toggleText = toggleBtn.querySelector('.toggle-text');
+        const petriImage = document.getElementById('petriImage');
+        const imagePlaceholder = document.getElementById('imagePlaceholder');
+        const idImagenInput = document.getElementById('id_imagen');
+        const extensionInput = document.getElementById('extension');
+
+        // Toggle del visualizador
+        toggleBtn.addEventListener('click', function () {
+            const isVisible = viewerContent.style.display !== 'none';
+
+            if (isVisible) {
+                viewerContent.style.display = 'none';
+                toggleIcon.classList.remove('rotated');
+                toggleText.textContent = 'Mostrar imagen';
+                openTabBtn.style.display = 'none';
+            } else {
+                viewerContent.style.display = 'block';
+                toggleIcon.classList.add('rotated');
+                toggleText.textContent = 'Ocultar imagen';
+                updateImageDisplay();
+                if (petriImage.src && petriImage.src !== window.location.href) {
+                    openTabBtn.style.display = 'flex';
+                }
+            }
+        });
+
+        // Función para actualizar la visualización de la imagen
+        function updateImageDisplay() {
+            const idImagen = idImagenInput.value.trim();
+            const extension = extensionInput.value.trim();
+
+            if (idImagen && extension) {
+                const imageUrl = `{{ data_image.IMAGE_URLBASE|safe|escapejs }}`.replaceAll('\\','/') + `/petri/${idImagen}.${extension}`;
+
+                petriImage.src = imageUrl;
+                petriImage.style.display = 'block';
+                imagePlaceholder.style.display = 'none';
+                openTabBtn.style.display = viewerContent.style.display === 'block' ? 'flex' : 'none';
+
+                // Manejar errores de carga
+                petriImage.onerror = function () {
+                    petriImage.style.display = 'none';
+                    imagePlaceholder.style.display = 'flex';
+                    imagePlaceholder.innerHTML = `
+                    <div class="placeholder-text">
+                        <span>❌</span>
+                        <p>No se pudo encontrar la imagen: ${idImagen}.${extension}</p>
+                    </div>
+                `;
+                    openTabBtn.style.display = 'none';
+                };
+            } else {
+                petriImage.style.display = 'none';
+                imagePlaceholder.style.display = 'flex';
+                imagePlaceholder.innerHTML = `
+                <div class="placeholder-text">
+                    <span>📸</span>
+                    <p>Introduce el ID de imagen para visualizar</p>
+                </div>
+            `;
+                openTabBtn.style.display = 'none';
+            }
+        }
+
+        // Abrir imagen en nueva pestaña
+        openTabBtn.addEventListener('click', function () {
+            if (petriImage.src && petriImage.src !== window.location.href) {
+                window.open(petriImage.src, '_blank');
+            }
+        });
+
+        // Actualizar imagen cuando cambien los campos
+        idImagenInput.addEventListener('input', updateImageDisplay);
+        extensionInput.addEventListener('input', updateImageDisplay);
+
+        // Actualizar imagen al cargar la página si ya hay valores
+        updateImageDisplay();
+    });
 </script>
 
 {% endblock %}

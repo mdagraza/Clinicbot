@@ -62,14 +62,15 @@
             
             <div class="form-buttons">
                 <button type="submit" id="guardarDatos">Guardar paciente</button>
+                <button type="button" id="eliminarDatos" onclick="if(confirm('¿Estás seguro de que quieres eliminar este paciente?')) document.getElementById('form-borrar-paciente').submit();">Eliminar paciente</button>
             </div>
         </form>
         
-        <form method="POST" action="{% url 'borrar_usuario' %}">
+        <form id="form-borrar-paciente" method="POST" action="{% url 'borrar_usuario' %}" style="display: none;">
             {% csrf_token %}
             <input type="hidden" id="usuario_id2" name="usuario_id2">
             <div class="form-buttons">
-                <button type="submit" id="eliminarDatos">Eliminar paciente</button>
+                {# <button type="submit" id="eliminarDatos">Eliminar paciente</button> #}
             </div>
         </form>
     </div>

@@ -18,17 +18,23 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh; /* Ocupa al menos toda la altura de la pantalla */
   background-color: #f4f7f6;
   color: #333;
-  line-height: 1.6;
 }
 
 /* Contenido principal */
-#content {
-  flex: 1;
+main.content-wrapper {
+  flex: 1; /* Hace que crezca para ocupar el espacio disponible */
   display: flex;
-  flex-direction: column;
+  width: 100%;
+}
+
+/* Esta clase modificadora la añadiremos SOLO cuando 
+   queramos que el contenido de <main> esté centrado. */
+main.content-wrapper.is-centered {
+  justify-content: center;
+  align-items: center;
   padding: 20px;
 }
 
@@ -42,9 +48,10 @@ h1 {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  background-color: #333;
-  padding: 8px 10px;
-  color: white;
+  background-color: #ffffff; 
+  padding: 10px 20px;
+  border-bottom: 1px solid #dee2e6; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -65,17 +72,32 @@ h1 {
 }
 
 .nav-links a {
+  display: flex; /*Alinear icono con el texto*/
+  align-items: center;
+  gap: 8px;
+
   text-decoration: none;
-  color: white;
-  font-size: 1.1em;
+  color: #343a40;
+  font-size: 1em;
+  font-weight: 500;
   padding: 8px 12px;
-  border-radius: 5px;
-  transition: 0.3s;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
 .nav-links a:hover,
-.nav-links .active {
-  background-color: #ff6600;
+.nav-links .active,
+.nav-links .active i {
+  background-color: #4a90e2;
+  color: #ffffff;
+}
+
+.nav-links i{
+  color: #333;
+}
+
+.nav-links a:hover i{
+  color: #ffffff;
 }
 
 /* Auth section */
@@ -86,7 +108,8 @@ h1 {
 }
 
 .welcome-message {
-  color: white;
+  color: #6c757d;
+  font-size: 0.9em;
   margin-right: 10px;
 }
 
@@ -94,18 +117,21 @@ h1 {
 .login-btn, .logout-btn, .register-btn, .panel-btn {
   color: white;
   text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 5px;
-  transition: 0.3s;
-  background-color: #02942e;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+  font-weight: 500;
+  border: none;
 }
 
 .panel-btn {
-  background-color: #969696;
+  background-color: #6c757d;
 }
 
 .panel-btn:hover {
-  background-color: #242424;
+  background-color: #5a6268;
+  transform: translateY(-1px);
 }
 
 .login-btn:hover, .register-btn:hover {
@@ -118,37 +144,42 @@ h1 {
 
 .logout-btn:hover {
   background-color: #410306;
+  transform: translateY(-1px);
 }
 
 /* Footer */
 .footer {
-  background-color: #333;
-  color: white;
+  background-color: #ffffff; 
+  color: #6c757d; 
   text-align: left;
   padding: 10px 20px;
   width: 100%;
-  margin-top: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 50px;
+  height: 60px; 
+  border-top: 1px solid #dee2e6; 
 }
 
 .footer img {
-  max-height: 100%;
+  max-height: 80%;
   width: auto;
+  opacity: 0.8;
 }
 
 .footer p {
   margin: 0;
   padding-left: 10px;
+  font-size: 0.9em;
 }
 
 /* Responsive */
 @media screen and (max-width: 768px) {
-  .navbar, footer {
+  .navbar, .footer {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    height: auto;
+    padding: 15px;
   }
 
   .nav-links, footer p {
@@ -162,6 +193,10 @@ h1 {
     flex-wrap: wrap;
     margin-top: 10px;
     gap: 8px;
+  }
+
+  .footer {
+    gap: 15px;
   }
 
 }

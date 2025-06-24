@@ -40,6 +40,7 @@ class UsuarioService:
             'nombre_completo': nombre_completo, 
             'email': email,
             'password': hashed_password,
+            'activo': True,  # Por defecto, el usuario está activo
             'es_superuser': es_superuser, 
             'permisos': ['usuario_normal'] if not es_superuser else ['superuser']
         }
@@ -72,6 +73,10 @@ class UsuarioService:
     def obtener_idUsuario(self, username):
         usuario = self.obtener_usuario(username)
         return str(usuario['_id']) if usuario else None
+    
+    def usuario_activo(self, username):
+        usuario = self.obtener_usuario(username)
+        return usuario and usuario.get('activo', False)
     
 
 class AuthMiddleware:

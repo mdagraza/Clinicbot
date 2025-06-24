@@ -108,6 +108,25 @@
                             
                         </fieldset>
                     </div>
+
+                    <!-- Visualizador de imagen -->
+                    <div class="image-viewer-container">
+                        <div class="image-viewer-header">
+                            <button type="button" id="toggleImageViewer" class="toggle-image-btn">
+                                <span class="toggle-icon">▼</span>
+                                <span class="toggle-text">Mostrar imagen</span>
+                            </button>
+                        </div>
+                        <div id="imageViewerContent" class="image-viewer-content" style="display: none;">
+                            <div class="image-placeholder">
+                                <img id="petriImage" src="" alt="Imagen de placa petri" style="display: none;">
+                                <div id="imagePlaceholder" class="placeholder-text">
+                                    <span>📸</span>
+                                    <p>Introduce el ID de imagen para visualizar</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
 
                 <fieldset>
@@ -133,14 +152,15 @@
 
                 <div class="form-buttons">
                     <button type="submit" id="guardarDatos">Guardar análisis</button>
+                    <button type="button" id="eliminarDatos" onclick="if(confirm('¿Seguro que quieres eliminar este análisis?')) document.getElementById('form-borrar-petri').submit();">Eliminar análisis</button>
                 </div>
             </form>
             
-            <form method="POST" action="{% url 'borrar_petri' %}">
+            <form id="form-borrar-petri" method="POST" action="{% url 'borrar_petri' %}" style="display: none;">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id2" name="muestra_id2">
                 <div class="form-buttons">
-                    <button type="submit" id="eliminarDatos">Eliminar análisis</button>
+                    {# <button type="submit" id="eliminarDatos">Eliminar análisis</button> #}
                 </div>
             </form>
         </div>

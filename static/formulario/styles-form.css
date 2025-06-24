@@ -20,8 +20,8 @@ body {
 
 .sidebar {
   flex: 0 0 250px;
-  min-width: 250px;
-  max-width: 250px;
+  min-width: 300px;
+  max-width: 300px;
   background: #f9f9f9;
   padding: 15px;
   overflow-y: auto;
@@ -83,6 +83,10 @@ body {
 }
 
 .tab-button {
+  display: flex; /*Alinear icono con el texto*/
+  align-items: center;
+  gap: 8px;
+
   padding: 12px 20px;
   background: #f1f1f1;
   border: none;
@@ -160,6 +164,7 @@ body {
   padding: 25px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-width: 40vw;
 }
 
 .formulario-muestras h2, .formulario-petri h2 {
@@ -169,14 +174,16 @@ body {
 }
 
 /* Grid específico para formulario petri */
-.formulario-petri form {
+.formulario-petri form,
+.formulario-muestras form  {
   /* display: grid; */
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 25px;
   align-items: start;
 }
 
-.formulario-petri .form-buttons {
+.formulario-petri .form-buttons,
+.formulario-muestras .form-buttons {
   grid-column: 1 / -1;
   display: flex;
   gap: 15px;
@@ -281,8 +288,6 @@ body {
   background: #c82333;
 }
 
-/* --- REVERTIR CAMBIOS Y AJUSTAR SIDEBAR INTERNO --- */
-
 .container2 {
   display: flex;
   align-items: flex-start;
@@ -373,7 +378,7 @@ body {
   border-color: #4a90e2;
 }
 
-.formulario-muestras {
+/* .formulario-muestras {
   flex: 1 1 0%;
   min-width: 0;
   padding: 20px;
@@ -381,9 +386,7 @@ body {
   background: #fff;
   box-sizing: border-box;
   max-height: 80vh;
-}
-
-/* --- AJUSTE FINAL PARA SIDEBAR INTERNO Y FORMULARIO --- */
+} */
 
 .container2 {
   display: flex;
@@ -475,7 +478,7 @@ body {
   border-color: #4a90e2;
 }
 
-.formulario-muestras {
+/* .formulario-muestras {
   flex: 1 1 0%;
   min-width: 0;
   padding: 20px;
@@ -483,10 +486,11 @@ body {
   background: #fff;
   box-sizing: border-box;
   max-height: 80vh;
-}
+} */
 
 /* Fieldsets mejorados */
-.formulario-petri fieldset {
+.formulario-petri fieldset,
+.formulario-muestras fieldset {
   border: 2px solid #e9ecef;
   border-radius: 8px;
   padding: 20px;
@@ -498,11 +502,13 @@ body {
   gap: 15px;
 }
 
-.formulario-petri fieldset:hover {
+.formulario-petri fieldset:hover,
+.formulario-muestras fieldset:hover {
   border-color: #4a90e2;
 }
 
-.formulario-petri legend {
+.formulario-petri legend,
+.formulario-muestras legend {
   grid-column: 1 / -1;
   font-weight: 700;
   font-size: 16px;
@@ -512,7 +518,8 @@ body {
 }
 
 /* Fieldsets anidados */
-.formulario-petri fieldset fieldset {
+.formulario-petri fieldset fieldset,
+.formulario-muestras fieldset fieldset {
   border: 1px solid #dee2e6;
   margin-top: 15px;
   padding: 15px;
@@ -523,7 +530,8 @@ body {
   gap: 10px;
 }
 
-.formulario-petri fieldset fieldset legend {
+.formulario-petri fieldset fieldset legend,
+.formulario-muestras fieldset fieldset legend {
   grid-column: 1 / -1;
   font-size: 14px;
   color: #6c757d;
@@ -538,9 +546,127 @@ body {
   grid-column: 1 / -1;
 }
 
+/* Estilos para el visualizador de imagen */
+.image-viewer-container {
+    grid-column: 1 / -1;
+    margin-top: 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    background: #fefefe;
+    transition: border-color 0.3s ease;
+}
+
+.image-viewer-container:hover {
+    border-color: #4a90e2;
+}
+
+.image-viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 6px 6px 0 0;
+}
+
+.toggle-image-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.toggle-image-btn:hover {
+    background: #3a7bc8;
+    transform: translateY(-1px);
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.toggle-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.open-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.open-tab-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.image-viewer-content {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.image-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    position: relative;
+}
+
+.placeholder-text {
+    text-align: center;
+    color: #6c757d;
+}
+
+.placeholder-text span {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.placeholder-text p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+#petriImage {
+    max-width: 100%;
+    max-height: 350px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+#petriImage:hover {
+    transform: scale(1.02);
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
-  .formulario-petri form {
+  .formulario-petri form,
+  .formulario-muestras form {
     grid-template-columns: 1fr;
   }
   .rgb-hsv-container {
@@ -579,7 +705,8 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .formulario-petri form {
+  .formulario-petri form,
+  .formulario-muestras form {
     grid-template-columns: 1fr;
   }
   
@@ -588,7 +715,8 @@ body {
   }
 
   .formulario .form-buttons,
-  .formulario-petri .form-buttons {
+  .formulario-petri .form-buttons,
+  .formulario-muestras .form-buttons {
     flex-direction: column;
     align-items: stretch;
   }
@@ -599,6 +727,29 @@ body {
     margin-right: 0;
     margin-bottom: 10px;
   }
+
+  .image-viewer-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+    
+    .toggle-image-btn,
+    .open-tab-btn {
+        justify-content: center;
+    }
+    
+    .image-viewer-content {
+        padding: 15px;
+    }
+    
+    .image-placeholder {
+        min-height: 150px;
+    }
+    
+    .placeholder-text span {
+        font-size: 36px;
+    }
 }
 
 @media (max-width: 480px) {

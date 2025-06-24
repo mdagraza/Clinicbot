@@ -7,17 +7,18 @@ from bson import ObjectId
 from datetime import datetime
 from db_connection import *
 from panel.decorators import *
+from django.conf import settings
 
 # Conectar con MongoDB
 db_pacientes = get_db_pacientes()
 db_muestras = get_db_muestras()
 db_petri = get_db_petri()
 
-def home2(request):
+def home(request):
     if request.user:
         print("Usuario autenticado:", request.user["username"])
         print("Id del usuario:", request.user.get("idUsuario"))
-    return render(request, "home2.html")
+    return render(request, "home.html")
 
 # Vista para mostrar la lista de usuarios y el formulario de edición
 @login_required
@@ -74,9 +75,13 @@ def editar_usuario(request):
     for usuario in usuarios
     ]
 
+    # Información para la imagen
+    data_image = {
+        'IMAGE_URLBASE' : settings.MEDIA_URL 
+    }
 
     # Renderizar la página con la lista de usuarios y el formulario de edición
-    return render(request, "pacientes.html", {"usuarios": usuarios})
+    return render(request, "pacientes.html", {"usuarios": usuarios, "data_image" : data_image})
 
 def borrar_usuario(request):
     if request.method == 'POST':
