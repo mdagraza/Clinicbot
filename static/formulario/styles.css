@@ -173,6 +173,13 @@ h1 {
   font-size: 0.9em;
 }
 
+#Men_error:focus { /* Para cuando hay un mensaje de error en cualquier pantalla */
+    outline: 2px solid #e53e3e;
+    outline-offset: 2px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
   .navbar, .footer {

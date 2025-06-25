@@ -12,44 +12,39 @@
                 <th>Nombre de Usuario</th>
                 <th>Email</th>
                 <th>Tipo de Cuenta</th>
-                <th>Fecha de Registro</th>
+                <th>Activo</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Ejemplos de usuarios - Django los cargará dinámicamente -->
+            {% for user in usuarios %}
             <tr>
-                <td>Juan Pérez</td>
-                <td>juanperez</td>
-                <td>juan@example.com</td>
-                <td><span class="user-type admin">Admin</span></td>
-                <td>10/05/2025</td>
-            </tr>
-            <tr>
-                <td>María García</td>
-                <td>mariagarcia</td>
-                <td>maria@example.com</td>
-                <td><span class="user-type user">Usuario</span></td>
-                <td>12/05/2025</td>
-            </tr>
-            <tr>
-                <td>Admin Sistema</td>
-                <td>admin</td>
-                <td>admin@example.com</td>
+                <td>{{ user.nombre_completo }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                {% if user.es_superuser %}
                 <td><span class="user-type superuser">Superuser</span></td>
-                <td>01/01/2025</td>
+                {% else %}
+                <td><span class="user-type user">Usuario</span></td>
+                {% endif %}
+                <td>{{ user.activo }}</td>
             </tr>
-
-            <!-- Django loop aquí -->
-            <!-- {% for user in usuarios %}
-                        <tr>
-                            <td>{{ user.first_name }} {{ user.last_name }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td><span class="user-type {{ user.user_type }}">{{ user.get_user_type_display }}</span></td>
-                            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
-                        </tr>
-                        {% endfor %} -->
+            {% endfor %}
         </tbody>
     </table>
 </div>
 {% endblock %}
+
+{#
+    <td><span class="user-type admin">Admin</span></td>
+    <td><span class="user-type user">Usuario</span></td>
+    <td><span class="user-type superuser">Superuser</span></td>
+
+
+        "id": str(usuario["_id"]),
+        "username": usuario.get("username", ""),
+        "nombre_completo": usuario.get("nombre_completo", ""),
+        "email": usuario.get("email", ""),
+        "es_superuser": usuario.get("es_superuser", ""),
+        "activo": usuario.get("activo", "")
+
+#}

@@ -12,34 +12,34 @@
 
             <div class="form-group">
                 <label for="usuario" class="form-label">Nombre de usuario</label>
-                <input type="text" id="usuario" name="usuario" class="form-input" disabled value="{{ datos.username }}">
+                <input type="text" id="usuario" name="usuario" class="form-input" disabled value="{{ datos.username }}" tabindex="1">
             </div>
 
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre completo</label>
                 <input type="text" id="nombre" name="nombre" class="form-input" required
-                    value="{{ datos.nombre_completo }}">
+                    value="{{ datos.nombre_completo }}"  tabindex="2">
             </div>
 
             <div class="form-group">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" id="email" name="email" class="form-input" required value="{{ datos.email }}">
+                <input type="email" id="email" name="email" class="form-input" required value="{{ datos.email }}"  tabindex="3">
             </div>
 
-            <button type="submit" class="btn btn-primary">Actualizar Datos</button>
+            <button type="submit" class="btn btn-primary"  tabindex="4">Actualizar Datos</button>
         </form>
 
         <!-- Sección para cambiar contraseña -->
         <div class="password-section">
             <h3>Cambiar Contraseña</h3>
             <form id="password-form" method="post" action="{% url 'cambiar_contrasena' %}">
-                <!-- {% csrf_token %} -->
+                {% csrf_token %}
 
                 <div class="form-group">
                     <label for="current-password" class="form-label">Contraseña actual</label>
                     <div class="password-input-wrapper">
                         <input type="password" id="current-password" name="current_password" class="form-input" required
-                            placeholder="··········">
+                            placeholder="··········"  tabindex="5">
                         <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
                             <!-- Icono de ojo (visible por defecto) -->
                             <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -62,7 +62,7 @@
                 <div class="form-group">
                     <label for="new-password" class="form-label">Nueva contraseña</label>
                     <div class="password-input-wrapper">
-                        <input type="password" id="new-password" name="new_password" class="form-input" required>
+                        <input type="password" id="new-password" name="new_password" class="form-input" required  tabindex="6">
                         <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
                             <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor">
@@ -84,7 +84,7 @@
                     <label for="confirm-password" class="form-label">Confirmar nueva contraseña</label>
                     <div class="password-input-wrapper">
                         <input type="password" id="confirm-password" name="confirm_password" class="form-input"
-                            required>
+                            required  tabindex="7">
                         <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
                             <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                 stroke-width="1.5" stroke="currentColor">
@@ -100,9 +100,12 @@
                             </svg>
                         </button>
                     </div>
+                    {% if error %}
+                    <p id="Men_error" style="color: red;" tabindex="-1">{{ error }}</p>
+                    {% endif %}
                 </div>
-
-                <button type="submit" class="btn btn-secondary">Cambiar Contraseña</button>
+            
+                <button type="submit" class="btn btn-secondary"  tabindex="8">Cambiar Contraseña</button>
             </form>
         </div>
     </div>
@@ -139,6 +142,12 @@
                     this.setAttribute('aria-label', 'Mostrar contraseña');
                 }
             });
+
+        //Hacer foco en el mensaje de error si existe
+        const errorElement = document.getElementById('Men_error');
+        if (errorElement) {
+            errorElement.focus();
+        }
         });
     });
 </script>

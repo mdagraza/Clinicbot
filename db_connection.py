@@ -29,6 +29,12 @@ def get_db_users():
     collection = db["usuarios"] 
     return collection
 
+def get_db_tokens():
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["Clinicbot-Usuarios"]
+    collection = db["api_tokens"] 
+    return collection
+
 class MongoDBConnection_Pacientes:
     def __init__(self):
         self.client = MongoClient(MONGODB_HOST, MONGODB_PORT)

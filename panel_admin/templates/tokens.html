@@ -8,7 +8,7 @@
     <div class="token-creator">
         <h3>Crear Nuevo Token</h3>
         <form id="token-form" method="post">
-            <!-- {% csrf_token %} -->
+            {% csrf_token %}
 
             <div class="form-row">
                 <div class="form-group">
@@ -30,25 +30,30 @@
 
     <div class="token-list">
         <h3>Tokens Activos</h3>
-
-        <!-- Ejemplo de tokens - Django los cargará dinámicamente -->
+        {% if not tokens %}
         <div class="token-item">
-            <div class="token-code">tk_1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t</div>
-            <div class="token-expiry">Expira: 15/07/2025</div>
+            <div class="token-code">No hay tokens activos.</div>
         </div>
+        {% endif %}
 
-        <div class="token-item">
-            <div class="token-code">tk_9z8y7x6w5v4u3t2s1r0q9p8o7n6m5l4k3j2i1h0g</div>
-            <div class="token-expiry">Expira: 20/06/2025</div>
+        {% for token in tokens %}
+        <div class="token-item"></div>
+            <div class="token-code">{{ token.token }}</div>
+            <div class="token-creation"></div>
+            <div class="token-info">Creado: {{ token.fecha_creacion|date:"d/m/Y H:i" }} | Expira: {{ token.fecha_expiracion|date:"d/m/Y H:i" }}</div>
         </div>
-
-        <!-- Django loop aquí -->
-        <!-- {% for token in user_tokens %}
-                    <div class="token-item">
-                        <div class="token-code">{{ token.code }}</div>
-                        <div class="token-expiry">Expira: {{ token.expiry_date|date:"d/m/Y" }}</div>
-                    </div>
-                    {% endfor %} -->
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
+
+{#
+    "id": str(token["_id"]),
+            "token": token.get("token", ""),
+            "fecha_creacion": token.get("created_at", ""),
+            "fecha_expiracion": token.get("expires_at", ""),
+            "activo": token.get("is_active", ""),
+    
+    
+    
+    #}
