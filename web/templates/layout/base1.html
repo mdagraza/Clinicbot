@@ -23,7 +23,7 @@
         </ul>
         <div class="auth-section">
             <span class="welcome-message">Bienvenid@, {{ request.user.username }}</span>
-            <a href="{% url 'general' %}" class="panel-btn">Panel</a>
+            <a href="{% url 'panel_datos' %}" class="panel-btn">Panel</a>
             <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
         </div>
     </nav>
@@ -38,7 +38,7 @@
         <img src="{% static 'images/logos_gob.png' %}" />
         {% endif %}
     </footer>
-
+    
     {% block scripts %}{% endblock %}
 </body>
 

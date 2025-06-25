@@ -140,7 +140,7 @@ body {
 /* Grid para el formulario de datos de paciente */
 .formulario form:first-of-type {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /*grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));*/
   gap: 20px;
   align-items: start;
 }
@@ -490,7 +490,8 @@ body {
 
 /* Fieldsets mejorados */
 .formulario-petri fieldset,
-.formulario-muestras fieldset {
+.formulario-muestras fieldset,
+.formulario fieldset  {
   border: 2px solid #e9ecef;
   border-radius: 8px;
   padding: 20px;
@@ -503,12 +504,14 @@ body {
 }
 
 .formulario-petri fieldset:hover,
-.formulario-muestras fieldset:hover {
+.formulario-muestras fieldset:hover,
+.formulario fieldset:hover {
   border-color: #4a90e2;
 }
 
 .formulario-petri legend,
-.formulario-muestras legend {
+.formulario-muestras legend,
+.formulario legend {
   grid-column: 1 / -1;
   font-weight: 700;
   font-size: 16px;
@@ -519,7 +522,8 @@ body {
 
 /* Fieldsets anidados */
 .formulario-petri fieldset fieldset,
-.formulario-muestras fieldset fieldset {
+.formulario-muestras fieldset fieldset,
+.formulario fieldset fieldset {
   border: 1px solid #dee2e6;
   margin-top: 15px;
   padding: 15px;
@@ -531,7 +535,8 @@ body {
 }
 
 .formulario-petri fieldset fieldset legend,
-.formulario-muestras fieldset fieldset legend {
+.formulario-muestras fieldset fieldset legend,
+.formulario fieldset fieldset legend {
   grid-column: 1 / -1;
   font-size: 14px;
   color: #6c757d;

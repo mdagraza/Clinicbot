@@ -1,10 +1,11 @@
 /* Contenedor principal */
 .main-container {
   display: flex;
-  height: 100vh; /* Original */
-  overflow: hidden; /* Original */
-  width: 100%;    /* Ocupa todo el ancho disponible */
-  height: 100%;   /* Ocupa toda la altura disponible */
+  /*height: 100vh;*/
+  min-height: 100vh; /**/
+  overflow: hidden;
+  width: 100%;    
+  height: 100%;   
 }
 
 /* Cada sección (bienvenida y login) ocupa la mitad del espacio */
@@ -14,7 +15,9 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    /*padding: 20px;*/
+    padding: 40px 20px; /**/
+    min-width: 0; /**/
 }
 
 /* Imagen de home */
@@ -24,6 +27,12 @@
     margin-bottom: 20px;
     animation-name: slideInDown;
     animation-duration: 1s;
+}
+
+.otros_logos {
+    max-width: 80%; /* Que no exceda el 80% del ancho de su contenedor */
+    height: auto;   /* Mantiene la proporción */
+    margin-top: 20px;
 }
 
 .text-container h1 {
@@ -89,7 +98,7 @@ form input:focus {
     box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
-form button {
+form button:not(.toggle-password) {
     width: 100%;
     padding: 12px;
     background-color: #4a90e2;
@@ -102,10 +111,51 @@ form button {
     transition: all 0.3s ease;
 }
 
-form button:hover {
+form button:not(.toggle-password):hover {
     background-color: #3a7bc8;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Wrapper para el input de contraseña para posicionar el botón */
+.password-input-wrapper {
+    position: relative;
+    /* Hacemos que ocupe el ancho y tenga el margen del input original */
+    margin-bottom: 20px;
+}
+
+/* El input dentro del wrapper debe tener espacio a la derecha para el botón */
+.password-input-wrapper input {
+    /* Quitamos el margen que ahora tiene el wrapper */
+    margin-bottom: 0; 
+    /* Añadimos padding para que el texto no se solape con el botón */
+    padding-right: 45px !important; /* !important para asegurar que sobreescribe el estilo general */
+}
+
+/* Estilo para el botón de mostrar/ocultar contraseña */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa; /* Un color gris neutro */
+}
+
+.toggle-password:hover {
+    color: #333; /* Oscurecer al pasar el ratón */
+}
+
+/* Estilo para los iconos SVG dentro del botón */
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
 }
 
 @media screen and (max-width: 768px) {

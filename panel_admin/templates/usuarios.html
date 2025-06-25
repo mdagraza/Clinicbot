@@ -1,12 +1,55 @@
-{% extends 'layout/base1.html' %}
+{% extends "panel.html" %}
 {% load static %}
 
-{% block title %}Panel admin{% endblock %}
+{% block contenido %}
+<div id="ver-usuarios" class="content-section">
+    <h2 class="section-title">Lista de Usuarios</h2>
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'formulario/styles-admin.css' %}">
-{% endblock %}
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Nombre de Usuario</th>
+                <th>Email</th>
+                <th>Tipo de Cuenta</th>
+                <th>Fecha de Registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ejemplos de usuarios - Django los cargará dinámicamente -->
+            <tr>
+                <td>Juan Pérez</td>
+                <td>juanperez</td>
+                <td>juan@example.com</td>
+                <td><span class="user-type admin">Admin</span></td>
+                <td>10/05/2025</td>
+            </tr>
+            <tr>
+                <td>María García</td>
+                <td>mariagarcia</td>
+                <td>maria@example.com</td>
+                <td><span class="user-type user">Usuario</span></td>
+                <td>12/05/2025</td>
+            </tr>
+            <tr>
+                <td>Admin Sistema</td>
+                <td>admin</td>
+                <td>admin@example.com</td>
+                <td><span class="user-type superuser">Superuser</span></td>
+                <td>01/01/2025</td>
+            </tr>
 
-{% block content %}
-
+            <!-- Django loop aquí -->
+            <!-- {% for user in usuarios %}
+                        <tr>
+                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td><span class="user-type {{ user.user_type }}">{{ user.get_user_type_display }}</span></td>
+                            <td>{{ user.date_joined|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %} -->
+        </tbody>
+    </table>
+</div>
 {% endblock %}

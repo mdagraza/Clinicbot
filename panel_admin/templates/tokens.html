@@ -1,12 +1,54 @@
-{% extends 'layout/base1.html' %}
+{% extends "panel.html" %}
 {% load static %}
 
-{% block title %}Panel admin{% endblock %}
+{% block contenido %}
+<div id="crear-token" class="content-section">
+    <h2 class="section-title">Gestión de Tokens</h2>
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'formulario/styles-admin.css' %}">
-{% endblock %}
+    <div class="token-creator">
+        <h3>Crear Nuevo Token</h3>
+        <form id="token-form" method="post">
+            <!-- {% csrf_token %} -->
 
-{% block content %}
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="token-duration" class="form-label">Duración del token (días)</label>
+                    <select id="token-duration" name="duration" class="form-input">
+                        <option value="1">1 día</option>
+                        <option value="7">7 días</option>
+                        <option value="30" selected>30 días</option>
+                        <option value="90">90 días</option>
+                        <option value="365">1 año</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Crear Token</button>
+                </div>
+            </div>
+        </form>
+    </div>
 
+    <div class="token-list">
+        <h3>Tokens Activos</h3>
+
+        <!-- Ejemplo de tokens - Django los cargará dinámicamente -->
+        <div class="token-item">
+            <div class="token-code">tk_1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t</div>
+            <div class="token-expiry">Expira: 15/07/2025</div>
+        </div>
+
+        <div class="token-item">
+            <div class="token-code">tk_9z8y7x6w5v4u3t2s1r0q9p8o7n6m5l4k3j2i1h0g</div>
+            <div class="token-expiry">Expira: 20/06/2025</div>
+        </div>
+
+        <!-- Django loop aquí -->
+        <!-- {% for token in user_tokens %}
+                    <div class="token-item">
+                        <div class="token-code">{{ token.code }}</div>
+                        <div class="token-expiry">Expira: {{ token.expiry_date|date:"d/m/Y" }}</div>
+                    </div>
+                    {% endfor %} -->
+    </div>
+</div>
 {% endblock %}

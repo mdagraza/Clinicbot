@@ -23,6 +23,12 @@ def get_db_petri():
     collection = db["placas_petri"] 
     return collection
 
+def get_db_users():
+    client = MongoClient("mongodb://localhost:27017/")
+    db = client["Clinicbot-Usuarios"]
+    collection = db["usuarios"] 
+    return collection
+
 class MongoDBConnection_Pacientes:
     def __init__(self):
         self.client = MongoClient(MONGODB_HOST, MONGODB_PORT)

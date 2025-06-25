@@ -12,17 +12,18 @@
 
             <div class="form-group">
                 <label for="usuario" class="form-label">Nombre de usuario</label>
-                <input type="text" id="usuario" name="usuario" class="form-input" required>
+                <input type="text" id="usuario" name="usuario" class="form-input" disabled value="{{ datos.username }}">
             </div>
 
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre completo</label>
-                <input type="text" id="nombre" name="nombre" class="form-input" required>
+                <input type="text" id="nombre" name="nombre" class="form-input" required
+                    value="{{ datos.nombre_completo }}">
             </div>
 
             <div class="form-group">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" id="email" name="email" class="form-input" required>
+                <input type="email" id="email" name="email" class="form-input" required value="{{ datos.email }}">
             </div>
 
             <button type="submit" class="btn btn-primary">Actualizar Datos</button>
@@ -31,22 +32,74 @@
         <!-- Sección para cambiar contraseña -->
         <div class="password-section">
             <h3>Cambiar Contraseña</h3>
-            <form id="password-form" method="post">
+            <form id="password-form" method="post" action="{% url 'cambiar_contrasena' %}">
                 <!-- {% csrf_token %} -->
 
                 <div class="form-group">
                     <label for="current-password" class="form-label">Contraseña actual</label>
-                    <input type="password" id="current-password" name="current_password" class="form-input" required>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="current-password" name="current_password" class="form-input" required
+                            placeholder="··········">
+                        <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
+                            <!-- Icono de ojo (visible por defecto) -->
+                            <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <!-- Icono de ojo tachado (oculto por defecto) -->
+                            <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243l-4.243-4.243" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="new-password" class="form-label">Nueva contraseña</label>
-                    <input type="password" id="new-password" name="new_password" class="form-input" required>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="new-password" name="new_password" class="form-input" required>
+                        <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
+                            <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243l-4.243-4.243" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="confirm-password" class="form-label">Confirmar nueva contraseña</label>
-                    <input type="password" id="confirm-password" name="confirm_password" class="form-input" required>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirm-password" name="confirm_password" class="form-input"
+                            required>
+                        <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
+                            <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.243 4.243l-4.243-4.243" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-secondary">Cambiar Contraseña</button>
@@ -54,5 +107,40 @@
         </div>
     </div>
 </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+        togglePasswordButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                // Encuentra el input de contraseña que es hermano del div del botón
+                const passwordInput = this.parentElement.querySelector('input');
+                const iconEye = this.querySelector('.icon-eye');
+                const iconEyeSlash = this.querySelector('.icon-eye-slash');
+
+                // Cambia el tipo de input
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+
+                // Cambia el icono y la etiqueta aria para accesibilidad
+                if (type === 'text') {
+                    iconEye.style.display = 'none';
+                    iconEyeSlash.style.display = 'block';
+                    this.setAttribute('aria-label', 'Ocultar contraseña');
+                } else {
+                    iconEye.style.display = 'block';
+                    iconEyeSlash.style.display = 'none';
+                    this.setAttribute('aria-label', 'Mostrar contraseña');
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}
