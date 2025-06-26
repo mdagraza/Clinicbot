@@ -12,7 +12,8 @@
 
  .admin-panel {
      display: flex;
-     min-height: 80vh;
+     flex: 1;
+     /*min-height: 80vh;*/
      overflow: hidden;
  }
 
@@ -70,6 +71,7 @@
      overflow: hidden;
      padding: 20px;
      background-color: #f4f7f6;
+     
  }
 
  .content-section {
