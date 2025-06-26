@@ -3,7 +3,7 @@
 
 {% block contenido %}
 <div id="crear-token" class="content-section">
-    <h2 class="section-title">Gestión de Tokens</h2>
+    <h2 class="section-title">Gestión de Bearer Tokens</h2>
 
     <div class="token-creator">
         <h3>Crear Nuevo Token</h3>
@@ -37,7 +37,7 @@
         {% endif %}
 
         {% for token in tokens %}
-        <div class="token-item"></div>
+        <div class="token-item">
             <div class="token-code">{{ token.token }}</div>
             <div class="token-creation"></div>
             <div class="token-info">Creado: {{ token.fecha_creacion|date:"d/m/Y H:i" }} | Expira: {{ token.fecha_expiracion|date:"d/m/Y H:i" }}</div>

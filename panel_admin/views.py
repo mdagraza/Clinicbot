@@ -76,21 +76,20 @@ def cambiar_contrasena(request):
 @login_required
 def panel_tokens(request):
     if request.method == 'POST':
-        expires = int(request.POST.get('token-duration', '30')) * 24  # Por defecto 30 días
+        expires = int(request.POST.get('duration', '30')) * 24  # Por defecto 30 días
         print(type(expires))
         token_manager = TokenManager()
         token_manager.generate_token(request.user.get('idUsuario'), expires)
      
-    # Obtener tokens desde la base de datos
-    tokens = db_tokens.find({"user_id": ObjectId(request.user.get('idUsuario'))})
-    activo = True
+    # Obtener tokens desde la base de datos que sigan activos
+    tokens = db_tokens.find({"user_id": ObjectId(request.user.get('idUsuario')), "expires_at": {"$gt": datetime.now()}})
+
     tokens = [
         {
             "id": str(token["_id"]),
             "token": token.get("token", ""),
             "fecha_creacion": token.get("created_at", ""),
             "fecha_expiracion": token.get("expires_at", ""),
-            "activo": activo
         }
         for token in tokens
     ]
