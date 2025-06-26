@@ -3,6 +3,7 @@ from django.contrib import messages
 from Clinicbot.utils import UsuarioService
 import bcrypt
 from .decorators import *
+from .logs import log_action
 
 # Inicializar servicio
 usuario_service = UsuarioService()
@@ -55,10 +56,12 @@ def login_view(request):
             # Guardar en sesión
             request.session['username'] = username
             messages.success(request, 'Inicio de sesión exitoso')
+            log_action(request, 'LOGIN', 'SUCCESS', f'Usuario {username} inició sesión exitosamente.')
             return redirect('home')
         else:
             messages.error(request, 'Credenciales inválidas')
-            return render(request, 'home.html', {"error": 'Credenciales inválidas'})
+            log_action(request, 'LOGIN', 'FAILURE', f'Intento de inicio de sesión fallido para el usuario {username}.')
+            return render(request, 'home.html', {"error": 'Credenciales inválidas'}) #CAMBIAR a un redirect y pasarle el error como se hace en panel-admin en cambiar contraseña
 
     return render(request, 'login.html')
 
