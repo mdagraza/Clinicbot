@@ -127,7 +127,11 @@
                         </button>
                     </div>
                     {% if error %}
-                    <p id="Men_error" style="color: red;" tabindex="-1">{{ error }}</p>
+                        {% if "cambiada" in error %}
+                        <p id="Men_success" style="color: green;" tabindex="-1">{{ error }}</p>
+                        {% else %}
+                        <p id="Men_error" style="color: red;" tabindex="-1">{{ error }}</p>
+                        {% endif %}
                     {% endif %}
                 </div>
 
@@ -171,8 +175,11 @@
 
             //Hacer foco en el mensaje de error si existe
             const errorElement = document.getElementById('Men_error');
+            const successElement = document.getElementById('Men_success');
             if (errorElement) {
                 errorElement.focus();
+            } else if (successElement) {
+                successElement.focus();
             }
         });
     });
