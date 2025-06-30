@@ -10,13 +10,25 @@ class UsuarioService:
         self.collection = self.db['usuarios']
 
     def crear_usuario(self, username, email, password, 
-                      es_superuser=False, nombre_completo=''): 
+                      nombre_completo='', tipo_usuario=1): 
         
         ##Formatear datos
         email = email.lower()
+
+        #Establecer tipo de usuario
+        if tipo_usuario == 1:
+            permiso_user = 'usuario_normal'
+        elif tipo_usuario == 2:
+            permiso_user = 'superuser'
+        elif tipo_usuario == 3:
+            permiso_user = 'muestras'
+        elif tipo_usuario == 4:
+            permiso_user = 'petri'
+        else:
+            raise ValueError("Tipo de usuario no válido")
         
         #Verificar que el usuario no sea nada relativo a admin
-        if not es_superuser and ('admin' in username.lower()):
+        if not tipo_usuario==2 and ('admin' in username.lower()):
             raise ValueError("Nombre de usuario no válido")
 
         # Verificar si el usuario ya existe
@@ -41,8 +53,8 @@ class UsuarioService:
             'email': email,
             'password': hashed_password,
             'activo': True,  # Por defecto, el usuario está activo
-            'es_superuser': es_superuser, 
-            'permisos': ['usuario_normal'] if not es_superuser else ['superuser']
+            'es_superuser': True if tipo_usuario == 2 else False,  # Si es superusuario
+            'permisos': [permiso_user]
         }
 
         return self.collection.insert_one(usuario)
