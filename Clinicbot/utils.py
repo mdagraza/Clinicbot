@@ -10,22 +10,10 @@ class UsuarioService:
         self.collection = self.db['usuarios']
 
     def crear_usuario(self, username, email, password, 
-                      nombre_completo='', tipo_usuario=1): 
+                      nombre_completo='', tipo_usuario='usuario'): 
         
         ##Formatear datos
         email = email.lower()
-
-        #Establecer tipo de usuario
-        if tipo_usuario == 1:
-            permiso_user = 'usuario_normal'
-        elif tipo_usuario == 2:
-            permiso_user = 'superuser'
-        elif tipo_usuario == 3:
-            permiso_user = 'muestras'
-        elif tipo_usuario == 4:
-            permiso_user = 'petri'
-        else:
-            raise ValueError("Tipo de usuario no válido")
         
         #Verificar que el usuario no sea nada relativo a admin
         if not tipo_usuario==2 and ('admin' in username.lower()):
@@ -54,15 +42,51 @@ class UsuarioService:
             'password': hashed_password,
             'activo': True,  # Por defecto, el usuario está activo
             'es_superuser': True if tipo_usuario == 2 else False,  # Si es superusuario
-            'permisos': [permiso_user]
+            'permisos': [tipo_usuario]
         }
 
         return self.collection.insert_one(usuario)
+    
+    def editar_usuario(self, id_usuario, username, email, password, 
+                      nombre_completo='', tipo_usuario='usuario'): 
+        ##Formatear datos
+        email = email.lower()
+        
+        ##REVISAR | APUNTE : Al editar un usuario, no se debería cambiar el nombre de usuario
+        #Verificar que el usuario no sea nada relativo a admin
+        if not tipo_usuario==2 and ('admin' in username.lower()):
+            raise ValueError("Nombre de usuario no válido")
+
+        # Verificar si el usuario ya existe        
+        '''if self.collection.find_one({"username": {"$regex": f"^{username}$", "$options": "i"}}) or self.collection.find_one({"email": email}):
+            raise ValueError("Nombre de usuario o email ya en uso")'''
+
+        # Actualizar los datos del usuario
+        update_data = {
+            'username': username,
+            'nombre_completo': nombre_completo, 
+            'email': email,
+            'es_superuser': True if tipo_usuario == 2 else False,  # Si es superusuario
+            'permisos': [tipo_usuario]
+        }
+
+        # Si se proporciona una contraseña, se codifica y se agrega al update_data
+        if password: 
+            salt = bcrypt.gensalt()
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+            update_data.update({'password': hashed_password}) # Se agrega la contraseña solo si se proporciona
+        
+        result = self.collection.update_one(
+            {'_id': ObjectId(id_usuario)},
+            {'$set': update_data}
+        )
+        
+        return result
 
     def autenticar_usuario(self, username, password):
         # Buscar usuario
         usuario = self.collection.find_one({'username': username})
-        
+    
         if usuario:
             # Verificar contraseña
             return bcrypt.checkpw(password.encode('utf-8'), usuario['password'])
@@ -89,7 +113,7 @@ class UsuarioService:
     def usuario_activo(self, username):
         usuario = self.obtener_usuario(username)
         return usuario and usuario.get('activo', False)
-    
+
 
 class AuthMiddleware:
     def __init__(self, get_response):
@@ -104,7 +128,7 @@ class AuthMiddleware:
                 'username': username,
                 'es_superuser': self.usuario_service.es_superuser(username),
                 'permisos': self.usuario_service.obtener_permisos(username),
-                'idUsuario': self.usuario_service.obtener_idUsuario(username)
+                'idUsuario': self.usuario_service.obtener_idUsuario(username),
             }
         else:
             request.user = None

@@ -77,7 +77,7 @@ def cambiar_contrasena(request):
 def panel_tokens(request):
     if request.method == 'POST':
         expires = int(request.POST.get('duration', '30')) * 24  # Por defecto 30 días
-        print(type(expires))
+        
         token_manager = TokenManager()
         token_manager.generate_token(request.user.get('idUsuario'), expires)
      
@@ -93,7 +93,7 @@ def panel_tokens(request):
         }
         for token in tokens
     ]
-    print(tokens)
+   
     return render(request, 'tokens.html', {"tokens": tokens})
 
 @login_required
@@ -108,13 +108,13 @@ def panel_usuarios(request):
         "nombre_completo": usuario.get("nombre_completo", ""),
         "email": usuario.get("email", ""),
         "es_superuser": usuario.get("es_superuser", ""),
-        "activo": usuario.get("activo", "")
+        "activo": usuario.get("activo", ""),
+        "permisos": usuario.get("permisos", [])
     }
     for usuario in usuarios
     ]
 
     return render(request, 'usuarios.html', {"usuarios": usuarios})
-
 
 
 

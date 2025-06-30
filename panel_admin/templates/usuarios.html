@@ -3,8 +3,77 @@
 
 {% block contenido %}
 <div id="ver-usuarios" class="content-section">
-    <h2 class="section-title">Lista de Usuarios</h2>
+    <h2 class="section-title">Gestión de Usuarios</h2>
 
+    <!-- Formulario para crear nuevo usuario -->
+    <div class="user-creator">
+        <h3 id="titulo_crearUsuario">Crear Nuevo Usuario</h3>
+        <form method="post" action="{% url 'registro' %}" class="form-container" id="form_crearUsuario" autocomplete="off">
+            {% csrf_token %}
+            <input type="hidden" id="usuario_id" name="usuario_id">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username" class="form-label">Nombre de Usuario</label>
+                    <input type="text" id="username" name="username" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="nombre_completo" class="form-label">Nombre Completo</label>
+                    <input type="text" id="nombre_completo" name="nombre_completo" class="form-input" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo_usuario" class="form-label">Tipo de Usuario</label>
+                    <select id="tipo_usuario" name="tipo_usuario" class="form-input" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="usuario">Usuario</option>
+                        <option value="superuser">Superuser</option>
+                        <option value="muestras">Muestras</option>
+                        <option value="petri">Petri</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" name="password" class="form-input" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password')">
+                            <svg id="eye-open-password" class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke-width="1.5" stroke="currentColor">
+                                <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round"
+                                    stroke-linejoin="round" transform="translate(2 10)">
+                                    <path
+                                        d="m0 .5c2.53705308 3.66666667 5.37038642 5.5 8.5 5.5 3.1296136 0 5.9629469-1.83333333 8.5-5.5" />
+                                    <path d="m2.5 3.423-2 2.077" />
+                                    <path d="m14.5 3.423 2 2.077" />
+                                    <path d="m10.5 6 1 2.5" />
+                                    <path d="m6.5 6-1 2.5" />
+                                </g>
+                            </svg>
+                            <svg id="eye-closed-password" class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; align-items: end;">
+                    <button id="submit_crearUsuario" type="submit" class="btn btn-primary">Crear Usuario</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de usuarios existentes -->
+    <h3>Lista de Usuarios</h3>
     <table class="user-table">
         <thead>
             <tr>
@@ -12,7 +81,8 @@
                 <th>Nombre de Usuario</th>
                 <th>Email</th>
                 <th>Tipo de Cuenta</th>
-                <th>Activo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -21,30 +91,160 @@
                 <td>{{ user.nombre_completo }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
-                {% if user.es_superuser %}
-                <td><span class="user-type superuser">Superuser</span></td>
-                {% else %}
-                <td><span class="user-type user">Usuario</span></td>
-                {% endif %}
-                <td>{{ user.activo }}</td>
+                <td><span class="user-type {{ user.permisos.0 }}">{{ user.permisos.0 }}</span></td>
+                <td>
+                    {% if user.activo %}
+                    <span class="status-badge active">Activo</span>
+                    {% else %}
+                    <span class="status-badge inactive">Inactivo</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-action btn-edit"
+                            onclick="editarUsuario('{{ user.id }}', '{{ user.username }}', '{{ user.nombre_completo }}', '{{ user.email }}', '{{ user.permisos.0 }}')"
+                            title="Editar">
+                            <i class="fa-solid fa-edit"></i>
+                        </button>
+                        <button class="btn-action btn-deactivate"
+                            onclick="toggleUsuario('{{ user.id }}', {{ user.activo }})"
+                            title="{% if user.activo %}Desactivar{% else %}Activar{% endif %}">
+                            {% if user.activo %}
+                            <i class="fa-solid fa-user-slash"></i>
+                            {% else %}
+                            <i class="fa-solid fa-user-check"></i>
+                            {% endif %}
+                        </button>
+                        <button class="btn-action btn-delete"
+                            onclick="eliminarUsuario('{{ user.id }}', '{{ user.username }}')" title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    function togglePassword(inputId) {
+        const passwordInput = document.getElementById(inputId);
+        const eyeOpen = document.getElementById('eye-open-' + inputId);
+        const eyeClosed = document.getElementById('eye-closed-' + inputId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeOpen.style.display = 'none';
+            eyeClosed.style.display = 'block';
+        } else {
+            passwordInput.type = 'password';
+            eyeOpen.style.display = 'block';
+            eyeClosed.style.display = 'none';
+        }
+    }
+
+    function editarUsuario(id, username, nombreCompleto, email, tipoUsuario) {
+        //Cambiar textos
+        document.getElementById('titulo_crearUsuario').textContent = 'Editar Usuario';
+        document.getElementById('submit_crearUsuario').textContent = 'Editar Usuario';
+        document.getElementById('password').placeholder = 'Dejar en blanco para no cambiar la contraseña';
+
+        //Mover información del usuario
+        document.getElementById('usuario_id').value = id;
+        document.getElementById('username').value = username;
+        document.getElementById('nombre_completo').value = nombreCompleto;
+        document.getElementById('email').value = email;
+        document.getElementById('tipo_usuario').value = tipoUsuario;
+
+        //Cambiar action del formulario
+        document.getElementById('form_crearUsuario').action = "{% url 'editar_usuario' %}";
+
+        //Quitar required al campo de contraseña
+        document.getElementById('password').required = false;
+    }
+
+    function cerrarModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    function toggleUsuario(userId, isActive) {
+        const action = isActive ? 'desactivar' : 'activar';
+        if (confirm(`¿Estás seguro de que quieres ${action} este usuario?`)) {
+            // Crear un formulario para enviar la petición
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = ``;
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+
+            const userIdInput = document.createElement('input');
+            userIdInput.type = 'hidden';
+            userIdInput.name = 'user_id';
+            userIdInput.value = userId;
+
+            form.appendChild(csrfInput);
+            form.appendChild(userIdInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    function eliminarUsuario(userId, username) {
+        if (confirm(`¿Estás seguro de que quieres eliminar al usuario "${username}"? Esta acción no se puede deshacer.`)) {
+            // Crear un formulario para enviar la petición
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = ``;
+
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+
+            const userIdInput = document.createElement('input');
+            userIdInput.type = 'hidden';
+            userIdInput.name = 'user_id';
+            userIdInput.value = userId;
+
+            form.appendChild(csrfInput);
+            form.appendChild(userIdInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Cerrar modal al hacer clic fuera de él
+    window.onclick = function (event) {
+        const modal = document.getElementById('editModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+
 {% endblock %}
 
 {#
-    <td><span class="user-type admin">Admin</span></td>
-    <td><span class="user-type user">Usuario</span></td>
-    <td><span class="user-type superuser">Superuser</span></td>
+<td><span class="user-type admin">Admin</span></td>
+<td><span class="user-type user">Usuario</span></td>
+<td><span class="user-type superuser">Superuser</span></td>
 
 
-        "id": str(usuario["_id"]),
-        "username": usuario.get("username", ""),
-        "nombre_completo": usuario.get("nombre_completo", ""),
-        "email": usuario.get("email", ""),
-        "es_superuser": usuario.get("es_superuser", ""),
-        "activo": usuario.get("activo", "")
+"id": str(usuario["_id"]),
+"username": usuario.get("username", ""),
+"nombre_completo": usuario.get("nombre_completo", ""),
+"email": usuario.get("email", ""),
+"es_superuser": usuario.get("es_superuser", ""),
+"activo": usuario.get("activo", "")
 
 #}

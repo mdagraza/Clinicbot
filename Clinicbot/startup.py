@@ -11,7 +11,7 @@ def crear_admin():
             'admin@admin.admin', 
             'admin',
             'Administrador',
-            2  # Tipo de usuario: 2 para superusuario
+            'superuser'
         )
         print('Usuario admin registrado exitosamente')
     except Exception as e:

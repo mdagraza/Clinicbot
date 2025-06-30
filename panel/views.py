@@ -12,9 +12,11 @@ usuario_service = UsuarioService()
 def registro(request):
     if request.method == 'POST':
         username = request.POST.get('username').strip()
-        email = request.POST.get('email')
-        password = request.POST.get('password')
         nombre_completo = request.POST.get('nombre_completo').strip()
+        email = request.POST.get('email').strip()
+        tipo_usuario = request.POST.get('tipo_usuario')
+        password = request.POST.get('password')
+        
 
         # Validar datos
         if not username or not email or not password:
@@ -27,14 +29,42 @@ def registro(request):
                 username, 
                 email, 
                 password,
-                False, #Por defecto no es superusuario
-                nombre_completo
+                nombre_completo,
+                tipo_usuario
             )
             messages.success(request, 'Usuario registrado exitosamente')
-            return redirect('home')
+            return redirect('panel_usuarios')
         except Exception as e:
             messages.error(request, f'Error al registrar: {str(e)}')
-            return render(request, 'registro.html', {"error": str(e), "user": username, "email": email})
+            return render(request, 'registro.html', {"error": str(e), "user": username, "email": email}) ## ARREGLAR REVISAR
+
+    return render(request, 'registro.html')
+
+@login_required
+def editar_usuario(request):
+    if request.method == 'POST':
+        usuario_id = request.POST.get('usuario_id')
+        username = request.POST.get('username').strip()
+        nombre_completo = request.POST.get('nombre_completo').strip()
+        email = request.POST.get('email').strip()
+        tipo_usuario = request.POST.get('tipo_usuario')
+        password = request.POST.get('password')
+
+        try:
+            # Editar usuario
+            usuario_service.editar_usuario(
+                usuario_id,
+                username, 
+                email, 
+                password,
+                nombre_completo,
+                tipo_usuario
+            )
+            messages.success(request, 'Usuario editado exitosamente')
+            return redirect('panel_usuarios')
+        except Exception as e:
+            messages.error(request, f'Error al registrar: {str(e)}')
+            return render(request, 'registro.html', {"error": str(e), "user": username, "email": email}) ## ARREGLAR REVISAR
 
     return render(request, 'registro.html')
 
@@ -61,7 +91,7 @@ def login_view(request):
         else:
             messages.error(request, 'Credenciales inválidas')
             log_action(request, 'LOGIN', 'FAILURE', f'Intento de inicio de sesión fallido para el usuario {username}.')
-            return render(request, 'home.html', {"error": 'Credenciales inválidas'}) #CAMBIAR a un redirect y pasarle el error como se hace en panel-admin en cambiar contraseña
+            return render(request, 'home.html', {"error": 'Credenciales inválidas'}) #REVISAR CAMBIAR a un redirect y pasarle el error como se hace en panel-admin en cambiar contraseña
 
     return render(request, 'login.html')
 
