@@ -12,7 +12,7 @@
 
     <h1>Datos de muestras</h1>
     <div class="container">
-        <!-- Lista de usuarios -->
+        <!-- Lista de pacientes -->
         <div class="lista">
             <h2>Lista:</h2>
             
@@ -38,8 +38,8 @@
                 <label for="paciente_id">Nombre:</label>
                 <select id="paciente_id" name="paciente_id">
                     <option value="" disabled selected hidden>- - - - -</option>
-                    {% for usuario in usuarios %}
-                    <option value="{{ usuario.id }}">{{ usuario.apellidos }}, {{ usuario.nombre }}</option>
+                    {% for paciente in pacientes %}
+                    <option value="{{ paciente.id }}">{{ paciente.apellidos }}, {{ paciente.nombre }}</option>
                     {% endfor %}
                 </select>
                 
@@ -81,7 +81,7 @@
             return identificadoresExistentes.includes(identificador);
         }
 
-        // Función para cargar los datos del usuario al hacer clic en su nombre
+        // Función para cargar los datos del paciente al hacer clic en su nombre
         function editar(id, paciente_id, identificador, color, posicion, fecha) {
             document.getElementById('muestra_id').value = id;
             document.getElementById('muestra_id2').value = id;

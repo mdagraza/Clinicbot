@@ -22,13 +22,13 @@
 
         <div class="lista2">
             <ul>
-                {% if not usuarios %}
+                {% if not pacientes %}
                 <li>No hay pacientes registrados</li>
                 {% endif %}
-                {% for usuario in usuarios %}
-                <li id="li{{ usuario.id }}"
-                    onclick="editarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}', '{{ usuario.apellidos }}', '{{ usuario.ident_muestra }}', '{{ usuario.ident_petri }}', '{{ usuario.edad }}', '{{ usuario.email }}', '{{ usuario.genero }}', '{{ usuario.gr_sanguineo }}')">
-                    {{ usuario.apellidos }}, {{ usuario.nombre }}
+                {% for paciente in pacientes %}
+                <li id="li{{ paciente.id }}"
+                    onclick="editarPaciente('{{ paciente.id }}', '{{ paciente.nombre }}', '{{ paciente.apellidos }}', '{{ paciente.ident_muestra }}', '{{ paciente.ident_petri }}', '{{ paciente.edad }}', '{{ paciente.email }}', '{{ paciente.genero }}', '{{ paciente.gr_sanguineo }}')">
+                    {{ paciente.apellidos }}, {{ paciente.nombre }}
                 </li>
                 {% endfor %}
             </ul>
@@ -61,10 +61,10 @@
     let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
     let petriSeleccionada; //Se guarda el id de la petri seleccionada
     let placas_petri; //Se guarda las placas petri del paciente seleccionado
-    // Función para cargar los datos del usuario al hacer clic en su nombre
-    function editarUsuario(id, nombre, apellidos, ident_muestra, ident_petri, edad, email, genero, gr_sanguineo) {
-        document.getElementById('usuario_id').value = id;
-        document.getElementById('usuario_id2').value = id;
+    // Función para cargar los datos del paciente al hacer clic en su nombre
+    function editarPaciente(id, nombre, apellidos, ident_muestra, ident_petri, edad, email, genero, gr_sanguineo) {
+        document.getElementById('paciente_id').value = id;
+        document.getElementById('paciente_id2').value = id;
         document.getElementById('nombre').value = nombre;
         document.getElementById('apellidos').value = apellidos;
         document.getElementById('ident_muestra').value = ident_muestra;
@@ -101,7 +101,7 @@
                         let li = document.createElement("li");
                         li.setAttribute('id', "li" + String(muestra.id));
                         li.setAttribute('data-muestra-id', muestra.id);
-                        li.setAttribute('data-usuario-id', id);
+                        li.setAttribute('data-paciente-id', id);
                         li.innerText = muestra.identificador + " | " + muestra.color;
                         li.onclick = function () {
                             editarMuestra(muestra.id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
@@ -128,7 +128,7 @@
                         let li = document.createElement("li");
                         li.setAttribute('id', "li" + String(petri.id));
                         li.setAttribute('data-petri-id', petri.id);
-                        li.setAttribute('data-usuario-id', id);
+                        li.setAttribute('data-paciente-id', id);
                         li.innerText = petri.identificador + " | " + petri.datos_muestra.tipo;
                         li.onclick = function () {
                             editarPetri(i);
@@ -145,8 +145,8 @@
     }
 
     function nuevoUser() {
-        document.getElementById('usuario_id').value = "";
-        document.getElementById('usuario_id2').value = "";
+        document.getElementById('paciente_id').value = "";
+        document.getElementById('paciente_id2').value = "";
         document.getElementById('nombre').value = "";
         document.getElementById('apellidos').value = "";
         document.getElementById('ident_muestra').value = "";

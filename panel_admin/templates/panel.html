@@ -13,10 +13,10 @@
     <aside class="sidebar">
         <nav>
             <ul>
-                <li><a href="{% url 'panel_datos' %}" data-section="datos-cuenta" class="nav-link {% if request.path == '/panel-u/' %}active{% endif %}">Datos Cuenta</a></li>
-                <li><a href="{% url 'panel_tokens' %}" data-section="crear-token" class="nav-link {% if request.path == '/panel-u/tokens' %}active{% endif %}">Crear Token</a></li>
+                <li><a href="{% url 'panel_datos' %}" data-section="datos-cuenta" class="nav-link {% if request.resolver_match.url_name == 'panel_datos' %}active{% endif %}">Datos Cuenta</a></li>
+                <li><a href="{% url 'panel_tokens' %}" data-section="crear-token" class="nav-link {% if request.resolver_match.url_name == 'panel_tokens' %}active{% endif %}">Crear Token</a></li>
                 {% if 'superuser' in request.user.permisos %}
-                <li><a href="{% url 'panel_usuarios' %}" data-section="ver-usuarios" class="nav-link {% if request.path == '/panel-u/usuarios' %}active{% endif %}">Ver Usuarios</a></li>
+                <li><a href="{% url 'panel_usuarios' %}" data-section="ver-usuarios" class="nav-link {% if request.resolver_match.url_name == 'panel_usuarios' %}active{% endif %}">Ver Usuarios</a></li>
                 {% endif %}
             </ul>
         </nav>

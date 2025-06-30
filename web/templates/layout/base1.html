@@ -17,9 +17,9 @@
     {% if request.user %}
     <nav class="navbar">
         <ul class="nav-links">
-            <li><a href="{% url 'home' %}" class="nav-link {% if request.path == '/' %}active{% endif %}"><i class="fa-solid fa-house"></i>Inicio</a>
+            <li><a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"><i class="fa-solid fa-house"></i>Inicio</a>
             </li>
-            <li><a href="{% url 'editar_usuario' %}" class="nav-link {% if request.path == '/editar/' %}active{% endif %}"><i class="fa-solid fa-clipboard-list"></i>Pacientes</a></li>
+            <li><a href="{% url 'datos_pacientes' %}" class="nav-link {% if request.resolver_match.url_name == 'datos_pacientes' %}active{% endif %}"><i class="fa-solid fa-clipboard-list"></i>Pacientes</a></li>
         </ul>
         <div class="auth-section">
             <span class="welcome-message">Bienvenid@, {{ request.user.username }}</span>

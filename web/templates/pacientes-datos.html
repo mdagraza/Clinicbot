@@ -1,9 +1,9 @@
 <div id="datos-paciente" class="tab-content active">
     <div class="formulario">
         <h2>Datos del Paciente</h2>
-         <form method="POST" action="{% url 'editar_usuario' %}" autocomplete="off">
+         <form method="POST" action="{% url 'datos_pacientes' %}" autocomplete="off">
             {% csrf_token %}
-            <input type="hidden" id="usuario_id" name="usuario_id">
+            <input type="hidden" id="paciente_id" name="paciente_id">
 
             <fieldset>
                 <legend>Información personal</legend>
@@ -59,9 +59,9 @@
             </div>
         </form>
         
-        <form id="form-borrar-paciente" method="POST" action="{% url 'borrar_usuario' %}" style="display: none;">
+        <form id="form-borrar-paciente" method="POST" action="{% url 'borrar_paciente' %}" style="display: none;">
             {% csrf_token %}
-            <input type="hidden" id="usuario_id2" name="usuario_id2">
+            <input type="hidden" id="paciente_id2" name="paciente_id2">
             <div class="form-buttons">
                 {# <button type="submit" id="eliminarDatos">Eliminar paciente</button> #}
             </div>

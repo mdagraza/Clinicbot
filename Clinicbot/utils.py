@@ -82,6 +82,19 @@ class UsuarioService:
         )
         
         return result
+    
+    def activacion_usuario(self, id_usuario, estado_actual):
+        result = self.collection.update_one(
+            {'_id': ObjectId(id_usuario)},
+            {'$set': {'activo': not estado_actual}}
+        )
+        
+        return result
+    
+    def borrar_usuario(self, id_usuario):
+        result = self.collection.delete_one({"_id": ObjectId(id_usuario)})
+        
+        return result
 
     def autenticar_usuario(self, username, password):
         # Buscar usuario

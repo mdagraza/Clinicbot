@@ -20,12 +20,12 @@ def home(request):
         print("Id del usuario:", request.user.get("idUsuario"))
     return render(request, "home.html")
 
-# Vista para mostrar la lista de usuarios y el formulario de edición
+# Vista para mostrar la lista de pacientes y el formulario de edición
 @login_required
-def editar_usuario(request):
+def datos_pacientes(request):
     if request.method == "POST":
-        # Obtener los datos del formulario para actualizar un usuario
-        usuario_id = request.POST.get("usuario_id")
+        # Obtener los datos del formulario para actualizar un paciente
+        paciente_id = request.POST.get("paciente_id")
         nombre = request.POST.get("nombre")
         apellidos = request.POST.get("apellidos")
         ident_muestra = request.POST.get("ident_muestra")
@@ -36,8 +36,8 @@ def editar_usuario(request):
         gr_sanguineo = request.POST.get("gr_sanguineo")
         
         # Actualizar los datos en MongoDB
-        if not usuario_id: #Si no hay ningún usuario cargado, se crea un nuevo con los datos | not... si es none, null o vacio
-            nuevo_usuario = {
+        if not paciente_id: #Si no hay ningún paciente cargado, se crea un nuevo con los datos | not... si es none, null o vacio
+            nuevo_paciente = {
                 "nombre": nombre,
                 "apellidos": apellidos,
                 "ident_muestra": ident_muestra,
@@ -47,32 +47,32 @@ def editar_usuario(request):
                 "genero": genero,
                 "gr_sanguineo": gr_sanguineo
             }
-            db_pacientes.insert_one(nuevo_usuario)
+            db_pacientes.insert_one(nuevo_paciente)
         else:
             db_pacientes.update_one(
-                {"_id": ObjectId(usuario_id)},
+                {"_id": ObjectId(paciente_id)},
                 {"$set": {"nombre": nombre, "apellidos": apellidos, "ident_muestra": ident_muestra, "ident_petri": ident_petri, "edad": int(edad), "email": email, "genero": genero, "gr_sanguineo": gr_sanguineo}}
             )
-        return redirect('editar_usuario')
+        return redirect('datos_pacientes')
     
-    # Obtener la lista de usuarios de MongoDB y se ordenan en ascendente (-1 descendente)
-    usuarios = db_pacientes.find().sort("apellidos",1)
+    # Obtener la lista de pacientes de MongoDB y se ordenan en ascendente (-1 descendente)
+    pacientes = db_pacientes.find().sort("apellidos",1)
     
     # Renombrar _id a id para que no cause problemas en la plantilla
-    #usuarios = [{"id": str(usuario["_id"]), "nombre": usuario["nombre"], "edad": usuario["edad"], "email": usuario["email"], "genero": usuario["genero"], "gr_sanguineo": usuario["gr_sanguineo"]} for usuario in usuarios]
-    usuarios = [
+    #pacientes = [{"id": str(paciente["_id"]), "nombre": paciente["nombre"], "edad": paciente["edad"], "email": paciente["email"], "genero": paciente["genero"], "gr_sanguineo": paciente["gr_sanguineo"]} for paciente in pacientes]
+    pacientes = [
     {
-        "id": str(usuario["_id"]),
-        "nombre": usuario.get("nombre", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
-        "apellidos": usuario.get("apellidos", ""),
-        "ident_muestra": usuario.get("ident_muestra", ""),
-        "ident_petri": usuario.get("ident_petri", ""),
-        "edad": usuario.get("edad", ""),
-        "email": usuario.get("email", ""),
-        "genero": usuario.get("genero", ""),
-        "gr_sanguineo": usuario.get("gr_sanguineo", "")
+        "id": str(paciente["_id"]),
+        "nombre": paciente.get("nombre", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
+        "apellidos": paciente.get("apellidos", ""),
+        "ident_muestra": paciente.get("ident_muestra", ""),
+        "ident_petri": paciente.get("ident_petri", ""),
+        "edad": paciente.get("edad", ""),
+        "email": paciente.get("email", ""),
+        "genero": paciente.get("genero", ""),
+        "gr_sanguineo": paciente.get("gr_sanguineo", "")
     }
-    for usuario in usuarios
+    for paciente in pacientes
     ]
 
     # Información para la imagen
@@ -80,24 +80,24 @@ def editar_usuario(request):
         'IMAGE_URLBASE' : settings.MEDIA_URL 
     }
 
-    # Renderizar la página con la lista de usuarios y el formulario de edición
-    return render(request, "pacientes.html", {"usuarios": usuarios, "data_image" : data_image})
+    # Renderizar la página con la lista de pacientes y el formulario de edición
+    return render(request, "pacientes.html", {"pacientes": pacientes, "data_image" : data_image})
 
-def borrar_usuario(request):
+def borrar_paciente(request):
     if request.method == 'POST':
-        usuario_id = request.POST.get("usuario_id2")
+        paciente_id = request.POST.get("paciente_id2")
         try:
-            # Convierte el ID en ObjectId y elimina el usuario
-            resultado = db_pacientes.delete_one({"_id": ObjectId(usuario_id)})
+            # Convierte el ID en ObjectId y elimina el paciente
+            resultado = db_pacientes.delete_one({"_id": ObjectId(paciente_id)})
 
             # Verifica si realmente se eliminó un documento
             if resultado.deleted_count > 0:
-                return redirect('editar_usuario') 
+                return redirect('datos_pacientes') 
             else:
                 return HttpResponse("Persona no encontrada", status=404)
         except Exception as e:
-            return redirect('editar_usuario') 
-            #return HttpResponse(f"Error eliminando usuario: {str(e)}", status=500)
+            return redirect('datos_pacientes') 
+            #return HttpResponse(f"Error eliminando paciente: {str(e)}", status=500)
 
     #return HttpResponse("Page not found", status=404)
     raise Http404
@@ -105,7 +105,7 @@ def borrar_usuario(request):
 @solo_superusuarios
 def editar_muestra(request):
     if request.method == "POST":
-        # Obtener los datos del formulario para actualizar un usuario
+        # Obtener los datos del formulario para actualizar un paciente
         muestra_id = request.POST.get("muestra_id")
         paciente_id = request.POST.get("paciente_id")
         identificador = request.POST.get("identificador")
@@ -116,7 +116,7 @@ def editar_muestra(request):
         print("Datos recibidos:", muestra_id, paciente_id, identificador, color, posicion, fecha)
         
         # Actualizar los datos en MongoDB
-        if not muestra_id: #Si no hay ningún usuario cargado, se crea un nuevo con los datos | not... si es none, null o vacio
+        if not muestra_id: #Si no hay ningún paciente cargado, se crea un nuevo con los datos | not... si es none, null o vacio
             print("Creando nueva muestra")
             nueva_muestra = {
                 "paciente_id": ObjectId(paciente_id),
@@ -135,19 +135,19 @@ def editar_muestra(request):
         #return redirect('editar_muestra')
         return redirect(request.META.get('HTTP_REFERER', '/'))
     
-    #Obtener la lista de usuarios
-    usuarios = db_pacientes.find().sort("apellidos",1)
-    usuarios = [
+    #Obtener la lista de pacientes
+    pacientes = db_pacientes.find().sort("apellidos",1)
+    pacientes = [
     {
-        "id": str(usuario["_id"]),
-        "nombre": usuario.get("nombre", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
-        "apellidos": usuario.get("apellidos", ""),
-        "edad": usuario.get("edad", ""),
-        "email": usuario.get("email", ""),
-        "genero": usuario.get("genero", ""),
-        "gr_sanguineo": usuario.get("gr_sanguineo", "")
+        "id": str(paciente["_id"]),
+        "nombre": paciente.get("nombre", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
+        "apellidos": paciente.get("apellidos", ""),
+        "edad": paciente.get("edad", ""),
+        "email": paciente.get("email", ""),
+        "genero": paciente.get("genero", ""),
+        "gr_sanguineo": paciente.get("gr_sanguineo", "")
     }
-    for usuario in usuarios
+    for paciente in pacientes
     ]
 
 
@@ -166,15 +166,15 @@ def editar_muestra(request):
     ]
 
 
-    # Renderizar la página con la lista de usuarios y el formulario de edición
-    return render(request, "muestras.html", {"muestras": muestras, "usuarios": usuarios})
+    # Renderizar la página con la lista de pacientes y el formulario de edición
+    return render(request, "muestras.html", {"muestras": muestras, "pacientes": pacientes})
 
 
 def borrar_muestra(request):
     if request.method == 'POST':
         muestra_id = request.POST.get("muestra_id2")
         try:
-            # Convierte el ID en ObjectId y elimina el usuario
+            # Convierte el ID en ObjectId y elimina el paciente
             resultado = db_muestras.delete_one({"_id": ObjectId(muestra_id)})
 
             # Verifica si realmente se eliminó un documento
@@ -184,7 +184,7 @@ def borrar_muestra(request):
                 return HttpResponse("Persona no encontrada", status=404)
         except Exception as e:
             return redirect('editar_muestra') 
-            #return HttpResponse(f"Error eliminando usuario: {str(e)}", status=500)
+            #return HttpResponse(f"Error eliminando paciente: {str(e)}", status=500)
 
     #return HttpResponse("Page not found", status=404)
     raise Http404
@@ -275,7 +275,7 @@ def borrar_petri(request):
     if request.method == 'POST':
         muestra_id = request.POST.get("muestra_id2")
         try:
-            # Convierte el ID en ObjectId y elimina el usuario
+            # Convierte el ID en ObjectId y elimina el paciente
             resultado = db_muestras.delete_one({"_id": ObjectId(muestra_id)})
 
             # Verifica si realmente se eliminó un documento
@@ -285,7 +285,7 @@ def borrar_petri(request):
                 return HttpResponse("Persona no encontrada", status=404)
         except Exception as e:
             return redirect('editar_muestra') 
-            #return HttpResponse(f"Error eliminando usuario: {str(e)}", status=500)
+            #return HttpResponse(f"Error eliminando paciente: {str(e)}", status=500)
 
     #return HttpResponse("Page not found", status=404)
     raise Http404
@@ -293,7 +293,7 @@ def borrar_petri(request):
 @solo_superusuarios
 def editar_petri(request):
     if request.method == "POST":
-        # Obtener los datos del formulario para actualizar un usuario
+        # Obtener los datos del formulario para actualizar un paciente
         muestra_id = request.POST.get("muestra_id")
         paciente_id = request.POST.get("paciente_id")
         identificador = request.POST.get("identificador")
@@ -304,7 +304,7 @@ def editar_petri(request):
         print("Datos recibidos:", muestra_id, paciente_id, identificador, color, posicion, fecha)
         
         # Actualizar los datos en MongoDB
-        if not muestra_id: #Si no hay ningún usuario cargado, se crea un nuevo con los datos | not... si es none, null o vacio
+        if not muestra_id: #Si no hay ningún paciente cargado, se crea un nuevo con los datos | not... si es none, null o vacio
             print("Creando nueva muestra")
             nueva_muestra = {
                 "paciente_id": ObjectId(paciente_id),
@@ -323,19 +323,19 @@ def editar_petri(request):
         #return redirect('editar_muestra')
         return redirect(request.META.get('HTTP_REFERER', '/'))
     
-    #Obtener la lista de usuarios
-    usuarios = db_pacientes.find().sort("apellidos",1)
-    usuarios = [
+    #Obtener la lista de pacientes
+    pacientes = db_pacientes.find().sort("apellidos",1)
+    pacientes = [
     {
-        "id": str(usuario["_id"]),
-        "nombre": usuario.get("nombre", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
-        "apellidos": usuario.get("apellidos", ""),
-        "edad": usuario.get("edad", ""),
-        "email": usuario.get("email", ""),
-        "genero": usuario.get("genero", ""),
-        "gr_sanguineo": usuario.get("gr_sanguineo", "")
+        "id": str(paciente["_id"]),
+        "nombre": paciente.get("nombre", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
+        "apellidos": paciente.get("apellidos", ""),
+        "edad": paciente.get("edad", ""),
+        "email": paciente.get("email", ""),
+        "genero": paciente.get("genero", ""),
+        "gr_sanguineo": paciente.get("gr_sanguineo", "")
     }
-    for usuario in usuarios
+    for paciente in pacientes
     ]
 
 
@@ -354,8 +354,8 @@ def editar_petri(request):
     ]
 
 
-    # Renderizar la página con la lista de usuarios y el formulario de edición
-    return render(request, "muestras.html", {"muestras": muestras, "usuarios": usuarios})
+    # Renderizar la página con la lista de pacientes y el formulario de edición
+    return render(request, "muestras.html", {"muestras": muestras, "pacientes": pacientes})
 
 
 

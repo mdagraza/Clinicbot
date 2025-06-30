@@ -107,7 +107,7 @@
                             <i class="fa-solid fa-edit"></i>
                         </button>
                         <button class="btn-action btn-deactivate"
-                            onclick="toggleUsuario('{{ user.id }}', {{ user.activo }})"
+                            onclick="toggleUsuario('{{ user.id }}', '{{ user.activo }}')"
                             title="{% if user.activo %}Desactivar{% else %}Activar{% endif %}">
                             {% if user.activo %}
                             <i class="fa-solid fa-user-slash"></i>
@@ -172,13 +172,13 @@
         document.getElementById('editModal').style.display = 'none';
     }
 
-    function toggleUsuario(userId, isActive) {
-        const action = isActive ? 'desactivar' : 'activar';
+    function toggleUsuario(userId, estadoActual) {
+        const action = estadoActual==='True' ? 'desactivar' : 'activar';
         if (confirm(`¿Estás seguro de que quieres ${action} este usuario?`)) {
             // Crear un formulario para enviar la petición
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = ``;
+            form.action = `{% url 'activacion_usuario' %}`;
 
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             const csrfInput = document.createElement('input');
@@ -191,8 +191,14 @@
             userIdInput.name = 'user_id';
             userIdInput.value = userId;
 
+            const estadoInput = document.createElement('input');
+            estadoInput.type = 'hidden';
+            estadoInput.name = 'estado_actual';
+            estadoInput.value = estadoActual;
+
             form.appendChild(csrfInput);
             form.appendChild(userIdInput);
+            form.appendChild(estadoInput);
             document.body.appendChild(form);
             form.submit();
         }
@@ -203,7 +209,7 @@
             // Crear un formulario para enviar la petición
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = ``;
+            form.action = `{% url 'borrar_usuario' %}`;
 
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             const csrfInput = document.createElement('input');

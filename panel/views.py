@@ -68,6 +68,44 @@ def editar_usuario(request):
 
     return render(request, 'registro.html')
 
+@login_required
+def activacion_usuario(request):
+    if request.method == 'POST':
+        usuario_id = request.POST.get('user_id')
+        estado_actual = request.POST.get('estado_actual').lower() == 'true'
+
+        try:
+            # Activar/Desactivar usuario
+            usuario_service.activacion_usuario(
+                usuario_id,
+                estado_actual 
+            )
+            messages.success(request, 'Usuario editado exitosamente')
+            return redirect('panel_usuarios')
+        except Exception as e:
+            messages.error(request, f'Error al registrar: {str(e)}')
+            return render(request, 'registro.html', {"error": str(e), "user": usuario_id}) ## ARREGLAR REVISAR
+
+    return render(request, 'registro.html')
+
+@login_required
+def borrar_usuario(request):
+    if request.method == 'POST':
+        usuario_id = request.POST.get('user_id')
+
+        try:
+            # Activar/Desactivar usuario
+            usuario_service.borrar_usuario(
+                usuario_id 
+            )
+            messages.success(request, 'Usuario borrado exitosamente')
+            return redirect('panel_usuarios')
+        except Exception as e:
+            messages.error(request, f'Error al registrar: {str(e)}')
+            return render(request, 'registro.html', {"error": str(e), "user": usuario_id}) ## ARREGLAR REVISAR
+
+    return render(request, 'registro.html')
+
 def login_view(request):
     if request.user and request.user.get('username'):
         messages.info(request, "Ya estas autenticado")

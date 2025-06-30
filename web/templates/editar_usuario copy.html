@@ -60,7 +60,7 @@
         <!-- Formulario de edición -->
         <div class="formulario">
             <h2>Formulario:</h2>
-            <form method="POST" action="{% url 'editar_usuario' %}">
+            <form method="POST" action="{% url 'datos_pacientes' %}">
                 {% csrf_token %}
                 <input type="hidden" id="usuario_id" name="usuario_id">
                 
