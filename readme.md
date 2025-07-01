@@ -16,11 +16,19 @@ Clinicbot es un asistente virtual diseñado para recibir y gestionar la informac
 ## Instalación
 
 ```bash
-git clone https://github.com/tu_usuario/Clinicbot.git
+git clone https://github.com/tu_usuario/Clinicbot.git # En caso de github
+git clone https://gitlab.com/mdagraza/clinicbot.git # En caso de gitlab
 cd Clinicbot
 python -m venv entorno_virtual
 source entorno_virtual/bin/activate  # En Windows: entorno_virtual\Scripts\activate
 pip install -r requirements.txt
+```
+
+Entorno_Virtual > Clinicbot
+
+## Activar servidor
+```bash
+(entorno_virtual)clinicbot$ python manage.py runserver
 ```
 
 ## Uso
