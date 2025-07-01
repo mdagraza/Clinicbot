@@ -11,6 +11,7 @@ Clinicbot es un asistente virtual diseñado para recibir y gestionar la informac
 
 - Python 3.10+
 - Librerías detalladas en `requirements.txt`
+- Base de datos MongoDB : Instalación sobre un mongo-server en docker en el puerto 27017
 
 ## Instalación
 
