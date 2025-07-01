@@ -16,7 +16,7 @@ class UsuarioService:
         email = email.lower()
         
         #Verificar que el usuario no sea nada relativo a admin
-        if not tipo_usuario==2 and ('admin' in username.lower()):
+        if not tipo_usuario=='superuser' and ('admin' in username.lower()):
             raise ValueError("Nombre de usuario no válido")
 
         # Verificar si el usuario ya existe
