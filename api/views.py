@@ -105,7 +105,7 @@ class ItemListView_Muestras(APIView):
         
         # Buscar si ya existe en la base de datos
         if self.collection.find_one({"identificador": data["identificador"]}):
-            return Response({"error": f"Ya existe un registro con el identificador: {str(data["identificador"])}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": f"Ya existe un registro con el identificador: {str(data['identificador'])}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
         # Agregar la fecha
