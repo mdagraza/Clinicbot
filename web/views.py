@@ -8,6 +8,7 @@ from datetime import datetime
 from db_connection import *
 from panel.decorators import *
 from django.conf import settings
+import requests
 
 # Conectar con MongoDB
 db_pacientes = get_db_pacientes()
@@ -55,8 +56,27 @@ def datos_pacientes(request):
             )
         return redirect('datos_pacientes')
     
+    print(f"Hora actual 1: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    # Obtener la lista de pacientes a través de API REST
+    api_url = f"{settings.API_URL}/api/pacientes" #pacientes-list
+    headers = {
+        'Authorization': 'Bearer 992457924e83931b3878b0407a2b3694b02a13abb24794ec7f37dba9f8347049' # REVISAR: Cambiar por el token de acceso del usuario autenticado
+    }
+    response = requests.get(api_url, headers=headers)
+
+    if response.status_code == 200:
+        pacientes = response.json()
+    else:
+        print("Error al obtener los pacientes:", response.status_code, response.text)
+        pacientes = []
+
+    print(f"Hora actual 2: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    #print("Pacientes obtenidos:", pacientes)
+
+
     # Obtener la lista de pacientes de MongoDB y se ordenan en ascendente (-1 descendente)
-    pacientes = db_pacientes.find().sort("apellidos",1)
+    #pacientes = db_pacientes.find().sort("apellidos",1)
     
     # Renombrar _id a id para que no cause problemas en la plantilla
     #pacientes = [{"id": str(paciente["_id"]), "nombre": paciente["nombre"], "edad": paciente["edad"], "email": paciente["email"], "genero": paciente["genero"], "gr_sanguineo": paciente["gr_sanguineo"]} for paciente in pacientes]
@@ -80,6 +100,7 @@ def datos_pacientes(request):
         'IMAGE_URLBASE' : settings.MEDIA_URL 
     }
 
+    print(f"Hora actual 3: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     # Renderizar la página con la lista de pacientes y el formulario de edición
     return render(request, "pacientes.html", {"pacientes": pacientes, "data_image" : data_image})
 

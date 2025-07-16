@@ -25,7 +25,7 @@ class ItemListView_Pacientes(APIView):
     # GET para obtener todos los items
     @token_required
     def get(self, request):
-        items = list(self.collection.find())
+        items = list(self.collection.find().sort("apellidos",1)) # Ordenar por apellidos en orden ascendente
         # Convertir ObjectId a string para poder serializar a JSON
         for item in items:
             item['_id'] = str(item['_id'])
@@ -134,7 +134,7 @@ class ItemDetailView_Muestras(APIView):
     
     # PUT para actualizar un item
     def put(self, request, id):
-        try:
+        try: 
             data = request.data
 
             #Proteger los campos que puede editar
