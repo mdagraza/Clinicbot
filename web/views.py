@@ -9,6 +9,7 @@ from db_connection import *
 from panel.decorators import *
 from django.conf import settings
 import requests
+from Funciones.Generales import peticion_datos
 
 # Conectar con MongoDB
 db_pacientes = get_db_pacientes()
@@ -56,11 +57,11 @@ def datos_pacientes(request):
             )
         return redirect('datos_pacientes')
     
-    print(f"Hora actual 1: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    '''print(f"Hora actual 1: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     # Obtener la lista de pacientes a través de API REST
     api_url = f"{settings.API_URL}/api/pacientes" #pacientes-list
     headers = {
-        'Authorization': 'Bearer 992457924e83931b3878b0407a2b3694b02a13abb24794ec7f37dba9f8347049' # REVISAR: Cambiar por el token de acceso del usuario autenticado
+        'Authorization': 'Bearer 9ce38f655d3beb4c79d538b7fba6c7ee7fea9f6ee6302dea6bfea1691ff6a618' # REVISAR: Cambiar por el token de acceso del usuario autenticado
     }
     response = requests.get(api_url, headers=headers)
 
@@ -70,7 +71,10 @@ def datos_pacientes(request):
         print("Error al obtener los pacientes:", response.status_code, response.text)
         pacientes = []
 
-    print(f"Hora actual 2: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"Hora actual 2: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")'''
+
+    # Obtener la lista de pacientes a través de API REST
+    pacientes = peticion_datos(request.user.get("idUsuario"), "pacientes")
 
     #print("Pacientes obtenidos:", pacientes)
 

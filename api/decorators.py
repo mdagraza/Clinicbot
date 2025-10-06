@@ -1,13 +1,26 @@
 from functools import wraps
 from rest_framework.response import Response
 from rest_framework import status
+from bson import ObjectId
 from .tokens import TokenManager
 
-def token_required(view_func):
+from db_connection import get_db_users
+db_users = get_db_users()
+
+def token_required(view_func): #PENDIENTE REVISAR : Se deberian devolver los datos segun el tipo de usuario, si es admin todos los datos, si es usuario normal solo los suyos
     @wraps(view_func)
     def wrapper(self, request, *args, **kwargs):
         # Obtener el token del encabezado
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
+
+        #Se filtra cuando la peticion es interna de la web
+        if auth_header.startswith('Interno '):
+            user_id = auth_header.split(' ')[1]
+            if not db_users.find_one({"_id": ObjectId(user_id)}): #Solo se verifica que el usuario exista
+                return Response({"error": "Se requiere Bearer token"}, status=status.HTTP_401_UNAUTHORIZED)
+
+            request.user_id = user_id
+            return view_func(self, request, *args, **kwargs)
         
         if not auth_header.startswith('Bearer '):
             return Response({"error": "Se requiere Bearer token"}, status=status.HTTP_401_UNAUTHORIZED)
