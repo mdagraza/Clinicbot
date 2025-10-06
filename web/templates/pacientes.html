@@ -89,6 +89,13 @@
         pacienteSeleccionado = "li" + String(id);
         document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
 
+        // Limpiar la lista mientras se cargan los datos y mostrar mensaje de carga
+        document.getElementById("muestras-lista").innerHTML = "";
+        document.getElementById("petri-lista").innerHTML = "";
+
+        document.getElementById("muestras-lista").appendChild(document.createElement("li")).innerText = "Cargando muestras...";
+        document.getElementById("petri-lista").appendChild(document.createElement("li")).innerText = "Cargando análisis de placas petri...";
+
         // Obtener muestras del paciente seleccionado
         fetch(`/obtener_muestras/${ident_muestra}/`)
             .then(response => response.json())
@@ -309,7 +316,7 @@
             }
         }
     }
- 
+
     document.addEventListener('DOMContentLoaded', function () {
         const toggleBtn = document.getElementById('toggleImageViewer');
         const openTabBtn = document.getElementById('petriImage');
@@ -347,7 +354,7 @@
             const extension = extensionInput.value.trim();
 
             if (idImagen && extension) {
-                const imageUrl = `{{ data_image.IMAGE_URLBASE|safe|escapejs }}`.replaceAll('\\','/') + `/petri/${idImagen}.${extension}`;
+                const imageUrl = `{{ data_image.IMAGE_URLBASE|safe|escapejs }}`.replaceAll('\\', '/') + `/petri/${idImagen}.${extension}`;
 
                 petriImage.src = imageUrl;
                 petriImage.style.display = 'block';
