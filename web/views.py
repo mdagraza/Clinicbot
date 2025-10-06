@@ -219,12 +219,10 @@ def obtener_muestras(request, identificador_paciente):
         patron_id_paciente = {"$regex" : f"{identificador_paciente}$"} # Se convierte el id a un patron que busca solo el string pasado solo en la parte derecha ($ Significa final del string)
 
         # Obtener la lista de muestras a través de API REST
-        muestras_datos = peticion_datos(request.user.get("idUsuario"), "muestras")
-        print("Muestras obtenidas de la API:", muestras_datos)
+        muestras_datos = peticion_datos(request.user.get("idUsuario"), "muestras") #PENDIENTE REVISAR : Que solo devuelva los datos del paciente en concreto, para no tener que solicitar todos los datos y luego filtrarlos
 
         #muestras = [m for m in muestras_datos if m.get("identificador") == patron_id_paciente] # regex no funciona con datos devueltos en formatos json, solo es para mongo
         muestras = [m for m in muestras_datos if identificador_paciente in m.get("identificador", "")]
-        print("Muestras obtenidas:", muestras)
 
         # Filtrar solo las muestras del paciente en MongoDB
         #muestras = db_muestras.find({"identificador": patron_id_paciente})
