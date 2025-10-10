@@ -27,11 +27,9 @@ source entorno_virtual/bin/activate
 ```
 
 ```powershell
-
-```
-
 #Windows
 entorno_virtual\Scripts\activate
+```
 
 ```bash
 #Archivo dentro de la carpeta de Clinicbot
