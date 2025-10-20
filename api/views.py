@@ -123,12 +123,17 @@ class ItemDetailView_Muestras(APIView):
     # GET para obtener un item específico
     def get(self, request, id):
         try:
-            item = self.collection.find_one({"_id": ObjectId(id)})
-            if item:
-                item['_id'] = str(item['_id'])
-                if 'paciente_id' in item and item['paciente_id'] is not None:
-                    item['paciente_id'] = str(item['paciente_id'])
-                return Response(item)
+            patron_id_paciente = {"$regex" : f"{id}$"} # Se convierte el id a un patron que busca solo el string de los últimos caracteres
+            items = list(self.collection.find({"identificador": patron_id_paciente})) # Se busca por el identificador del paciente
+
+            if items:
+                # Convertir ObjectId a string para poder serializar a JSON
+                for item in items:
+                    item['_id'] = str(item['_id'])
+                    # Verificar si existe paciente_id antes de convertirlo
+                    if 'paciente_id' in item and item['paciente_id'] is not None:
+                        item['paciente_id'] = str(item['paciente_id'])
+                return Response(items)
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -218,12 +223,17 @@ class ItemDetailView_Petri(APIView):
     # GET para obtener un item específico
     def get(self, request, id):
         try:
-            item = self.collection.find_one({"_id": ObjectId(id)})
-            if item:
-                item['_id'] = str(item['_id'])
-                if 'paciente_id' in item and item['paciente_id'] is not None:
-                    item['paciente_id'] = str(item['paciente_id'])
-                return Response(item)
+            patron_id_paciente = {"$regex" : f"^{id}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres
+            items = list(self.collection.find({"identificador": patron_id_paciente})) # Se busca por el identificador del paciente
+
+            if items:
+                # Convertir ObjectId a string para poder serializar a JSON
+                for item in items:
+                    item['_id'] = str(item['_id'])
+                    # Verificar si existe paciente_id antes de convertirlo
+                    if 'paciente_id' in item and item['paciente_id'] is not None:
+                        item['paciente_id'] = str(item['paciente_id'])
+                return Response(items)
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
