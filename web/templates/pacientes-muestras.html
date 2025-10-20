@@ -13,7 +13,8 @@
         </div>
         <div class="formulario-muestras" id="formulario-muestras" style="display:none;">
             <h2>Datos de la Muestra</h2>
-            <form id="formularioDatos" method="POST" action="{% url 'editar_muestra' %}">
+            {# Antes %url 'editar_muestra'% - Se debería cambiar a algo con javascript, para actualizar los datos #}
+            <form id="formularioDatos" method="POST" action="#">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id" name="muestra_id">
 
@@ -34,13 +35,15 @@
                     <label for="posicion">Posición:</label>
                     <input type="number" id="posicion" name="posicion" required>
                 </fieldset>
-                
+
                 <div class="form-buttons">
                     <button type="submit" id="guardarDatos">Guardar muestra</button>
-                    <button type="button" id="eliminarDatos" onclick="if(confirm('¿Seguro que quieres eliminar esta muestra?')) document.getElementById('form-borrar-muestra').submit();">Eliminar muestra</button>
+                    <button type="button" id="eliminarDatos"
+                        onclick="if(confirm('¿Seguro que quieres eliminar esta muestra?')) document.getElementById('form-borrar-muestra').submit();">Eliminar
+                        muestra</button>
                 </div>
             </form>
-            
+
             <form id="form-borrar-muestra" method="POST" action="{% url 'borrar_muestra' %}" style="display: none;">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id2" name="muestra_id2">

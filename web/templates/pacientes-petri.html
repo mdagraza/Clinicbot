@@ -13,7 +13,8 @@
         </div>
         <div class="formulario-petri" id="formulario-petri" style="display:none;">
             <h2>Análisis de Placas Petri</h2>
-            <form id="formularioDatos" method="POST" action="{% url 'editar_petri' %}">
+            {# Antes %url 'editar_petri'% - Se debería cambiar a algo con javascript, para actualizar los datos #}
+            <form id="formularioDatos" method="POST" action="#">
                 {% csrf_token %}
 
                 <input type="hidden" id="petri_id" name="petri_id">
@@ -77,17 +78,17 @@
                             <label for="r">R:
                                 <input type="number" id="r" name="datos_imagen.rgb.r" min="0" max="255" required>
                             </label>
-                            
+
 
                             <label for="g">G:
                                 <input type="number" id="g" name="datos_imagen.rgb.g" min="0" max="255" required>
                             </label>
-                            
+
 
                             <label for="b">B:
                                 <input type="number" id="b" name="datos_imagen.rgb.b" min="0" max="255" required>
                             </label>
-                            
+
                         </fieldset>
 
                         <fieldset>
@@ -95,17 +96,17 @@
                             <label for="h">H:
                                 <input type="number" id="h" name="datos_imagen.hsv.h" required>
                             </label>
-                            
+
 
                             <label for="s">S:
                                 <input type="number" id="s" name="datos_imagen.hsv.s" required>
                             </label>
-                            
+
 
                             <label for="v">V:
                                 <input type="number" id="v" name="datos_imagen.hsv.v" required>
                             </label>
-                            
+
                         </fieldset>
                     </div>
 
@@ -152,10 +153,12 @@
 
                 <div class="form-buttons">
                     <button type="submit" id="guardarDatos">Guardar análisis</button>
-                    <button type="button" id="eliminarDatos" onclick="if(confirm('¿Seguro que quieres eliminar este análisis?')) document.getElementById('form-borrar-petri').submit();">Eliminar análisis</button>
+                    <button type="button" id="eliminarDatos"
+                        onclick="if(confirm('¿Seguro que quieres eliminar este análisis?')) document.getElementById('form-borrar-petri').submit();">Eliminar
+                        análisis</button>
                 </div>
             </form>
-            
+
             <form id="form-borrar-petri" method="POST" action="{% url 'borrar_petri' %}" style="display: none;">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id2" name="muestra_id2">
