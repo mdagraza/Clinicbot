@@ -9,6 +9,7 @@ from panel.decorators import *
 from .tokens import TokenManager
 from Clinicbot.utils import UsuarioService
 from .decorators import token_required
+from .validators import MuestraSangreValidator
 
 import os
 from django.conf import settings
@@ -99,17 +100,27 @@ class ItemListView_Muestras(APIView):
     def post(self, request):
         data = request.data
 
-        #Filtrar entrada del codigo
-        if "identificador" not in data or not re.match(PATRON_CODE, data["identificador"]):
-            return Response({"error": "El Identificador(AA.1234567) no es válido."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        # Buscar si ya existe en la base de datos
-        if self.collection.find_one({"identificador": data["identificador"]}):
-            return Response({"error": f"Ya existe un registro con el identificador: {str(data['identificador'])}"}, status=status.HTTP_400_BAD_REQUEST)
+        # Validar identificador si se proporciona
+        if "identificador" in data and data["identificador"]:
+            if not re.match(PATRON_CODE, data["identificador"]):
+                return Response({"error": "El Identificador(AA.1234567) no es válido."}, status=status.HTTP_400_BAD_REQUEST)
 
+            # Buscar si ya existe en la base de datos
+            if self.collection.find_one({"identificador": data["identificador"]}):
+                return Response({"error": f"Ya existe un registro con el identificador: {str(data['identificador'])}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Agregar la fecha
-        data["fecha"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
+        # Validar campos de muestra de sangre usando el validador
+        validation_errors = MuestraSangreValidator.validate_muestra_completa(data)
+
+        if validation_errors:
+            return Response({
+                "error": "Error de validación en los datos de la muestra de sangre",
+                "detalles": validation_errors
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Agregar la fecha si no se proporciona
+        if "fecha" not in data or not data["fecha"]:
+            data["fecha"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
 
         result = self.collection.insert_one(data)
         return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
@@ -134,24 +145,25 @@ class ItemDetailView_Muestras(APIView):
     
     # PUT para actualizar un item
     def put(self, request, id):
-        try: 
+        try:
             data = request.data
 
-            #Proteger los campos que puede editar
-            campos_permitidos = ['color', 'posicion'] 
-            campos_invalidos = [campo for campo in data.keys() if campo not in campos_permitidos]
-            if campos_invalidos:
-                return Response({
-                    "error": f"No se pueden editar los campos: {', '.join(campos_invalidos)}",
-                    "Solo se pueden editar los campos:": campos_permitidos
-                }, status=400)
-
-            '''# Eliminar campos que no se pueden actualizar
-            campos_protegidos = ['identificador', 'fecha']
+            # Proteger solo campos críticos que no deben editarse
+            campos_protegidos = ['identificador', 'fecha', '_id']
             for campo in campos_protegidos:
                 if campo in data:
-                    data.pop(campo)'''
+                    data.pop(campo)
 
+            # Validar campos de muestra de sangre usando el validador
+            validation_errors = MuestraSangreValidator.validate_muestra_completa(data)
+
+            if validation_errors:
+                return Response({
+                    "error": "Error de validación en los datos de la muestra de sangre",
+                    "detalles": validation_errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            # Permitir todos los demás campos del CSV de muestras de sangre
             result = self.collection.update_one(
                 {"_id": ObjectId(id)},
                 {"$set": data}
@@ -169,6 +181,32 @@ class ItemDetailView_Muestras(APIView):
             if result.deleted_count:
                 return Response({"message": "Eliminado correctamente"})
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class ItemListView_MuestrasPorPaciente(APIView):
+    """Endpoint para obtener todas las muestras de un paciente específico"""
+    def __init__(self):
+        self.mongodb = MongoDBConnection_Muestras()
+        self.collection = self.mongodb.get_collection('muestras')
+    
+    @token_required
+    def get(self, request, id):
+        try:
+            # Buscar todas las muestras del paciente
+            muestras = list(self.collection.find({"paciente_id": ObjectId(id)}))
+            
+            # Convertir ObjectId a string para poder serializar a JSON
+            for muestra in muestras:
+                muestra['_id'] = str(muestra['_id'])
+                if 'paciente_id' in muestra and muestra['paciente_id'] is not None:
+                    muestra['paciente_id'] = str(muestra['paciente_id'])
+            
+            return Response({
+                "paciente_id": id,
+                "total_muestras": len(muestras),
+                "muestras": muestras
+            })
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
         
