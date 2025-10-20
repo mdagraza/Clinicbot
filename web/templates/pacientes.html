@@ -89,8 +89,8 @@
         pacienteSeleccionado = "li" + String(id);
         document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
 
-        // Obtener muestras del paciente seleccionado
-        fetch(`/obtener_muestras/${ident_muestra}/`)
+        // Obtener muestras del paciente seleccionado usando ID del paciente
+        fetch(`/obtener_muestras/${id}/`)
             .then(response => response.json())
             .then(muestras => {
                 let listaMuestras = document.getElementById("muestras-lista");
@@ -102,9 +102,13 @@
                         li.setAttribute('id', "li" + String(muestra.id));
                         li.setAttribute('data-muestra-id', muestra.id);
                         li.setAttribute('data-paciente-id', id);
-                        li.innerText = muestra.identificador + " | " + muestra.color;
+                        // Actualizar para nueva estructura de datos
+                        let identificador = muestra.codigo_identificacion || muestra.identificador || "N/A";
+                        let tipo = muestra.tipo_muestra || muestra.color || "N/A";
+                        li.innerText = identificador + " | " + tipo;
                         li.onclick = function () {
-                            editarMuestra(muestra.id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
+                            // Pasar toda la muestra a la función de edición
+                            editarMuestra(muestra);
                         };
                         listaMuestras.appendChild(li);
                     });
@@ -171,13 +175,89 @@
         document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
     }
 
-    function editarMuestra(muestraId, identificador, color, posicion, fecha) {
-        document.getElementById('muestra_id').value = muestraId;
-        document.getElementById('muestra_id2').value = muestraId;
-        document.getElementById('identificador').value = identificador;
-        document.getElementById('color').value = color;
-        document.getElementById('posicion').value = posicion;
-        document.getElementById('fecha').value = fecha;
+    function editarMuestra(muestra) {
+        // Campos básicos
+        document.getElementById('muestra_id').value = muestra.id || '';
+        document.getElementById('muestra_id2').value = muestra.id || '';
+        
+        // Identificación
+        document.getElementById('codigo_identificacion').value = muestra.codigo_identificacion || muestra.identificador || '';
+        
+        // Características cámara
+        document.getElementById('camara_neubauer').value = muestra.camara_neubauer || '';
+        
+        // Datos muestra
+        document.getElementById('tipo_muestra').value = muestra.tipo_muestra || muestra.color || '';
+        document.getElementById('fecha_muestra').value = muestra.fecha || '';
+        document.getElementById('hora_muestra').value = muestra.hora || '';
+        document.getElementById('metodo_dilucion').value = muestra.metodo_dilucion || '';
+        document.getElementById('tipo_diluyente').value = muestra.tipo_diluyente || '';
+        document.getElementById('volumen_muestra').value = muestra.volumen_muestra || '';
+        document.getElementById('dilucion_numero').value = muestra.dilucion_numero || '';
+        
+        // Datos imagen
+        document.getElementById('id_imagen').value = muestra.id_imagen || '';
+        document.getElementById('extension_imagen').value = muestra.extension_imagen || '';
+        
+        // Color RGB
+        if (muestra.color_rgb) {
+            document.getElementById('color_r').value = muestra.color_rgb.r || '';
+            document.getElementById('color_g').value = muestra.color_rgb.g || '';
+            document.getElementById('color_b').value = muestra.color_rgb.b || '';
+        } else {
+            document.getElementById('color_r').value = '';
+            document.getElementById('color_g').value = '';
+            document.getElementById('color_b').value = '';
+        }
+        
+        // Color HSV
+        if (muestra.color_hsv) {
+            document.getElementById('color_h').value = muestra.color_hsv.h || '';
+            document.getElementById('color_s').value = muestra.color_hsv.s || '';
+            document.getElementById('color_v').value = muestra.color_hsv.v || '';
+        } else {
+            document.getElementById('color_h').value = '';
+            document.getElementById('color_s').value = '';
+            document.getElementById('color_v').value = '';
+        }
+        
+        document.getElementById('resolucion_imagen').value = muestra.resolucion_imagen || '';
+        document.getElementById('umbral_color').value = muestra.umbral_color || '';
+        
+        // Datos análisis
+        document.getElementById('radio_minimo').value = muestra.radio_minimo || '';
+        document.getElementById('radio_maximo').value = muestra.radio_maximo || '';
+        document.getElementById('parametros_procesamiento').value = muestra.parametros_procesamiento || '';
+        
+        // Resultados
+        if (muestra.resultados) {
+            document.getElementById('superficie_1_cuadrado').value = muestra.resultados.superficie_contada_1_cuadrado || '';
+            document.getElementById('superficie_5_cuadrados').value = muestra.resultados.superficie_contada_5_cuadrados || '';
+            document.getElementById('profundidad_camara').value = muestra.resultados.profundidad_camara_recuento || '';
+            document.getElementById('factor_dilucion').value = muestra.resultados.factor_dilucion || '';
+            document.getElementById('eritrocitos_cuadrado_1').value = muestra.resultados.eritrocitos_cuadrado_1 || '';
+            document.getElementById('eritrocitos_cuadrado_2').value = muestra.resultados.eritrocitos_cuadrado_2 || '';
+            document.getElementById('eritrocitos_cuadrado_3').value = muestra.resultados.eritrocitos_cuadrado_3 || '';
+            document.getElementById('eritrocitos_cuadrado_4').value = muestra.resultados.eritrocitos_cuadrado_4 || '';
+            document.getElementById('eritrocitos_cuadrado_5').value = muestra.resultados.eritrocitos_cuadrado_5 || '';
+            document.getElementById('eritrocitos_por_muestra').value = muestra.resultados.eritrocitos_por_muestra || '';
+            document.getElementById('valores_referencia_mujeres').value = muestra.resultados.valores_referencia_mujeres || '';
+            document.getElementById('valores_referencia_hombres').value = muestra.resultados.valores_referencia_hombres || '';
+        } else {
+            // Limpiar campos de resultados si no hay datos
+            document.getElementById('superficie_1_cuadrado').value = '';
+            document.getElementById('superficie_5_cuadrados').value = '';
+            document.getElementById('profundidad_camara').value = '';
+            document.getElementById('factor_dilucion').value = '';
+            document.getElementById('eritrocitos_cuadrado_1').value = '';
+            document.getElementById('eritrocitos_cuadrado_2').value = '';
+            document.getElementById('eritrocitos_cuadrado_3').value = '';
+            document.getElementById('eritrocitos_cuadrado_4').value = '';
+            document.getElementById('eritrocitos_cuadrado_5').value = '';
+            document.getElementById('eritrocitos_por_muestra').value = '';
+            document.getElementById('valores_referencia_mujeres').value = '';
+            document.getElementById('valores_referencia_hombres').value = '';
+        }
 
         document.getElementById('formulario-muestras').style.display = 'block';
         document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
@@ -187,7 +267,7 @@
         if (muestraSeleccionada) {
             document.getElementById(muestraSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
         }
-        muestraSeleccionada = "li" + String(muestraId);
+        muestraSeleccionada = "li" + String(muestra.id);
         document.getElementById(muestraSeleccionada).style.fontWeight = "bold";
     }
 

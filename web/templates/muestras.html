@@ -20,8 +20,8 @@
             <div class="lista2">
                 <ul>
                     {% for muestra in muestras %}
-                    <li onclick="editar('{{ muestra.id }}', '{{ muestra.paciente_id }}', '{{ muestra.identificador }}', '{{ muestra.color }}', '{{ muestra.posicion }}', '{{ muestra.fecha }}')">
-                        {{ muestra.identificador }}
+                    <li onclick="editar('{{ muestra.id }}', '{{ muestra.paciente_id }}', '{{ muestra.codigo_identificacion }}', '{{ muestra.camara_neubauer }}', '{{ muestra.tipo_muestra }}', '{{ muestra.fecha_muestra }}', '{{ muestra.hora_muestra }}', '{{ muestra.metodo_dilucion }}', '{{ muestra.tipo_diluyente }}', '{{ muestra.volumen_muestra }}', '{{ muestra.dilucion_numero }}', '{{ muestra.id_imagen }}', '{{ muestra.extension_imagen }}', '{{ muestra.color_r }}', '{{ muestra.color_g }}', '{{ muestra.color_b }}', '{{ muestra.color_h }}', '{{ muestra.color_s }}', '{{ muestra.color_v }}', '{{ muestra.resolucion_imagen }}', '{{ muestra.umbral_color }}', '{{ muestra.radio_minimo }}', '{{ muestra.radio_maximo }}', '{{ muestra.parametros_procesamiento }}', '{{ muestra.superficie_1_cuadrado }}', '{{ muestra.superficie_5_cuadrados }}', '{{ muestra.profundidad_camara }}', '{{ muestra.factor_dilucion }}', '{{ muestra.eritrocitos_cuadrado_1 }}', '{{ muestra.eritrocitos_cuadrado_2 }}', '{{ muestra.eritrocitos_cuadrado_3 }}', '{{ muestra.eritrocitos_cuadrado_4 }}', '{{ muestra.eritrocitos_cuadrado_5 }}', '{{ muestra.eritrocitos_por_muestra }}', '{{ muestra.valores_referencia_mujeres }}', '{{ muestra.valores_referencia_hombres }}')">
+                        {{ muestra.codigo_identificacion }} - {{ muestra.tipo_muestra }}
                     </li>
                     {% endfor %}
                 </ul>
@@ -30,32 +30,173 @@
         
         <!-- Formulario de edición -->
         <div class="formulario">
-            <h2>Formulario:</h2>
+            <h2>Formulario de Muestra de Sangre:</h2>
             <form id="formularioMuestras" method="POST" action="{% url 'editar_muestra' %}">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id" name="muestra_id">
 
-                <label for="paciente_id">Nombre:</label>
-                <select id="paciente_id" name="paciente_id">
-                    <option value="" disabled selected hidden>- - - - -</option>
-                    {% for paciente in pacientes %}
-                    <option value="{{ paciente.id }}">{{ paciente.apellidos }}, {{ paciente.nombre }}</option>
-                    {% endfor %}
-                </select>
-                
-                <label for="identificador">Identificador:</label>
-                <input type="text" id="identificador" name="identificador" required>
-                <p id="Men_error" style="color: red; display: none;">Mensaje error</p>
+                <!-- Identificación -->
+                <fieldset>
+                    <legend>Identificación</legend>
+                    <label for="paciente_id">Paciente:</label>
+                    <select id="paciente_id" name="paciente_id">
+                        <option value="" disabled selected hidden>- - - - -</option>
+                        {% for paciente in pacientes %}
+                        <option value="{{ paciente.id }}">{{ paciente.apellidos }}, {{ paciente.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <label for="codigo_identificacion">Código identificación:</label>
+                    <input type="text" id="codigo_identificacion" name="codigo_identificacion" placeholder="PPPP.ddmmtttTT" required>
+                    <p id="Men_error" style="color: red; display: none;">Mensaje error</p>
+                </fieldset>
 
+                <!-- Características Cámara -->
+                <fieldset>
+                    <legend>Características Cámara Recuento</legend>
+                    <label for="camara_neubauer">Cámara Neubauer:</label>
+                    <input type="text" id="camara_neubauer" name="camara_neubauer" placeholder="Tipo de cámara">
+                </fieldset>
 
-                <label for="color">Color:</label>
-                <input type="text" id="color" name="color" required>
-                
-                <label for="posicion">Posición:</label>
-                <input type="number" id="posicion" name="posicion" required>
-                
-                <label for="fecha" id="fechaL" style="display: none;">Fecha:
-                <input type="datetime-local" id="fecha" name="fecha"></label>
+                <!-- Datos de la Muestra -->
+                <fieldset>
+                    <legend>Datos de la Muestra</legend>
+                    <label for="tipo_muestra">Tipo de muestra:</label>
+                    <input type="text" id="tipo_muestra" name="tipo_muestra">
+                    
+                    <label for="fecha_muestra">Fecha (dd/mm):</label>
+                    <input type="text" id="fecha_muestra" name="fecha_muestra" placeholder="dd/mm">
+                    
+                    <label for="hora_muestra">Hora (hh:mm):</label>
+                    <input type="text" id="hora_muestra" name="hora_muestra" placeholder="hh:mm">
+                    
+                    <label for="metodo_dilucion">Método de dilución:</label>
+                    <input type="text" id="metodo_dilucion" name="metodo_dilucion" placeholder="dilución 1/200 con pipeta dilutora">
+                    
+                    <label for="tipo_diluyente">Tipo de diluyente:</label>
+                    <input type="text" id="tipo_diluyente" name="tipo_diluyente">
+                    
+                    <label for="volumen_muestra">Volumen muestra sembrado (ml):</label>
+                    <input type="number" step="0.01" id="volumen_muestra" name="volumen_muestra">
+                    
+                    <label for="dilucion_numero">Dilución (número):</label>
+                    <input type="number" step="0.001" id="dilucion_numero" name="dilucion_numero">
+                </fieldset>
+
+                <!-- Datos de Imagen -->
+                <fieldset>
+                    <legend>Datos de Imagen</legend>
+                    <label for="id_imagen">ID imagen:</label>
+                    <input type="text" id="id_imagen" name="id_imagen">
+                    
+                    <label for="extension_imagen">Extensión imagen:</label>
+                    <select id="extension_imagen" name="extension_imagen">
+                        <option value="">Seleccionar...</option>
+                        <option value="png">png</option>
+                        <option value="jpeg">jpeg</option>
+                        <option value="jpg">jpg</option>
+                    </select>
+                    
+                    <label>Color RGB (0-255):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div>
+                            <label for="color_r">R:</label>
+                            <input type="number" min="0" max="255" id="color_r" name="color_r">
+                        </div>
+                        <div>
+                            <label for="color_g">G:</label>
+                            <input type="number" min="0" max="255" id="color_g" name="color_g">
+                        </div>
+                        <div>
+                            <label for="color_b">B:</label>
+                            <input type="number" min="0" max="255" id="color_b" name="color_b">
+                        </div>
+                    </div>
+                    
+                    <label>Color HSV:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div>
+                            <label for="color_h">H:</label>
+                            <input type="number" step="0.01" id="color_h" name="color_h">
+                        </div>
+                        <div>
+                            <label for="color_s">S:</label>
+                            <input type="number" step="0.01" id="color_s" name="color_s">
+                        </div>
+                        <div>
+                            <label for="color_v">V:</label>
+                            <input type="number" step="0.01" id="color_v" name="color_v">
+                        </div>
+                    </div>
+                    
+                    <label for="resolucion_imagen">Resolución imagen (megapixeles):</label>
+                    <input type="number" step="0.01" id="resolucion_imagen" name="resolucion_imagen">
+                    
+                    <label for="umbral_color">Umbral color:</label>
+                    <input type="number" step="0.01" id="umbral_color" name="umbral_color">
+                </fieldset>
+
+                <!-- Datos de Análisis -->
+                <fieldset>
+                    <legend>Datos de Análisis Placa</legend>
+                    <label for="radio_minimo">Radio mínimo (pixel):</label>
+                    <input type="number" id="radio_minimo" name="radio_minimo">
+                    
+                    <label for="radio_maximo">Radio máximo (pixel):</label>
+                    <input type="number" id="radio_maximo" name="radio_maximo">
+                    
+                    <label for="parametros_procesamiento">Parámetros de procesamiento:</label>
+                    <textarea id="parametros_procesamiento" name="parametros_procesamiento" rows="3"></textarea>
+                </fieldset>
+
+                <!-- Resultados -->
+                <fieldset>
+                    <legend>Resultados</legend>
+                    <label for="superficie_1_cuadrado">Superficie contada (1 cuadrado) mm²:</label>
+                    <input type="number" step="0.01" id="superficie_1_cuadrado" name="superficie_1_cuadrado" placeholder="0.04">
+                    
+                    <label for="superficie_5_cuadrados">Superficie contada (5 cuadrados) mm²:</label>
+                    <input type="number" step="0.01" id="superficie_5_cuadrados" name="superficie_5_cuadrados" placeholder="0.2">
+                    
+                    <label for="profundidad_camara">Profundidad cámara recuento (mm):</label>
+                    <input type="number" step="0.01" id="profundidad_camara" name="profundidad_camara" placeholder="0.1">
+                    
+                    <label for="factor_dilucion">Factor dilución:</label>
+                    <input type="text" id="factor_dilucion" name="factor_dilucion" placeholder="1/200">
+                    
+                    <label>Recuento Eritrocitos por Cuadrado:</label>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div>
+                            <label for="eritrocitos_cuadrado_1">Cuadrado 1:</label>
+                            <input type="number" id="eritrocitos_cuadrado_1" name="eritrocitos_cuadrado_1">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_2">Cuadrado 2:</label>
+                            <input type="number" id="eritrocitos_cuadrado_2" name="eritrocitos_cuadrado_2">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_3">Cuadrado 3:</label>
+                            <input type="number" id="eritrocitos_cuadrado_3" name="eritrocitos_cuadrado_3">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_4">Cuadrado 4:</label>
+                            <input type="number" id="eritrocitos_cuadrado_4" name="eritrocitos_cuadrado_4">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_5">Cuadrado 5:</label>
+                            <input type="number" id="eritrocitos_cuadrado_5" name="eritrocitos_cuadrado_5">
+                        </div>
+                    </div>
+                    
+                    <label for="eritrocitos_por_muestra">Eritrocitos por muestra (n° eritrocitos / mm³):</label>
+                    <input type="number" step="0.01" id="eritrocitos_por_muestra" name="eritrocitos_por_muestra">
+                    
+                    <label for="valores_referencia_mujeres">Valores referencia mujeres (millones/mm³):</label>
+                    <input type="text" id="valores_referencia_mujeres" name="valores_referencia_mujeres" placeholder="4.2 a 5.4">
+                    
+                    <label for="valores_referencia_hombres">Valores referencia hombres (millones/mm³):</label>
+                    <input type="text" id="valores_referencia_hombres" name="valores_referencia_hombres" placeholder="4.7 a 6.1">
+                </fieldset>
 
                 <button type="submit" id="guardarDatos">Guardar muestra</button>
             </form>
@@ -69,28 +210,57 @@
     </div>
 
     <script>
-        // Lista de identificadores de muestras ya cargadas en la página
-        const identificadoresExistentes = [
+        // Lista de códigos de identificación ya cargados en la página
+        const codigosExistentes = [
             {% for muestra in muestras %}
-                "{{ muestra.identificador }}", 
+                "{{ muestra.codigo_identificacion }}", 
             {% endfor %}
         ];
 
         // Verificar si hay repetidos antes de guardar
-        function verificarDuplicado(identificador) {
-            return identificadoresExistentes.includes(identificador);
+        function verificarDuplicado(codigo) {
+            return codigosExistentes.includes(codigo);
         }
 
-        // Función para cargar los datos del paciente al hacer clic en su nombre
-        function editar(id, paciente_id, identificador, color, posicion, fecha) {
+        // Función para cargar los datos de la muestra al hacer clic
+        function editar(id, paciente_id, codigo_identificacion, camara_neubauer, tipo_muestra, fecha_muestra, hora_muestra, metodo_dilucion, tipo_diluyente, volumen_muestra, dilucion_numero, id_imagen, extension_imagen, color_r, color_g, color_b, color_h, color_s, color_v, resolucion_imagen, umbral_color, radio_minimo, radio_maximo, parametros_procesamiento, superficie_1_cuadrado, superficie_5_cuadrados, profundidad_camara, factor_dilucion, eritrocitos_cuadrado_1, eritrocitos_cuadrado_2, eritrocitos_cuadrado_3, eritrocitos_cuadrado_4, eritrocitos_cuadrado_5, eritrocitos_por_muestra, valores_referencia_mujeres, valores_referencia_hombres) {
             document.getElementById('muestra_id').value = id;
             document.getElementById('muestra_id2').value = id;
             document.getElementById('paciente_id').value = paciente_id;
-            document.getElementById('identificador').value = identificador;
-            document.getElementById('color').value = color;
-            document.getElementById('posicion').value = posicion;
-            document.getElementById('fecha').value = fecha;
-            document.getElementById('fechaL').style.display = "block";
+            document.getElementById('codigo_identificacion').value = codigo_identificacion;
+            document.getElementById('camara_neubauer').value = camara_neubauer;
+            document.getElementById('tipo_muestra').value = tipo_muestra;
+            document.getElementById('fecha_muestra').value = fecha_muestra;
+            document.getElementById('hora_muestra').value = hora_muestra;
+            document.getElementById('metodo_dilucion').value = metodo_dilucion;
+            document.getElementById('tipo_diluyente').value = tipo_diluyente;
+            document.getElementById('volumen_muestra').value = volumen_muestra;
+            document.getElementById('dilucion_numero').value = dilucion_numero;
+            document.getElementById('id_imagen').value = id_imagen;
+            document.getElementById('extension_imagen').value = extension_imagen;
+            document.getElementById('color_r').value = color_r;
+            document.getElementById('color_g').value = color_g;
+            document.getElementById('color_b').value = color_b;
+            document.getElementById('color_h').value = color_h;
+            document.getElementById('color_s').value = color_s;
+            document.getElementById('color_v').value = color_v;
+            document.getElementById('resolucion_imagen').value = resolucion_imagen;
+            document.getElementById('umbral_color').value = umbral_color;
+            document.getElementById('radio_minimo').value = radio_minimo;
+            document.getElementById('radio_maximo').value = radio_maximo;
+            document.getElementById('parametros_procesamiento').value = parametros_procesamiento;
+            document.getElementById('superficie_1_cuadrado').value = superficie_1_cuadrado;
+            document.getElementById('superficie_5_cuadrados').value = superficie_5_cuadrados;
+            document.getElementById('profundidad_camara').value = profundidad_camara;
+            document.getElementById('factor_dilucion').value = factor_dilucion;
+            document.getElementById('eritrocitos_cuadrado_1').value = eritrocitos_cuadrado_1;
+            document.getElementById('eritrocitos_cuadrado_2').value = eritrocitos_cuadrado_2;
+            document.getElementById('eritrocitos_cuadrado_3').value = eritrocitos_cuadrado_3;
+            document.getElementById('eritrocitos_cuadrado_4').value = eritrocitos_cuadrado_4;
+            document.getElementById('eritrocitos_cuadrado_5').value = eritrocitos_cuadrado_5;
+            document.getElementById('eritrocitos_por_muestra').value = eritrocitos_por_muestra;
+            document.getElementById('valores_referencia_mujeres').value = valores_referencia_mujeres;
+            document.getElementById('valores_referencia_hombres').value = valores_referencia_hombres;
             document.getElementById('guardarDatos').innerText = "Actualizar muestra";
         }
 
@@ -98,25 +268,55 @@
             document.getElementById('muestra_id').value = "";
             document.getElementById('muestra_id2').value = "";
             document.getElementById('paciente_id').value = "";
-            document.getElementById('identificador').value = "";
-            document.getElementById('color').value = "";
-            document.getElementById('posicion').value = "";
-            document.getElementById('fecha').value = "";
-            document.getElementById('fechaL').style.display = "none";
+            document.getElementById('codigo_identificacion').value = "";
+            document.getElementById('camara_neubauer').value = "";
+            document.getElementById('tipo_muestra').value = "";
+            document.getElementById('fecha_muestra').value = "";
+            document.getElementById('hora_muestra').value = "";
+            document.getElementById('metodo_dilucion').value = "";
+            document.getElementById('tipo_diluyente').value = "";
+            document.getElementById('volumen_muestra').value = "";
+            document.getElementById('dilucion_numero').value = "";
+            document.getElementById('id_imagen').value = "";
+            document.getElementById('extension_imagen').value = "";
+            document.getElementById('color_r').value = "";
+            document.getElementById('color_g').value = "";
+            document.getElementById('color_b').value = "";
+            document.getElementById('color_h').value = "";
+            document.getElementById('color_s').value = "";
+            document.getElementById('color_v').value = "";
+            document.getElementById('resolucion_imagen').value = "";
+            document.getElementById('umbral_color').value = "";
+            document.getElementById('radio_minimo').value = "";
+            document.getElementById('radio_maximo').value = "";
+            document.getElementById('parametros_procesamiento').value = "";
+            document.getElementById('superficie_1_cuadrado').value = "";
+            document.getElementById('superficie_5_cuadrados').value = "";
+            document.getElementById('profundidad_camara').value = "";
+            document.getElementById('factor_dilucion').value = "";
+            document.getElementById('eritrocitos_cuadrado_1').value = "";
+            document.getElementById('eritrocitos_cuadrado_2').value = "";
+            document.getElementById('eritrocitos_cuadrado_3').value = "";
+            document.getElementById('eritrocitos_cuadrado_4').value = "";
+            document.getElementById('eritrocitos_cuadrado_5').value = "";
+            document.getElementById('eritrocitos_por_muestra').value = "";
+            document.getElementById('valores_referencia_mujeres').value = "";
+            document.getElementById('valores_referencia_hombres').value = "";
             document.getElementById('guardarDatos').innerText = "Guardar muestra";
         }
 
         document.getElementById("formularioMuestras").addEventListener("submit", function(event) {
-            let identificador = document.getElementById("identificador").value;
+            let codigo = document.getElementById("codigo_identificacion").value;
             let errorMensaje = document.getElementById("Men_error");
 
-            if (!/^[A-Z0-9]{2}\.[A-Z0-9]{7}$/i.test(identificador)) {  
+            // Validar formato del código de identificación (PPPP.ddmmtttTT)
+            if (!/^[A-Z0-9]{4}\.[0-9]{2}[0-9]{2}[0-9]{3}[A-Z0-9]{2}$/i.test(codigo)) {  
                 event.preventDefault(); 
-                errorMensaje.textContent = "El código debe tener el formato: XX.XXXXXXX";
+                errorMensaje.textContent = "El código debe tener el formato: PPPP.ddmmtttTT";
                 errorMensaje.style.display = "block"; 
-            } else if (verificarDuplicado(identificador)) { // Verificar si el identificador ya existe
+            } else if (verificarDuplicado(codigo)) { // Verificar si el código ya existe
                 event.preventDefault(); // Evitar el envío del formulario
-                errorMensaje.textContent = "Este identificador ya existe.";
+                errorMensaje.textContent = "Este código de identificación ya existe.";
                 errorMensaje.style.display = "block"; 
                 
             } else {
