@@ -4,6 +4,7 @@ MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_NAME1 = 'Clinicbot-Pacientes'
 MONGODB_NAME2 = 'Clinicbot-Muestras'
+MONGODB_NAME3 = 'Clinicbot-Petri'
 
 def get_db_pacientes():
     client = MongoClient("mongodb://localhost:27017/")
@@ -53,6 +54,14 @@ class MongoDBConnection_Muestras:
     def __init__(self):
         self.client = MongoClient(MONGODB_HOST, MONGODB_PORT)
         self.db = self.client[MONGODB_NAME2]
+        
+    def get_collection(self, collection_name):
+        return self.db[collection_name]
+    
+class MongoDBConnection_Petri:
+    def __init__(self):
+        self.client = MongoClient(MONGODB_HOST, MONGODB_PORT)
+        self.db = self.client[MONGODB_NAME3]
         
     def get_collection(self, collection_name):
         return self.db[collection_name]

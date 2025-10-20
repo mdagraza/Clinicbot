@@ -76,7 +76,8 @@ class ItemDetailView_Pacientes(APIView):
             return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
+
+################### GESTION MUESTRAS SANGRE ##################        
 class ItemListView_Muestras(APIView):
     def __init__(self):
         self.mongodb = MongoDBConnection_Muestras()
@@ -145,6 +146,101 @@ class ItemDetailView_Muestras(APIView):
                     "error": f"No se pueden editar los campos: {', '.join(campos_invalidos)}",
                     "Solo se pueden editar los campos:": campos_permitidos
                 }, status=400)
+
+            '''# Eliminar campos que no se pueden actualizar
+            campos_protegidos = ['identificador', 'fecha']
+            for campo in campos_protegidos:
+                if campo in data:
+                    data.pop(campo)'''
+
+            result = self.collection.update_one(
+                {"_id": ObjectId(id)},
+                {"$set": data}
+            )
+            if result.modified_count:
+                return Response({"message": "Actualizado correctamente"})
+            return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # DELETE para eliminar un item
+    def delete(self, request, id):
+        try:
+            result = self.collection.delete_one({"_id": ObjectId(id)})
+            if result.deleted_count:
+                return Response({"message": "Eliminado correctamente"})
+            return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+################### GESTION PLACAS PETRI ##################
+class ItemListView_Petri(APIView):
+    def __init__(self):
+        self.mongodb = MongoDBConnection_Petri()
+        self.collection = self.mongodb.get_collection('placas_petri')
+    
+    # GET para obtener todos los items
+    @token_required
+    def get(self, request):
+        items = list(self.collection.find())
+        # Convertir ObjectId a string para poder serializar a JSON
+        for item in items:
+            item['_id'] = str(item['_id'])
+            # Verificar si existe paciente_id antes de convertirlo
+            if 'paciente_id' in item and item['paciente_id'] is not None:
+                item['paciente_id'] = str(item['paciente_id'])
+        return Response(items)
+    
+    # POST para crear un nuevo item
+    @token_required
+    def post(self, request):
+        data = request.data
+
+        '''#Filtrar entrada del codigo
+        if "identificador" not in data or not re.match(PATRON_CODE, data["identificador"]):
+            return Response({"error": "El Identificador(AA.1234567) no es válido."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Buscar si ya existe en la base de datos
+        if self.collection.find_one({"identificador": data["identificador"]}):
+            return Response({"error": f"Ya existe un registro con el identificador: {str(data['identificador'])}"}, status=status.HTTP_400_BAD_REQUEST)'''
+
+        # Agregar la fecha
+        data["fecha"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
+
+        result = self.collection.insert_one(data)
+        return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
+
+class ItemDetailView_Petri(APIView):
+    def __init__(self):
+        self.mongodb = MongoDBConnection_Petri()
+        self.collection = self.mongodb.get_collection('placas_petri')
+    
+    # GET para obtener un item específico
+    def get(self, request, id):
+        try:
+            item = self.collection.find_one({"_id": ObjectId(id)})
+            if item:
+                item['_id'] = str(item['_id'])
+                if 'paciente_id' in item and item['paciente_id'] is not None:
+                    item['paciente_id'] = str(item['paciente_id'])
+                return Response(item)
+            return Response({"error": "No encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # PUT para actualizar un item
+    def put(self, request, id):
+        try: 
+            data = request.data
+
+            #Proteger los campos que puede editar
+            '''campos_permitidos = ['color', 'posicion'] 
+            campos_invalidos = [campo for campo in data.keys() if campo not in campos_permitidos]
+            if campos_invalidos:
+                return Response({
+                    "error": f"No se pueden editar los campos: {', '.join(campos_invalidos)}",
+                    "Solo se pueden editar los campos:": campos_permitidos
+                }, status=400)'''
 
             '''# Eliminar campos que no se pueden actualizar
             campos_protegidos = ['identificador', 'fecha']

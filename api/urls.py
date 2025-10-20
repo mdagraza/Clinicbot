@@ -6,6 +6,8 @@ urlpatterns = [
     path('pacientes/<str:id>/', ItemDetailView_Pacientes.as_view(), name='pacientes-detail'),
     path('muestras/', ItemListView_Muestras.as_view(), name='muestras-list'),
     path('muestras/<str:id>/', ItemDetailView_Muestras.as_view(), name='muestras-detail'),
+    path('petri/', ItemListView_Petri.as_view(), name='petri-list'),
+    path('petri/<str:id>/', ItemDetailView_Petri.as_view(), name='petri-detail'),
 
     path('token/', TokenView.as_view(), name='token'),
 

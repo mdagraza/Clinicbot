@@ -248,8 +248,14 @@ def obtener_muestras(request, identificador_paciente):
 def obtener_petri(request, identificador_paciente):
     try:        
         patron_id_paciente = {"$regex": f"^{identificador_paciente[:4]}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres (^ Significa inicio del string)
+
+        # Obtener la lista de placas petri a través de API REST
+        petri_datos = peticion_datos(request.user.get("idUsuario"), "petri") #PENDIENTE REVISAR : Que solo devuelva los datos del paciente en concreto, para no tener que solicitar todos los datos y luego filtrarlos
+
+        petri = [p for p in petri_datos if identificador_paciente in p.get("identificador", "")]
+
         # Filtrar solo las placas petri del paciente en MongoDB
-        petri = db_petri.find({"identificador": patron_id_paciente})
+        #petri = db_petri.find({"identificador": patron_id_paciente})
         
         # Convertir los datos a una lista con los IDs como strings
         petri_lista = [
