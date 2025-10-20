@@ -61,6 +61,9 @@
     let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
     let petriSeleccionada; //Se guarda el id de la petri seleccionada
     let placas_petri; //Se guarda las placas petri del paciente seleccionado
+
+    let abortController = null; //Variable global o fuera de la función, para poder abortar el fetch anterior
+
     // Función para cargar los datos del paciente al hacer clic en su nombre
     function editarPaciente(id, nombre, apellidos, ident_muestra, ident_petri, edad, email, genero, gr_sanguineo) {
         document.getElementById('paciente_id').value = id;
@@ -96,8 +99,15 @@
         document.getElementById("muestras-lista").appendChild(document.createElement("li")).innerText = "Cargando muestras...";
         document.getElementById("petri-lista").appendChild(document.createElement("li")).innerText = "Cargando análisis de placas petri...";
 
+        // Abortar la solicitud fetch anterior si existe
+        if (abortController) {
+            abortController.abort();
+        }
+        abortController = new AbortController(); // Crear un nuevo AbortController para la nueva solicitud
+        const signal = abortController.signal;
+
         // Obtener muestras del paciente seleccionado
-        fetch(`/obtener_muestras/${ident_muestra}/`)
+        fetch(`/obtener_muestras/${ident_muestra}/`, { signal })
             .then(response => response.json())
             .then(muestras => {
                 let listaMuestras = document.getElementById("muestras-lista");
@@ -124,7 +134,7 @@
             .catch(error => console.error("Error al obtener las muestras:", error));
 
         // Obtener petri del paciente seleccionado
-        fetch(`/obtener_petri/${ident_petri}/`)
+        fetch(`/obtener_petri/${ident_petri}/`, { signal })
             .then(response => response.json())
             .then(petris => {
                 let listaPetri = document.getElementById("petri-lista");
