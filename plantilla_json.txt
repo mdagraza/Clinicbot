@@ -1,0 +1,45 @@
+Muestras:
+
+
+Petri:
+
+{
+  "identificacion": <string: PPPP.ddmmtttTT>,
+  "placa": <int>,
+  "datos_muestra": {
+      "tipo": <string>,
+      "fecha": <string: dd/mm/aaaa>,
+      "hora": <string: hh:mm>,
+      "metodo_siembra": <string>,
+      "tipo_medio": <string>,
+      "volumen": <int>,
+      "dilucion": <float>,
+      "tiempo_incubacion": <int>,
+      "temperatura": <int>
+  },
+  "datos_imagen": {
+      "id_imagen": <string>,
+      "extension": <string: png, jpg, jpeg>,
+      "rgb": {
+          "r": <int: 0-255>,
+          "g": <int: 0-255>,
+          "b": <int: 0-255>
+      },
+      "hsv": {
+          "h": <int: 0-179>,
+          "s": <int: 0-255>,
+          "v": <int: 0-255>
+      },
+      "resolucion": <float>,
+      "umbral_color": <int>
+  },
+  "datos_analisis": {
+      "radio_min": <float>,
+      "radio_max": <float>
+  },
+  "resultados": {
+      "colonias_placa": <int>,
+      "colonias_muestra": <int>,
+      "objetos_no_validos": <int>
+  }
+}
