@@ -43,7 +43,7 @@ def log_action(request, action, status, description=""):
 
 nueva_muestra = {
                 "paciente_id": ObjectId(paciente_id),
-                "identificador": identificador,
+                "identificacion": identificacion,
                 "color": color,
                 "posicion": posicion,
                 #"fecha": fecha,

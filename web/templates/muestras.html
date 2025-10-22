@@ -21,8 +21,8 @@
             <ul>
                 {% for muestra in muestras %}
                 <li
-                    onclick="editar('{{ muestra.id }}', '{{ muestra.paciente_id }}', '{{ muestra.identificador }}', '{{ muestra.color }}', '{{ muestra.posicion }}', '{{ muestra.fecha }}')">
-                    {{ muestra.identificador }}
+                    onclick="editar('{{ muestra.id }}', '{{ muestra.paciente_id }}', '{{ muestra.identificacion }}', '{{ muestra.color }}', '{{ muestra.posicion }}', '{{ muestra.fecha }}')">
+                    {{ muestra.identificacion }}
                 </li>
                 {% endfor %}
             </ul>
@@ -45,8 +45,8 @@
                 {% endfor %}
             </select>
 
-            <label for="identificador">Identificador:</label>
-            <input type="text" id="identificador" name="identificador" required>
+            <label for="identificacion">Identificación:</label>
+            <input type="text" id="identificacion" name="identificacion" required>
             <p id="Men_error" style="color: red; display: none;">Mensaje error</p>
 
 
@@ -71,24 +71,24 @@
 </div>
 
 <script>
-    // Lista de identificadores de muestras ya cargadas en la página
-    const identificadoresExistentes = [
+    // Lista de identificaciones de muestras ya cargadas en la página
+    const identificacionesExistentes = [
         {% for muestra in muestras %}
-    "{{ muestra.identificador }}",
+    "{{ muestra.identificacion }}",
         {% endfor %}
         ];
 
     // Verificar si hay repetidos antes de guardar
-    function verificarDuplicado(identificador) {
-        return identificadoresExistentes.includes(identificador);
+    function verificarDuplicado(identificacion) {
+        return identificacionesExistentes.includes(identificacion);
     }
 
     // Función para cargar los datos del paciente al hacer clic en su nombre
-    function editar(id, paciente_id, identificador, color, posicion, fecha) {
+    function editar(id, paciente_id, identificacion, color, posicion, fecha) {
         document.getElementById('muestra_id').value = id;
         document.getElementById('muestra_id2').value = id;
         document.getElementById('paciente_id').value = paciente_id;
-        document.getElementById('identificador').value = identificador;
+        document.getElementById('identificacion').value = identificacion;
         document.getElementById('color').value = color;
         document.getElementById('posicion').value = posicion;
         document.getElementById('fecha').value = fecha;
@@ -100,7 +100,7 @@
         document.getElementById('muestra_id').value = "";
         document.getElementById('muestra_id2').value = "";
         document.getElementById('paciente_id').value = "";
-        document.getElementById('identificador').value = "";
+        document.getElementById('identificacion').value = "";
         document.getElementById('color').value = "";
         document.getElementById('posicion').value = "";
         document.getElementById('fecha').value = "";
@@ -109,16 +109,16 @@
     }
 
     document.getElementById("formularioMuestras").addEventListener("submit", function (event) {
-        let identificador = document.getElementById("identificador").value;
+        let identificacion = document.getElementById("identificacion").value;
         let errorMensaje = document.getElementById("Men_error");
 
-        if (!/^[A-Z0-9]{2}\.[A-Z0-9]{7}$/i.test(identificador)) {
+        if (!/^[A-Z0-9]{2}\.[A-Z0-9]{7}$/i.test(identificacion)) {
             event.preventDefault();
             errorMensaje.textContent = "El código debe tener el formato: XX.XXXXXXX";
             errorMensaje.style.display = "block";
-        } else if (verificarDuplicado(identificador)) { // Verificar si el identificador ya existe
+        } else if (verificarDuplicado(identificacion)) { // Verificar si el identificacion ya existe
             event.preventDefault(); // Evitar el envío del formulario
-            errorMensaje.textContent = "Este identificador ya existe.";
+            errorMensaje.textContent = "Esta identificación ya existe.";
             errorMensaje.style.display = "block";
 
         } else {

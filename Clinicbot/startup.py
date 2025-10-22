@@ -71,35 +71,35 @@ def datos_prueba():
 
     muestras = [{
                 #"paciente_id": collection.find_one({"ident_muestra": "1234567"})["_id"],
-                "identificador": "YY.1234567",
+                "identificacion": "YY.1234567",
                 "color": "Rojo",
                 "posicion": 123123,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
             },
             {
                 #"paciente_id": collection.find_one({"ident_muestra": "1234567"})["_id"],
-                "identificador": "ZZ.1234567",
+                "identificacion": "ZZ.1234567",
                 "color": "Verde",
                 "posicion": 123123,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
             },
             {
                 #"paciente_id": collection.find_one({"ident_muestra": "1234567"})["_id"],
-                "identificador": "kK.1234567",
+                "identificacion": "kK.1234567",
                 "color": "Amarillo",
                 "posicion": 123123,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
             },
             {
                 #"paciente_id": collection.find_one({"ident_muestra": "2345678"})["_id"],
-                "identificador": "YY.2345678",
+                "identificacion": "YY.2345678",
                 "color": "Azul",
                 "posicion": 234234,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
             },
             {
                 #"paciente_id": collection.find_one({"ident_muestra": "3456789"})["_id"],
-                "identificador": "YY.3456789",
+                "identificacion": "YY.3456789",
                 "color": "Verde",
                 "posicion": 345345,
                 "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
@@ -108,7 +108,7 @@ def datos_prueba():
 
 
     petri = [{
-        "identificador": "1234.112300433",
+        "identificacion": "1234.112300433",
         "placa": 90,
         "datos_muestra": {
             "tipo": "sangre",
@@ -148,7 +148,7 @@ def datos_prueba():
         }
     },
     {
-        "identificador": "1234.112300433",
+        "identificacion": "1234.112300433",
         "placa": 90,
         "datos_muestra": {
             "tipo": "sangre",
@@ -188,7 +188,7 @@ def datos_prueba():
         }
     },
     {
-        "identificador": "1234.112300433",
+        "identificacion": "1234.112300433",
         "placa": 90,
         "datos_muestra": {
             "tipo": "Sangre",
@@ -228,7 +228,7 @@ def datos_prueba():
         }
     },
     {
-        "identificador": "1235.112300434",
+        "identificacion": "1235.112300434",
         "placa": 91,
         "datos_muestra": {
             "tipo": "orina",
@@ -268,7 +268,7 @@ def datos_prueba():
         }
     },
     {
-        "identificador": "1236.112300435",
+        "identificacion": "1236.112300435",
         "placa": 92,
         "datos_muestra": {
             "tipo": "saliva",

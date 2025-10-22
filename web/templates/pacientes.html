@@ -119,9 +119,9 @@
                         li.setAttribute('id', "li" + String(muestra.id));
                         li.setAttribute('data-muestra-id', muestra.id);
                         li.setAttribute('data-paciente-id', id);
-                        li.innerText = muestra.identificador + " | " + muestra.color;
+                        li.innerText = muestra.identificacion + " | " + muestra.color;
                         li.onclick = function () {
-                            editarMuestra(muestra.id, muestra.identificador, muestra.color, muestra.posicion, muestra.fecha);
+                            editarMuestra(muestra.id, muestra.identificacion, muestra.color, muestra.posicion, muestra.fecha);
                         };
                         listaMuestras.appendChild(li);
                     });
@@ -146,7 +146,7 @@
                         li.setAttribute('id', "li" + String(petri.id));
                         li.setAttribute('data-petri-id', petri.id);
                         li.setAttribute('data-paciente-id', id);
-                        li.innerText = petri.identificador + " | " + petri.datos_muestra.tipo;
+                        li.innerText = petri.identificacion + " | " + petri.datos_muestra.tipo;
                         li.onclick = function () {
                             editarPetri(i);
                         };
@@ -188,10 +188,10 @@
         document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
     }
 
-    function editarMuestra(muestraId, identificador, color, posicion, fecha) {
+    function editarMuestra(muestraId, identificacion, color, posicion, fecha) {
         document.getElementById('muestra_id').value = muestraId;
         document.getElementById('muestra_id2').value = muestraId;
-        document.getElementById('identificador').value = identificador;
+        document.getElementById('identificacion').value = identificacion;
         document.getElementById('color').value = color;
         document.getElementById('posicion').value = posicion;
         document.getElementById('fecha').value = fecha;
@@ -220,7 +220,7 @@
 
         divPestana.querySelector('#petri_id').value = placas_petri[petriIndex].id;
 
-        divPestana.querySelector('#identificador').value = placas_petri[petriIndex].identificador;
+        divPestana.querySelector('#identificacion').value = placas_petri[petriIndex].identificacion;
 
         divPestana.querySelector('#placa').value = placas_petri[petriIndex].placa;
         //datos_muestra

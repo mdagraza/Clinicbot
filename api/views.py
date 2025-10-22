@@ -101,12 +101,12 @@ class ItemListView_Muestras(APIView):
         data = request.data
 
         #Filtrar entrada del codigo
-        if "identificador" not in data or not re.match(PATRON_CODE, data["identificador"]):
-            return Response({"error": "El Identificador(AA.1234567) no es válido."}, status=status.HTTP_400_BAD_REQUEST)
+        if "identificacion" not in data or not re.match(PATRON_CODE, data["identificacion"]):
+            return Response({"error": "La identificación(AA.1234567) no es válida."}, status=status.HTTP_400_BAD_REQUEST)
         
         # Buscar si ya existe en la base de datos
-        if self.collection.find_one({"identificador": data["identificador"]}):
-            return Response({"error": f"Ya existe un registro con el identificador: {str(data['identificador'])}"}, status=status.HTTP_400_BAD_REQUEST)
+        if self.collection.find_one({"identificacion": data["identificacion"]}):
+            return Response({"error": f"Ya existe un registro con la identificación: {str(data['identificacion'])}"}, status=status.HTTP_400_BAD_REQUEST)
 
 
         # Agregar la fecha
@@ -124,7 +124,7 @@ class ItemDetailView_Muestras(APIView):
     def get(self, request, id):
         try:
             patron_id_paciente = {"$regex" : f"{id}$"} # Se convierte el id a un patron que busca solo el string de los últimos caracteres
-            items = list(self.collection.find({"identificador": patron_id_paciente})) # Se busca por el identificador del paciente
+            items = list(self.collection.find({"identificacion": patron_id_paciente})) # Se busca por la identificacion del paciente
 
             if items:
                 # Convertir ObjectId a string para poder serializar a JSON
@@ -153,7 +153,7 @@ class ItemDetailView_Muestras(APIView):
                 }, status=400)
 
             '''# Eliminar campos que no se pueden actualizar
-            campos_protegidos = ['identificador', 'fecha']
+            campos_protegidos = ['identificacion', 'fecha']
             for campo in campos_protegidos:
                 if campo in data:
                     data.pop(campo)'''
@@ -202,12 +202,12 @@ class ItemListView_Petri(APIView):
         data = request.data
 
         '''#Filtrar entrada del codigo
-        if "identificador" not in data or not re.match(PATRON_CODE, data["identificador"]):
-            return Response({"error": "El Identificador(AA.1234567) no es válido."}, status=status.HTTP_400_BAD_REQUEST)
+        if "identificacion" not in data or not re.match(PATRON_CODE, data["identificacion"]):
+            return Response({"error": "La identificacion(AA.1234567) no es válida."}, status=status.HTTP_400_BAD_REQUEST)
         
         # Buscar si ya existe en la base de datos
-        if self.collection.find_one({"identificador": data["identificador"]}):
-            return Response({"error": f"Ya existe un registro con el identificador: {str(data['identificador'])}"}, status=status.HTTP_400_BAD_REQUEST)'''
+        if self.collection.find_one({"identificacion": data["identificacion"]}):
+            return Response({"error": f"Ya existe un registro con la identificacion: {str(data['identificacion'])}"}, status=status.HTTP_400_BAD_REQUEST)'''
 
         # Agregar la fecha
         data["fecha"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
@@ -224,7 +224,7 @@ class ItemDetailView_Petri(APIView):
     def get(self, request, id):
         try:
             patron_id_paciente = {"$regex" : f"^{id}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres
-            items = list(self.collection.find({"identificador": patron_id_paciente})) # Se busca por el identificador del paciente
+            items = list(self.collection.find({"identificacion": patron_id_paciente})) # Se busca por la identificacion del paciente
 
             if items:
                 # Convertir ObjectId a string para poder serializar a JSON
@@ -253,7 +253,7 @@ class ItemDetailView_Petri(APIView):
                 }, status=400)'''
 
             '''# Eliminar campos que no se pueden actualizar
-            campos_protegidos = ['identificador', 'fecha']
+            campos_protegidos = ['identificacion', 'fecha']
             for campo in campos_protegidos:
                 if campo in data:
                     data.pop(campo)'''

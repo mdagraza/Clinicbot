@@ -1,7 +1,7 @@
 <div id="datos-paciente" class="tab-content active">
     <div class="formulario">
         <h2>Datos del Paciente</h2>
-         <form method="POST" action="{% url 'datos_pacientes' %}" autocomplete="off">
+        <form method="POST" action="{% url 'datos_pacientes' %}" autocomplete="off">
             {% csrf_token %}
             <input type="hidden" id="paciente_id" name="paciente_id">
 
@@ -45,20 +45,22 @@
             </fieldset>
 
             <fieldset>
-                <legend>Identificadores de laboratorio</legend>
-                <label for="ident_muestra">Identificador paciente de muestras sangre:</label>
+                <legend>Identificaciones de laboratorio</legend>
+                <label for="ident_muestra">Identificación paciente de muestras sangre:</label>
                 <input type="text" id="ident_muestra" name="ident_muestra" required>
 
-                <label for="ident_petri">Identificador paciente de placas petri:</label>
+                <label for="ident_petri">Identificación paciente de placas petri:</label>
                 <input type="text" id="ident_petri" name="ident_petri" required>
             </fieldset>
-            
+
             <div class="form-buttons">
                 <button type="submit" id="guardarDatos">Guardar paciente</button>
-                <button type="button" id="eliminarDatos" onclick="if(confirm('¿Estás seguro de que quieres eliminar este paciente?')) document.getElementById('form-borrar-paciente').submit();">Eliminar paciente</button>
+                <button type="button" id="eliminarDatos"
+                    onclick="if(confirm('¿Estás seguro de que quieres eliminar este paciente?')) document.getElementById('form-borrar-paciente').submit();">Eliminar
+                    paciente</button>
             </div>
         </form>
-        
+
         <form id="form-borrar-paciente" method="POST" action="{% url 'borrar_paciente' %}" style="display: none;">
             {% csrf_token %}
             <input type="hidden" id="paciente_id2" name="paciente_id2">

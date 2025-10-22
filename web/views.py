@@ -133,19 +133,19 @@ def editar_muestra(request):
         # Obtener los datos del formulario para actualizar un paciente
         muestra_id = request.POST.get("muestra_id")
         paciente_id = request.POST.get("paciente_id")
-        identificador = request.POST.get("identificador")
+        identificacion = request.POST.get("identificacion")
         color = request.POST.get("color")
         posicion = request.POST.get("posicion")
         fecha = request.POST.get("fecha")
 
-        print("Datos recibidos:", muestra_id, paciente_id, identificador, color, posicion, fecha)
+        print("Datos recibidos:", muestra_id, paciente_id, identificacion, color, posicion, fecha)
         
         # Actualizar los datos en MongoDB
         if not muestra_id: #Si no hay ningún paciente cargado, se crea un nuevo con los datos | not... si es none, null o vacio
             print("Creando nueva muestra")
             nueva_muestra = {
                 "paciente_id": ObjectId(paciente_id),
-                "identificador": identificador,
+                "identificacion": identificacion,
                 "color": color,
                 "posicion": posicion,
                 #"fecha": fecha,
@@ -155,7 +155,7 @@ def editar_muestra(request):
         else:
             db_muestras.update_one(
                 {"_id": ObjectId(muestra_id)},
-                {"$set": {"paciente_id": ObjectId(paciente_id), "identificador": identificador, "color": color, "posicion": posicion, "fecha": fecha}}
+                {"$set": {"paciente_id": ObjectId(paciente_id), "identificacion": identificacion, "color": color, "posicion": posicion, "fecha": fecha}}
             )
         #return redirect('editar_muestra')
         return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -182,7 +182,7 @@ def editar_muestra(request):
     {
         "id": str(muestra["_id"]),
         "paciente_id": muestra.get("paciente_id", ""),
-        "identificador": muestra.get("identificador", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
+        "identificacion": muestra.get("identificacion", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
         "color": muestra.get("color", ""),
         "posicion": muestra.get("posicion", ""),
         "fecha": muestra.get("fecha", ""),
@@ -214,25 +214,25 @@ def borrar_muestra(request):
     #return HttpResponse("Page not found", status=404)
     raise Http404
 
-def obtener_muestras(request, identificador_paciente):
+def obtener_muestras(request, identificacion_paciente):
     try:        
-        patron_id_paciente = {"$regex" : f"{identificador_paciente}$"} # Se convierte el id a un patron que busca solo el string pasado solo en la parte derecha ($ Significa final del string)
+        patron_id_paciente = {"$regex" : f"{identificacion_paciente}$"} # Se convierte el id a un patron que busca solo el string pasado solo en la parte derecha ($ Significa final del string)
 
         # Obtener la lista de muestras a través de API REST
         #muestras_datos = peticion_datos(request.user.get("idUsuario"), "muestras") #PENDIENTE REVISAR : Que solo devuelva los datos del paciente en concreto, para no tener que solicitar todos los datos y luego filtrarlos
-        #muestras = [m for m in muestras_datos if m.get("identificador") == patron_id_paciente] # regex no funciona con datos devueltos en formatos json, solo es para mongo
-        #muestras = [m for m in muestras_datos if identificador_paciente in m.get("identificador", "")]
+        #muestras = [m for m in muestras_datos if m.get("identificacion") == patron_id_paciente] # regex no funciona con datos devueltos en formatos json, solo es para mongo
+        #muestras = [m for m in muestras_datos if identificacion_paciente in m.get("identificacion", "")]
 
-        muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificador_paciente)
+        muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificacion_paciente)
 
         # Filtrar solo las muestras del paciente en MongoDB
-        #muestras = db_muestras.find({"identificador": patron_id_paciente})
+        #muestras = db_muestras.find({"identificacion": patron_id_paciente})
         
         # Convertir los datos a una lista con los IDs como strings
         muestras_lista = [
         {
             "id": str(muestra["_id"]),
-            "identificador": muestra.get("identificador", ""), 
+            "identificacion": muestra.get("identificacion", ""), 
             "color": muestra.get("color", ""),
             "posicion": muestra.get("posicion", ""),
             "fecha": muestra.get("fecha", ""),
@@ -246,24 +246,24 @@ def obtener_muestras(request, identificador_paciente):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     
-def obtener_petri(request, identificador_paciente):
+def obtener_petri(request, identificacion_paciente):
     try:        
-        patron_id_paciente = {"$regex": f"^{identificador_paciente[:4]}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres (^ Significa inicio del string)
+        patron_id_paciente = {"$regex": f"^{identificacion_paciente[:4]}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres (^ Significa inicio del string)
 
         # Obtener la lista de placas petri a través de API REST
         #petri_datos = peticion_datos(request.user.get("idUsuario"), "petri") #PENDIENTE REVISAR : Que solo devuelva los datos del paciente en concreto, para no tener que solicitar todos los datos y luego filtrarlos
-        #petri = [p for p in petri_datos if identificador_paciente in p.get("identificador", "")]
+        #petri = [p for p in petri_datos if identificacion_paciente in p.get("identificacion", "")]
 
-        petri = peticion_datos_detalle(request.user.get("idUsuario"), "petri", identificador_paciente)
+        petri = peticion_datos_detalle(request.user.get("idUsuario"), "petri", identificacion_paciente)
 
         # Filtrar solo las placas petri del paciente en MongoDB
-        #petri = db_petri.find({"identificador": patron_id_paciente})
+        #petri = db_petri.find({"identificacion": patron_id_paciente})
         
         # Convertir los datos a una lista con los IDs como strings
         petri_lista = [
         {
             "id": str(p["_id"]),
-            "identificador": p.get("identificador", ""), 
+            "identificacion": p.get("identificacion", ""), 
             "placa": p.get("placa", ""),
             "datos_muestra": {
                 "tipo": p.get("datos_muestra", {}).get("tipo", ""),
@@ -336,19 +336,19 @@ def editar_petri(request):
         # Obtener los datos del formulario para actualizar un paciente
         muestra_id = request.POST.get("muestra_id")
         paciente_id = request.POST.get("paciente_id")
-        identificador = request.POST.get("identificador")
+        identificacion = request.POST.get("identificacion")
         color = request.POST.get("color")
         posicion = request.POST.get("posicion")
         fecha = request.POST.get("fecha")
 
-        print("Datos recibidos:", muestra_id, paciente_id, identificador, color, posicion, fecha)
+        print("Datos recibidos:", muestra_id, paciente_id, identificacion, color, posicion, fecha)
         
         # Actualizar los datos en MongoDB
         if not muestra_id: #Si no hay ningún paciente cargado, se crea un nuevo con los datos | not... si es none, null o vacio
             print("Creando nueva muestra")
             nueva_muestra = {
                 "paciente_id": ObjectId(paciente_id),
-                "identificador": identificador,
+                "identificacion": identificacion,
                 "color": color,
                 "posicion": posicion,
                 #"fecha": fecha,
@@ -358,7 +358,7 @@ def editar_petri(request):
         else:
             db_muestras.update_one(
                 {"_id": ObjectId(muestra_id)},
-                {"$set": {"paciente_id": ObjectId(paciente_id), "identificador": identificador, "color": color, "posicion": posicion, "fecha": fecha}}
+                {"$set": {"paciente_id": ObjectId(paciente_id), "identificacion": identificacion, "color": color, "posicion": posicion, "fecha": fecha}}
             )
         #return redirect('editar_muestra')
         return redirect(request.META.get('HTTP_REFERER', '/'))
@@ -385,7 +385,7 @@ def editar_petri(request):
     {
         "id": str(muestra["_id"]),
         "paciente_id": muestra.get("paciente_id", ""),
-        "identificador": muestra.get("identificador", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
+        "identificacion": muestra.get("identificacion", ""), #Si no encuentra la key, se asigna un valor por defecto a la variable
         "color": muestra.get("color", ""),
         "posicion": muestra.get("posicion", ""),
         "fecha": muestra.get("fecha", ""),
@@ -402,7 +402,7 @@ def editar_petri(request):
 '''
 
  Datos de persona (Nombre, Apellidos, Edad, Genero, grupo sanguineo)
- Datos de muestra (Identificador(Formato: XY.1234567 [2 primeros caracteres es tipo de análisis, 7 siguientes caracteres es el identificador de la muestra]), color, posicion)
- Datos petri: Identificador: PPPP.ddmmtttTT (PPPP identificador de paciente, dd día, mm mes, ttt horas, TT temperatura)
+ Datos de muestra (identificacion(Formato: XY.1234567 [2 primeros caracteres es tipo de análisis, 7 siguientes caracteres es el identificacion de la muestra]), color, posicion)
+ Datos petri: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día, mm mes, ttt horas, TT temperatura)
  
 '''
