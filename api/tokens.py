@@ -1,12 +1,13 @@
-from db_connection import MongoDBConnection_Usuarios
+from db_connection import MongoDBConnection
 from datetime import datetime, timedelta
 import secrets
 from bson import ObjectId
 
+mongo = MongoDBConnection()
+
 class TokenManager:
     def __init__(self):
-        self.mongodb = MongoDBConnection_Usuarios() 
-        self.collection = self.mongodb.get_collection('api_tokens')
+        self.collection = mongo.get_collection_db_usuarios('api_tokens')
     
     def generate_token(self, user_id, expires_in_hours=24):
         # Generar un token aleatorio seguro

@@ -1,7 +1,9 @@
 from Clinicbot.utils import UsuarioService
 from django.contrib import messages
-from db_connection import *
+from db_connection import MongoDBConnection
 from datetime import datetime
+
+mongo = MongoDBConnection()
 
 def crear_admin():
     try:
@@ -20,9 +22,10 @@ def crear_admin():
 
 def datos_prueba():
     # Conectar con MongoDB
-    db_pacientes = get_db_pacientes()
-    db_muestras = get_db_muestras()
-    db_petri = get_db_petri()
+    db_pacientes = mongo.get_collection_db_pacientes()
+    db_muestras = mongo.get_collection_db_muestras()
+    db_petri = mongo.get_collection_db_petri()
+
 
     if list(db_pacientes.find()): # Comprobar si ya hay pacientes en la colección convertiendo a lista
         return  # Si ya hay pacientes, no se añaden más

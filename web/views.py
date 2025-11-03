@@ -5,16 +5,18 @@ from pymongo import MongoClient
 from django.views.decorators.csrf import csrf_exempt
 from bson import ObjectId
 from datetime import datetime
-from db_connection import *
+from db_connection import MongoDBConnection
 from panel.decorators import *
 from django.conf import settings
 import requests
 from Funciones.Generales import peticion_datos, peticion_datos_detalle
 
+mongo = MongoDBConnection()
+
 # Conectar con MongoDB
-db_pacientes = get_db_pacientes()
-db_muestras = get_db_muestras()
-db_petri = get_db_petri()
+db_pacientes = mongo.get_collection_db_pacientes()
+db_muestras = mongo.get_collection_db_muestras()
+db_petri = mongo.get_collection_db_petri()
 
 def home(request):
     if request.user:

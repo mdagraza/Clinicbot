@@ -29,5 +29,5 @@ def peticion_datos_detalle(user_id, peticion, id):
     if response.status_code == 200:
         return response.json()
     else:
-        print(f"Error al obtener los datos de {peticion}:", response.status_code, response.text)
+        print(f"Error al obtener los datos de {peticion} con id {id}:", response.status_code, response.text)
         return []

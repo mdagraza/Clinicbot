@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from bson.objectid import ObjectId
-from db_connection import *
+from db_connection import MongoDBConnection
 import re
 from datetime import datetime
 from panel.decorators import *
@@ -17,10 +17,11 @@ import uuid
 
 PATRON_CODE = r"^[a-zA-Z0-9]{2}\.[a-zA-Z0-9]{7}$"
 
+mongo = MongoDBConnection()
+
 class ItemListView_Pacientes(APIView):
     def __init__(self):
-        self.mongodb = MongoDBConnection_Pacientes()
-        self.collection = self.mongodb.get_collection('pacientes')
+        self.collection = mongo.get_collection_db_pacientes()
     
     # GET para obtener todos los items
     @token_required
@@ -39,8 +40,7 @@ class ItemListView_Pacientes(APIView):
 
 class ItemDetailView_Pacientes(APIView):
     def __init__(self):
-        self.mongodb = MongoDBConnection_Pacientes()
-        self.collection = self.mongodb.get_collection('pacientes')
+        self.collection = mongo.get_collection_db_pacientes()
     
     # GET para obtener un item específico
     def get(self, request, id):
@@ -80,8 +80,7 @@ class ItemDetailView_Pacientes(APIView):
 ################### GESTION MUESTRAS SANGRE ##################        
 class ItemListView_Muestras(APIView):
     def __init__(self):
-        self.mongodb = MongoDBConnection_Muestras()
-        self.collection = self.mongodb.get_collection('muestras')
+        self.collection = mongo.get_collection_db_muestras()
     
     # GET para obtener todos los items
     @token_required
@@ -117,8 +116,7 @@ class ItemListView_Muestras(APIView):
 
 class ItemDetailView_Muestras(APIView):
     def __init__(self):
-        self.mongodb = MongoDBConnection_Muestras()
-        self.collection = self.mongodb.get_collection('muestras')
+        self.collection = mongo.get_collection_db_muestras()
     
     # GET para obtener un item específico
     def get(self, request, id):
@@ -181,8 +179,7 @@ class ItemDetailView_Muestras(APIView):
 ################### GESTION PLACAS PETRI ##################
 class ItemListView_Petri(APIView):
     def __init__(self):
-        self.mongodb = MongoDBConnection_Petri()
-        self.collection = self.mongodb.get_collection('placas_petri')
+        self.collection = mongo.get_collection_db_petri()
     
     # GET para obtener todos los items
     @token_required
@@ -217,8 +214,7 @@ class ItemListView_Petri(APIView):
 
 class ItemDetailView_Petri(APIView):
     def __init__(self):
-        self.mongodb = MongoDBConnection_Petri()
-        self.collection = self.mongodb.get_collection('placas_petri')
+        self.collection = mongo.get_collection_db_petri()
     
     # GET para obtener un item específico
     def get(self, request, id):
@@ -282,8 +278,8 @@ class ItemDetailView_Petri(APIView):
 ################## GESTION TOKENS ##################
 class TokenView(APIView):
     def __init__(self):
-        self.user_db = MongoDBConnection_Usuarios()
-        self.users = self.user_db.get_collection('usuarios')
+        self.users = mongo.get_collection_db_usuarios()
+        self.tokens = mongo.get_collection_db_usuarios('api_tokens')
         self.token_manager = TokenManager()
     
     # Endpoint para obtener un token
@@ -305,7 +301,7 @@ class TokenView(APIView):
             "access_token": token,
             "token_type": "Bearer Token",
             "expires_in_hours": expires,
-            "date_expires": datetime.fromisoformat(str(self.user_db.get_collection('api_tokens').find_one({"token": token})["expires_at"])).strftime("%d/%m/%Y %H:%M")
+            "date_expires": datetime.fromisoformat(str(self.tokens.find_one({"token": token})["expires_at"])).strftime("%d/%m/%Y %H:%M")
         })
     
     def verify_password(self, u_username, u_password):
