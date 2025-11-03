@@ -224,8 +224,8 @@ def obtener_muestras(request, identificacion_paciente):
         #muestras = [m for m in muestras_datos if identificacion_paciente in m.get("identificacion", "")]
 
         muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificacion_paciente)
-        print("identificacion_paciente:", identificacion_paciente)
-        print("Muestras obtenidas:", muestras)
+        """ print("identificacion_paciente:", identificacion_paciente)
+        print("Muestras obtenidas:", muestras) """
         # Filtrar solo las muestras del paciente en MongoDB
         #muestras = db_muestras.find({"identificacion": patron_id_paciente})
         
