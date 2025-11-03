@@ -13,29 +13,164 @@
         </div>
         <div class="formulario-muestras" id="formulario-muestras" style="display:none;">
             <h2>Datos de la Muestra</h2>
-            {# Antes %url 'editar_muestra'% - Se debería cambiar a algo con javascript, para actualizar los datos #}
             <form id="formularioDatos" method="POST" action="#">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id" name="muestra_id">
 
+                <!-- Identificación -->
                 <fieldset>
-                    <legend>Datos generales</legend>
-                    <label for="identificacion">Identificación:</label>
-                    <input type="text" id="identificacion" name="identificacion" readonly>
-
-                    <label for="fecha">Fecha:</label>
-                    <input type="datetime-local" id="fecha" name="fecha">
+                    <legend>Identificación</legend>
+                    <label for="identificacion">Código identificación:</label>
+                    <input type="text" id="identificacion" name="identificacion" placeholder="PPPP.ddmmtttTT" required>
                 </fieldset>
 
+                <!-- Características Cámara -->
                 <fieldset>
-                    <legend>Datos máquina</legend>
-                    <label for="color">Color:</label>
-                    <input type="text" id="color" name="color" required>
-
-                    <label for="posicion">Posición:</label>
-                    <input type="number" id="posicion" name="posicion" required>
+                    <legend>Características Cámara Recuento</legend>
+                    <label for="codigo_identificacion">Cámara Neubauer:</label>
+                    <input type="text" id="codigo_identificacion" name="codigo_identificacion" placeholder="Tipo de cámara">
                 </fieldset>
 
+                <!-- Datos de la Muestra -->
+                <fieldset>
+                    <legend>Datos de la Muestra</legend>
+                    <label for="tipo_muestra">Tipo de muestra:</label>
+                    <input type="text" id="tipo_muestra" name="tipo_muestra">
+                    
+                    <label for="fecha_muestra">Fecha (dd/mm):</label>
+                    <input type="text" id="fecha_muestra" name="fecha_muestra" placeholder="dd/mm">
+                    
+                    <label for="hora_muestra">Hora (hh:mm):</label>
+                    <input type="text" id="hora_muestra" name="hora_muestra" placeholder="hh:mm">
+                    
+                    <label for="metodo_dilucion">Método de dilución:</label>
+                    <input type="text" id="metodo_dilucion" name="metodo_dilucion" placeholder="dilución 1/200 con pipeta dilutora">
+                    
+                    <label for="tipo_diluyente">Tipo de diluyente:</label>
+                    <input type="text" id="tipo_diluyente" name="tipo_diluyente">
+                    
+                    <label for="volumen_muestra">Volumen muestra sembrado (ml):</label>
+                    <input type="number" step="0.01" id="volumen_muestra" name="volumen_muestra">
+                    
+                    <label for="dilucion_numero">Dilución (número):</label>
+                    <input type="number" step="0.001" id="dilucion_numero" name="dilucion_numero">
+                </fieldset>
+
+                <!-- Datos de Imagen -->
+                <fieldset>
+                    <legend>Datos de Imagen</legend>
+                    <label for="id_imagen">ID imagen:</label>
+                    <input type="text" id="id_imagen" name="id_imagen">
+                    
+                    <label for="extension_imagen">Extensión imagen:</label>
+                    <select id="extension_imagen" name="extension_imagen">
+                        <option value="">Seleccionar...</option>
+                        <option value="png">png</option>
+                        <option value="jpeg">jpeg</option>
+                        <option value="jpg">jpg</option>
+                    </select>
+                    
+                    <label>Color RGB (0-255):</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div>
+                            <label for="color_r">R:</label>
+                            <input type="number" min="0" max="255" id="color_r" name="color_r">
+                        </div>
+                        <div>
+                            <label for="color_g">G:</label>
+                            <input type="number" min="0" max="255" id="color_g" name="color_g">
+                        </div>
+                        <div>
+                            <label for="color_b">B:</label>
+                            <input type="number" min="0" max="255" id="color_b" name="color_b">
+                        </div>
+                    </div>
+                    
+                    <label>Color HSV:</label>
+                    <div style="display: flex; gap: 10px;">
+                        <div>
+                            <label for="color_h">H:</label>
+                            <input type="number" step="0.01" id="color_h" name="color_h">
+                        </div>
+                        <div>
+                            <label for="color_s">S:</label>
+                            <input type="number" step="0.01" id="color_s" name="color_s">
+                        </div>
+                        <div>
+                            <label for="color_v">V:</label>
+                            <input type="number" step="0.01" id="color_v" name="color_v">
+                        </div>
+                    </div>
+                    
+                    <label for="resolucion_imagen">Resolución imagen (megapixeles):</label>
+                    <input type="number" step="0.01" id="resolucion_imagen" name="resolucion_imagen">
+                    
+                    <label for="umbral_color">Umbral color:</label>
+                    <input type="number" step="0.01" id="umbral_color" name="umbral_color">
+                </fieldset>
+
+                <!-- Datos de Análisis -->
+                <fieldset>
+                    <legend>Datos de Análisis Placa</legend>
+                    <label for="radio_minimo">Radio mínimo (pixel):</label>
+                    <input type="number" id="radio_minimo" name="radio_minimo">
+                    
+                    <label for="radio_maximo">Radio máximo (pixel):</label>
+                    <input type="number" id="radio_maximo" name="radio_maximo">
+                    
+                    <label for="parametros_procesamiento">Parámetros de procesamiento:</label>
+                    <textarea id="parametros_procesamiento" name="parametros_procesamiento" rows="3"></textarea>
+                </fieldset>
+
+                <!-- Resultados -->
+                <fieldset>
+                    <legend>Resultados</legend>
+                    <label for="superficie_1_cuadrado">Superficie contada (1 cuadrado) mm²:</label>
+                    <input type="number" step="0.01" id="superficie_1_cuadrado" name="superficie_1_cuadrado" placeholder="0.04">
+                    
+                    <label for="superficie_5_cuadrados">Superficie contada (5 cuadrados) mm²:</label>
+                    <input type="number" step="0.01" id="superficie_5_cuadrados" name="superficie_5_cuadrados" placeholder="0.2">
+                    
+                    <label for="profundidad_camara">Profundidad cámara recuento (mm):</label>
+                    <input type="number" step="0.01" id="profundidad_camara" name="profundidad_camara" placeholder="0.1">
+                    
+                    <label for="factor_dilucion">Factor dilución:</label>
+                    <input type="text" id="factor_dilucion" name="factor_dilucion" placeholder="1/200">
+                    
+                    <label>Recuento Eritrocitos por Cuadrado:</label>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                        <div>
+                            <label for="eritrocitos_cuadrado_1">Cuadrado 1:</label>
+                            <input type="number" id="eritrocitos_cuadrado_1" name="eritrocitos_cuadrado_1">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_2">Cuadrado 2:</label>
+                            <input type="number" id="eritrocitos_cuadrado_2" name="eritrocitos_cuadrado_2">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_3">Cuadrado 3:</label>
+                            <input type="number" id="eritrocitos_cuadrado_3" name="eritrocitos_cuadrado_3">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_4">Cuadrado 4:</label>
+                            <input type="number" id="eritrocitos_cuadrado_4" name="eritrocitos_cuadrado_4">
+                        </div>
+                        <div>
+                            <label for="eritrocitos_cuadrado_5">Cuadrado 5:</label>
+                            <input type="number" id="eritrocitos_cuadrado_5" name="eritrocitos_cuadrado_5">
+                        </div>
+                    </div>
+                    
+                    <label for="eritrocitos_por_muestra">Eritrocitos por muestra (n° eritrocitos / mm³):</label>
+                    <input type="number" step="0.01" id="eritrocitos_por_muestra" name="eritrocitos_por_muestra">
+                    
+                    <label for="valores_referencia_mujeres">Valores referencia mujeres (millones/mm³):</label>
+                    <input type="text" id="valores_referencia_mujeres" name="valores_referencia_mujeres" placeholder="4.2 a 5.4">
+                    
+                    <label for="valores_referencia_hombres">Valores referencia hombres (millones/mm³):</label>
+                    <input type="text" id="valores_referencia_hombres" name="valores_referencia_hombres" placeholder="4.7 a 6.1">
+                </fieldset>
+                
                 <div class="form-buttons">
                     <button type="submit" id="guardarDatos">Guardar muestra</button>
                     <button type="button" id="eliminarDatos"
@@ -43,7 +178,7 @@
                         muestra</button>
                 </div>
             </form>
-
+            
             <form id="form-borrar-muestra" method="POST" action="{% url 'borrar_muestra' %}" style="display: none;">
                 {% csrf_token %}
                 <input type="hidden" id="muestra_id2" name="muestra_id2">
