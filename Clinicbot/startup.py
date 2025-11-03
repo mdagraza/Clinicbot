@@ -27,10 +27,11 @@ def datos_prueba():
     if list(db_pacientes.find()): # Comprobar si ya hay pacientes en la colección convertiendo a lista
         return  # Si ya hay pacientes, no se añaden más
 
-    pacientes = [{
+    pacientes = [
+        {
             "nombre": "Miguel",
             "apellidos": "Dagraza Alonso",
-            "ident_muestra": "1234567",
+            "ident_muestra": "1234",
             "ident_petri": "1234",
             "edad": 30,
             "email": "nombre_1@test.com",
@@ -40,7 +41,7 @@ def datos_prueba():
             {
             "nombre": "Antonio Manuel",
             "apellidos": "Zacarias Del Río Parísimo de la Vega Fernandez",
-            "ident_muestra": "2345678",
+            "ident_muestra": "1235",
             "ident_petri": "1235",
             "edad": 25,
             "email": "nombre_2@test.com",
@@ -50,7 +51,7 @@ def datos_prueba():
             {
             "nombre": "Jesús",
             "apellidos": "Nazareno de la Cruz",
-            "ident_muestra": "3456789",
+            "ident_muestra": "1236",
             "ident_petri": "1236",
             "edad": 40,
             "email": "nombre_3@test.com",
@@ -60,7 +61,7 @@ def datos_prueba():
             {
             "nombre": "Jesús",
             "apellidos": "Nazareno de la Cruz",
-            "ident_muestra": "356984",
+            "ident_muestra": "2654",
             "ident_petri": "2654",
             "edad": 40,
             "email": "nombre_3@test.com",
@@ -71,7 +72,7 @@ def datos_prueba():
 
     muestras = [
             {
-                "identificacion": "YY.1234567",
+                "identificacion": "1234.112300433",
                 "caracteristicas_camara": "Cámara Neubauer digital",
                 "datos_muestra": {
                     "tipo_muestra": "Sangre venosa",
@@ -89,13 +90,13 @@ def datos_prueba():
                     "r": 220,
                     "g": 100,
                     "b": 100
-                    }, """ max 255 """
+                    },
                     "hsv": {
                     "h": 0,
                     "s": 0.8,
                     "v": 0.9
-                    }, """ ??? """
-                    "resolucion_imagen": 16, """ mpx """
+                    },
+                    "resolucion_imagen": 16,
                     "umbral_color": 0.5
                 },
                 "datos_analisis": {
@@ -104,9 +105,9 @@ def datos_prueba():
                     "parametros_procesamiento": "Análisis automático 1-1"
                 },
                 "resultados": {
-                    "superficie_contada_1_cuadrado": 0.04, """ mm2 """
-                    "superficie_contada_5_cuadrados": 0.2, """ mm2 """
-                    "profundidad_camara_recuento": 0.1, """ mm """
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
                     "factor_dilucion": "1/200",
                     "eritrocitos_cuadrado_1": 104,
                     "eritrocitos_cuadrado_2": 95,
@@ -120,7 +121,7 @@ def datos_prueba():
                 "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                "identificacion": "KK.1234567",
+                "identificacion": "1234.112600433",
                 "caracteristicas_camara": "Cámara Neubauer digital",
                 "datos_muestra": {
                     "tipo_muestra": "Sangre venosa",
@@ -138,13 +139,13 @@ def datos_prueba():
                     "r": 220,
                     "g": 100,
                     "b": 100
-                    }, """ max 255 """
+                    },
                     "hsv": {
                     "h": 0,
                     "s": 0.8,
                     "v": 0.9
-                    }, """ ??? """
-                    "resolucion_imagen": 16, """ mpx """
+                    },
+                    "resolucion_imagen": 16,
                     "umbral_color": 0.5
                 },
                 "datos_analisis": {
@@ -153,9 +154,9 @@ def datos_prueba():
                     "parametros_procesamiento": "Análisis automático 1-1"
                 },
                 "resultados": {
-                    "superficie_contada_1_cuadrado": 0.04, """ mm2 """
-                    "superficie_contada_5_cuadrados": 0.2, """ mm2 """
-                    "profundidad_camara_recuento": 0.1, """ mm """
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
                     "factor_dilucion": "1/200",
                     "eritrocitos_cuadrado_1": 104,
                     "eritrocitos_cuadrado_2": 95,
@@ -169,7 +170,7 @@ def datos_prueba():
                 "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                "identificacion": "YY.1234567",
+                "identificacion": "1236.112300435",
                 "caracteristicas_camara": "Cámara Neubauer digital",
                 "datos_muestra": {
                     "tipo_muestra": "Sangre venosa",
@@ -187,13 +188,13 @@ def datos_prueba():
                     "r": 220,
                     "g": 100,
                     "b": 100
-                    }, """ max 255 """
+                    },
                     "hsv": {
                     "h": 0,
                     "s": 0.8,
                     "v": 0.9
-                    }, """ ??? """
-                    "resolucion_imagen": 16, """ mpx """
+                    },
+                    "resolucion_imagen": 16,
                     "umbral_color": 0.5
                 },
                 "datos_analisis": {
@@ -202,9 +203,9 @@ def datos_prueba():
                     "parametros_procesamiento": "Análisis automático 1-1"
                 },
                 "resultados": {
-                    "superficie_contada_1_cuadrado": 0.04, """ mm2 """
-                    "superficie_contada_5_cuadrados": 0.2, """ mm2 """
-                    "profundidad_camara_recuento": 0.1, """ mm """
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
                     "factor_dilucion": "1/200",
                     "eritrocitos_cuadrado_1": 104,
                     "eritrocitos_cuadrado_2": 95,
@@ -218,7 +219,7 @@ def datos_prueba():
                 "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                "identificacion": "YY.2345678",
+                "identificacion": "1235.112300434",
                 "caracteristicas_camara": "Cámara Neubauer digital",
                 "datos_muestra": {
                     "tipo_muestra": "Sangre venosa",
@@ -236,13 +237,13 @@ def datos_prueba():
                     "r": 220,
                     "g": 100,
                     "b": 100
-                    }, """ max 255 """
+                    },
                     "hsv": {
                     "h": 0,
                     "s": 0.8,
                     "v": 0.9
-                    }, """ ??? """
-                    "resolucion_imagen": 16, """ mpx """
+                    },
+                    "resolucion_imagen": 16,
                     "umbral_color": 0.5
                 },
                 "datos_analisis": {
@@ -251,9 +252,9 @@ def datos_prueba():
                     "parametros_procesamiento": "Análisis automático 1-1"
                 },
                 "resultados": {
-                    "superficie_contada_1_cuadrado": 0.04, """ mm2 """
-                    "superficie_contada_5_cuadrados": 0.2, """ mm2 """
-                    "profundidad_camara_recuento": 0.1, """ mm """
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
                     "factor_dilucion": "1/200",
                     "eritrocitos_cuadrado_1": 104,
                     "eritrocitos_cuadrado_2": 95,
@@ -267,7 +268,7 @@ def datos_prueba():
                 "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                "identificacion": "YY.3456789",
+                "identificacion": "1236.112300435",
                 "caracteristicas_camara": "Cámara Neubauer digital",
                 "datos_muestra": {
                     "tipo_muestra": "Sangre venosa",
@@ -285,13 +286,13 @@ def datos_prueba():
                     "r": 220,
                     "g": 100,
                     "b": 100
-                    }, """ max 255 """
+                    },
                     "hsv": {
                     "h": 0,
                     "s": 0.8,
                     "v": 0.9
-                    }, """ ??? """
-                    "resolucion_imagen": 16, """ mpx """
+                    },
+                    "resolucion_imagen": 16,
                     "umbral_color": 0.5
                 },
                 "datos_analisis": {
@@ -300,9 +301,9 @@ def datos_prueba():
                     "parametros_procesamiento": "Análisis automático 1-1"
                 },
                 "resultados": {
-                    "superficie_contada_1_cuadrado": 0.04, """ mm2 """
-                    "superficie_contada_5_cuadrados": 0.2, """ mm2 """
-                    "profundidad_camara_recuento": 0.1, """ mm """
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
                     "factor_dilucion": "1/200",
                     "eritrocitos_cuadrado_1": 104,
                     "eritrocitos_cuadrado_2": 95,
@@ -319,7 +320,7 @@ def datos_prueba():
 
 
     petri = [{
-        "identificacion": "1234.112300433",
+        "identificacion": "1234.112300933",
         "placa": 90,
         "datos_muestra": {
             "tipo": "sangre",

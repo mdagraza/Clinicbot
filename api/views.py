@@ -123,7 +123,7 @@ class ItemDetailView_Muestras(APIView):
     # GET para obtener un item específico
     def get(self, request, id):
         try:
-            patron_id_paciente = {"$regex" : f"{id}$"} # Se convierte el id a un patron que busca solo el string de los últimos caracteres
+            patron_id_paciente = {"$regex" : f"^{id}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres
             items = list(self.collection.find({"identificacion": patron_id_paciente})) # Se busca por la identificacion del paciente
 
             if items:

@@ -212,86 +212,55 @@
         }
 
         // Set all fields
-        document.getElementById('muestra_id').value = muestra.id || "";
-        document.getElementById('muestra_id2').value = muestra.id || "";
-        document.getElementById('identificacion').value = muestra.identificacion || "";
+        document.getElementById('muestra_id').value = muestra.id ?? ""
+        document.getElementById('muestra_id2').value = muestra.id ?? ""
+        document.getElementById('identificacion').value = muestra.identificacion ?? ""
 
         // Características Cámara
-        document.getElementById('codigo_identificacion').value = muestra.caracteristicas_camara || "";
+        document.getElementById('codigo_identificacion').value = muestra.caracteristicas_camara ?? ""
 
         // Datos de la Muestra
-        document.getElementById('tipo_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.tipo_muestra) || "";
-        document.getElementById('fecha_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.fecha) || "";
-        document.getElementById('hora_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.hora) || "";
-        document.getElementById('metodo_dilucion').value = (muestra.datos_muestra && muestra.datos_muestra.metodo_dilucion) || "";
-        document.getElementById('tipo_diluyente').value = (muestra.datos_muestra && muestra.datos_muestra.tipo_diluyente) || "";
-        document.getElementById('volumen_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.volumen_muestra_sembrado) || "";
-        document.getElementById('dilucion_numero').value = (muestra.datos_muestra && muestra.datos_muestra.dilucion) || "";
+        document.getElementById('tipo_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.tipo_muestra) ?? ""
+        document.getElementById('fecha_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.fecha) ?? ""
+        document.getElementById('hora_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.hora) ?? ""
+        document.getElementById('metodo_dilucion').value = (muestra.datos_muestra && muestra.datos_muestra.metodo_dilucion) ?? ""
+        document.getElementById('tipo_diluyente').value = (muestra.datos_muestra && muestra.datos_muestra.tipo_diluyente) ?? ""
+        document.getElementById('volumen_muestra').value = (muestra.datos_muestra && muestra.datos_muestra.volumen_muestra_sembrado) ?? ""
+        document.getElementById('dilucion_numero').value = (muestra.datos_muestra && muestra.datos_muestra.dilucion) ?? ""
 
         // Datos de Imagen
-        if (muestra.datos_imagen) {
-            document.getElementById('id_imagen').value = muestra.datos_imagen.id_imagen || "";
-            document.getElementById('extension_imagen').value = muestra.datos_imagen.extension || "";
-            document.getElementById('color_r').value = (muestra.datos_imagen.rgb && muestra.datos_imagen.rgb.r) || "";
-            document.getElementById('color_g').value = (muestra.datos_imagen.rgb && muestra.datos_imagen.rgb.g) || "";
-            document.getElementById('color_b').value = (muestra.datos_imagen.rgb && muestra.datos_imagen.rgb.b) || "";
-            document.getElementById('color_h').value = (muestra.datos_imagen.hsv && muestra.datos_imagen.hsv.h) || "";
-            document.getElementById('color_s').value = (muestra.datos_imagen.hsv && muestra.datos_imagen.hsv.s) || "";
-            document.getElementById('color_v').value = (muestra.datos_imagen.hsv && muestra.datos_imagen.hsv.v) || "";
-            document.getElementById('resolucion_imagen').value = muestra.datos_imagen.resolucion_imagen || "";
-            document.getElementById('umbral_color').value = muestra.datos_imagen.umbral_color || "";
-        } else {
-            document.getElementById('id_imagen').value = "";
-            document.getElementById('extension_imagen').value = "";
-            document.getElementById('color_r').value = "";
-            document.getElementById('color_g').value = "";
-            document.getElementById('color_b').value = "";
-            document.getElementById('color_h').value = "";
-            document.getElementById('color_s').value = "";
-            document.getElementById('color_v').value = "";
-            document.getElementById('resolucion_imagen').value = "";
-            document.getElementById('umbral_color').value = "";
-        }
+        document.getElementById('id_imagen').value = muestra.datos_imagen.id_imagen ?? ""
+        document.getElementById('extension_imagen').value = muestra.datos_imagen.extension ?? ""
+        document.getElementById('color_r').value = (muestra.datos_imagen.rgb && muestra.datos_imagen.rgb.r) ?? ""
+        document.getElementById('color_g').value = (muestra.datos_imagen.rgb && muestra.datos_imagen.rgb.g) ?? ""
+        document.getElementById('color_b').value = (muestra.datos_imagen.rgb && muestra.datos_imagen.rgb.b) ?? ""
+        document.getElementById('color_h').value = (muestra.datos_imagen.hsv && (muestra.datos_imagen.hsv.h ?? "")); // instead of || ""
+        document.getElementById('color_s').value = (muestra.datos_imagen.hsv && (muestra.datos_imagen.hsv.s ?? ""));
+        document.getElementById('color_v').value = (muestra.datos_imagen.hsv && (muestra.datos_imagen.hsv.v ?? ""));
+        document.getElementById('resolucion_imagen').value = muestra.datos_imagen.resolucion_imagen ?? ""
+        document.getElementById('umbral_color').value = muestra.datos_imagen.umbral_color ?? "";
 
         // Datos de Análisis
-        if (muestra.datos_analisis) {
-            document.getElementById('radio_minimo').value = muestra.datos_analisis.radio_min || "";
-            document.getElementById('radio_maximo').value = muestra.datos_analisis.radio_max || "";
-            document.getElementById('parametros_procesamiento').value = muestra.datos_analisis.parametros_procesamiento || "";
-        } else {
-            document.getElementById('radio_minimo').value = "";
-            document.getElementById('radio_maximo').value = "";
-            document.getElementById('parametros_procesamiento').value = "";
-        }
+        document.getElementById('radio_minimo').value = muestra.datos_analisis.radio_min ?? ""
+        document.getElementById('radio_maximo').value = muestra.datos_analisis.radio_max ?? ""
+        document.getElementById('parametros_procesamiento').value = muestra.datos_analisis.parametros_procesamiento ?? ""
 
         // Resultados
-        if (muestra.resultados) {
-            document.getElementById('superficie_1_cuadrado').value = muestra.resultados.superficie_contada_1_cuadrado || "";
-            document.getElementById('superficie_5_cuadrados').value = muestra.resultados.superficie_contada_5_cuadrados || "";
-            document.getElementById('profundidad_camara').value = muestra.resultados.profundidad_camara_recuento || "";
-            document.getElementById('factor_dilucion').value = muestra.resultados.factor_dilucion || "";
-            document.getElementById('eritrocitos_cuadrado_1').value = muestra.resultados.eritrocitos_cuadrado_1 || "";
-            document.getElementById('eritrocitos_cuadrado_2').value = muestra.resultados.eritrocitos_cuadrado_2 || "";
-            document.getElementById('eritrocitos_cuadrado_3').value = muestra.resultados.eritrocitos_cuadrado_3 || "";
-            document.getElementById('eritrocitos_cuadrado_4').value = muestra.resultados.eritrocitos_cuadrado_4 || "";
-            document.getElementById('eritrocitos_cuadrado_5').value = muestra.resultados.eritrocitos_cuadrado_5 || "";
-            document.getElementById('eritrocitos_por_muestra').value = muestra.resultados.eritrocitos_por_muestra || "";
-            document.getElementById('valores_referencia_mujeres').value = muestra.resultados.valores_referencia_mujeres || "";
-            document.getElementById('valores_referencia_hombres').value = muestra.resultados.valores_referencia_hombres || "";
-        } else {
-            document.getElementById('superficie_1_cuadrado').value = "";
-            document.getElementById('superficie_5_cuadrados').value = "";
-            document.getElementById('profundidad_camara').value = "";
-            document.getElementById('factor_dilucion').value = "";
-            document.getElementById('eritrocitos_cuadrado_1').value = "";
-            document.getElementById('eritrocitos_cuadrado_2').value = "";
-            document.getElementById('eritrocitos_cuadrado_3').value = "";
-            document.getElementById('eritrocitos_cuadrado_4').value = "";
-            document.getElementById('eritrocitos_cuadrado_5').value = "";
-            document.getElementById('eritrocitos_por_muestra').value = "";
-            document.getElementById('valores_referencia_mujeres').value = "";
-            document.getElementById('valores_referencia_hombres').value = "";
-        }
+        document.getElementById('superficie_1_cuadrado').value = muestra.resultados.superficie_contada_1_cuadrado ?? ""
+        console.log(muestra.resultados.superficie_contada_5_cuadrados);
+        console.log(muestra.resultados.profundidad_camara_recuento);
+        console.log(muestra.resultados.factor_dilucion);
+        document.getElementById('superficie_5_cuadrados').value = muestra.resultados.superficie_contada_5_cuadrados ?? ""
+        document.getElementById('profundidad_camara').value = muestra.resultados.profundidad_camara_recuento ?? ""
+        document.getElementById('factor_dilucion').value = muestra.resultados.factor_dilucion ?? ""
+        document.getElementById('eritrocitos_cuadrado_1').value = muestra.resultados.eritrocitos_cuadrado_1 ?? ""
+        document.getElementById('eritrocitos_cuadrado_2').value = muestra.resultados.eritrocitos_cuadrado_2 ?? ""
+        document.getElementById('eritrocitos_cuadrado_3').value = muestra.resultados.eritrocitos_cuadrado_3 ?? ""
+        document.getElementById('eritrocitos_cuadrado_4').value = muestra.resultados.eritrocitos_cuadrado_4 ?? ""
+        document.getElementById('eritrocitos_cuadrado_5').value = muestra.resultados.eritrocitos_cuadrado_5 ?? ""
+        document.getElementById('eritrocitos_por_muestra').value = muestra.resultados.eritrocitos_por_muestra ?? ""
+        document.getElementById('valores_referencia_mujeres').value = muestra.resultados.valores_referencia_mujeres ?? ""
+        document.getElementById('valores_referencia_hombres').value = muestra.resultados.valores_referencia_hombres ?? ""
 
         document.getElementById('formulario-muestras').style.display = 'block';
         document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });

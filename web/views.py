@@ -224,6 +224,8 @@ def obtener_muestras(request, identificacion_paciente):
         #muestras = [m for m in muestras_datos if identificacion_paciente in m.get("identificacion", "")]
 
         muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificacion_paciente)
+        print("identificacion_paciente:", identificacion_paciente)
+        print("Muestras obtenidas:", muestras)
         # Filtrar solo las muestras del paciente en MongoDB
         #muestras = db_muestras.find({"identificacion": patron_id_paciente})
         
@@ -246,17 +248,17 @@ def obtener_muestras(request, identificacion_paciente):
                 "id_imagen": muestra.get("datos_imagen", {}).get("id_imagen", ""),
                 "extension": muestra.get("datos_imagen", {}).get("extension", ""),
                 "rgb": {
-                "r": muestra.get("datos_imagen", {}).get("rgb", {}).get("r", ""),
-                "g": muestra.get("datos_imagen", {}).get("rgb", {}).get("g", ""),
-                "b": muestra.get("datos_imagen", {}).get("rgb", {}).get("b", ""),
+                    "r": muestra.get("datos_imagen", {}).get("rgb", {}).get("r", ""),
+                    "g": muestra.get("datos_imagen", {}).get("rgb", {}).get("g", ""),
+                    "b": muestra.get("datos_imagen", {}).get("rgb", {}).get("b", ""),
                 },
                 "hsv": {
-                "h": muestra.get("datos_imagen", {}).get(" max 255 hsv", {}).get("h", ""),
-                "s": muestra.get("datos_imagen", {}).get(" max 255 hsv", {}).get("s", ""),
-                "v": muestra.get("datos_imagen", {}).get(" max 255 hsv", {}).get("v", ""),
+                    "h": muestra.get("datos_imagen", {}).get("hsv", {}).get("h", ""),
+                    "s": muestra.get("datos_imagen", {}).get("hsv", {}).get("s", ""),
+                    "v": muestra.get("datos_imagen", {}).get("hsv", {}).get("v", ""),
                 },
-                "resolucion_imagen": muestra.get("datos_imagen", {}).get(" ??? resolucion_imagen", ""),
-                "umbral_color": muestra.get("datos_imagen", {}).get(" mpx umbral_color", ""),
+                "resolucion_imagen": muestra.get("datos_imagen", {}).get("resolucion_imagen", ""),
+                "umbral_color": muestra.get("datos_imagen", {}).get("umbral_color", ""),
             },
             "datos_analisis": {
                 "radio_min": muestra.get("datos_analisis", {}).get("radio_min", ""),
@@ -265,9 +267,9 @@ def obtener_muestras(request, identificacion_paciente):
             },
             "resultados": {
                 "superficie_contada_1_cuadrado": muestra.get("resultados", {}).get("superficie_contada_1_cuadrado", ""),
-                "superficie_contada_5_cuadrados": muestra.get("resultados", {}).get(" mm2 superficie_contada_5_cuadrados", ""),
-                "profundidad_camara_recuento": muestra.get("resultados", {}).get(" mm2 profundidad_camara_recuento", ""),
-                "factor_dilucion": muestra.get("resultados", {}).get(" mm factor_dilucion", ""),
+                "superficie_contada_5_cuadrados": muestra.get("resultados", {}).get("superficie_contada_5_cuadrados", ""),
+                "profundidad_camara_recuento": muestra.get("resultados", {}).get("profundidad_camara_recuento", ""),
+                "factor_dilucion": muestra.get("resultados", {}).get("factor_dilucion", ""),
                 "eritrocitos_cuadrado_1": muestra.get("resultados", {}).get("eritrocitos_cuadrado_1", ""),
                 "eritrocitos_cuadrado_2": muestra.get("resultados", {}).get("eritrocitos_cuadrado_2", ""),
                 "eritrocitos_cuadrado_3": muestra.get("resultados", {}).get("eritrocitos_cuadrado_3", ""),
@@ -445,6 +447,6 @@ def editar_petri(request):
 
  Datos de persona (Nombre, Apellidos, Edad, Genero, grupo sanguineo)
  Datos de muestra (identificacion(Formato: XY.1234567 [2 primeros caracteres es tipo de análisis, 7 siguientes caracteres es el identificacion de la muestra]), color, posicion)
- Datos petri: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día, mm mes, ttt horas, TT temperatura)
+ Datos petri: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día,mes, ttt horas, TT temperatura)
  
 '''
