@@ -4,8 +4,8 @@ from rest_framework import status
 from bson import ObjectId
 from .tokens import TokenManager
 
-from db_connection import get_db_users
-db_users = get_db_users()
+from db_connection import MongoDBConnection
+mongo = MongoDBConnection()
 
 def token_required(view_func): #PENDIENTE REVISAR : Se deberian devolver los datos segun el tipo de usuario, si es admin todos los datos, si es usuario normal solo los suyos
     @wraps(view_func)
@@ -16,7 +16,7 @@ def token_required(view_func): #PENDIENTE REVISAR : Se deberian devolver los dat
         #Se filtra cuando la peticion es interna de la web
         if auth_header.startswith('Interno '):
             user_id = auth_header.split(' ')[1]
-            if not db_users.find_one({"_id": ObjectId(user_id)}): #Solo se verifica que el usuario exista
+            if not mongo.get_collection_db_usuarios().find_one({"_id": ObjectId(user_id)}): #Solo se verifica que el usuario exista
                 return Response({"error": "Se requiere Bearer token"}, status=status.HTTP_401_UNAUTHORIZED)
 
             request.user_id = user_id

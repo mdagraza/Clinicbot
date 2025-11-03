@@ -1,8 +1,8 @@
 from datetime import datetime
 from bson import ObjectId
-from db_connection import get_db_Logs_Access
+from db_connection import MongoDBConnection
 
-db_logs_access = get_db_Logs_Access();
+mongo = MongoDBConnection()
 
 def log_action(request, action, status, description=""):
     nuevo_log = {
@@ -18,7 +18,7 @@ def log_action(request, action, status, description=""):
         #"request_method": "POST"
     }
 
-    db_logs_access.insert_one(nuevo_log)
+    mongo.get_collection_db_log().insert_one(nuevo_log)
 
 '''
 {

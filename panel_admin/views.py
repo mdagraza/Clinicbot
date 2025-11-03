@@ -4,11 +4,10 @@ from django.utils import timezone
 from datetime import datetime
 from django.shortcuts import render
 from panel.decorators import *
-from db_connection import get_db_users, get_db_tokens
+from db_connection import MongoDBConnection
 from api.tokens import TokenManager
 
-db_users = get_db_users()
-db_tokens = get_db_tokens() 
+mongo = MongoDBConnection()
 
 # Create your views here.
 @login_required
@@ -17,13 +16,13 @@ def panel_datos(request, error=None):
         nombre = request.POST.get('nombre').strip()
         email = request.POST.get('email').strip()
 
-        db_users.update_one(
+        mongo.get_collection_db_usuarios().update_one(
             {"_id": ObjectId(request.user.get('idUsuario'))},
             {"$set": {"nombre_completo": nombre, "email": email}}
         )
 
     #Obtener datos del usuario desde la sesión
-    usuario = db_users.find_one({"_id": ObjectId(request.user.get('idUsuario'))})
+    usuario = mongo.get_collection_db_usuarios().find_one({"_id": ObjectId(request.user.get('idUsuario'))})
     datos = {
         'username': usuario.get('username', ''),
         'nombre_completo': usuario.get('nombre_completo', ''),
@@ -39,7 +38,7 @@ def cambiar_contrasena(request):
         confirmar_clave = request.POST.get('confirm_password')
 
         # Obtener usuario actual
-        usuario = db_users.find_one({"_id": ObjectId(request.user.get('idUsuario'))})
+        usuario = mongo.get_collection_db_usuarios().find_one({"_id": ObjectId(request.user.get('idUsuario'))})
 
         # Verificar contraseña actual
         if not bcrypt.checkpw(clave_actual.encode('utf-8'), usuario['password']):
@@ -64,7 +63,7 @@ def cambiar_contrasena(request):
         hashed_password = bcrypt.hashpw(nueva_clave.encode('utf-8'), salt)
         
         # Actualizar contraseña
-        db_users.update_one(
+        mongo.get_collection_db_usuarios().update_one(
             {"_id": ObjectId(request.user.get('idUsuario'))},
             {'$set': {'password': hashed_password}}
         )
@@ -82,7 +81,7 @@ def panel_tokens(request):
         token_manager.generate_token(request.user.get('idUsuario'), expires)
      
     # Obtener tokens desde la base de datos que sigan activos
-    tokens = db_tokens.find({"user_id": ObjectId(request.user.get('idUsuario')), "expires_at": {"$gt": datetime.now()}})
+    tokens = mongo.get_collection_db_usuarios("api_tokens").find({"user_id": ObjectId(request.user.get('idUsuario')), "expires_at": {"$gt": datetime.now()}})
 
     tokens = [
         {
@@ -99,7 +98,7 @@ def panel_tokens(request):
 @login_required
 def panel_usuarios(request):
     # Obtener usuarios desde la base de datos
-    usuarios = list(db_users.find({}, {'password': 0}))  # Excluir contraseñas
+    usuarios = list(mongo.get_collection_db_usuarios().find({}, {'password': 0}))  # Excluir contraseñas
     # Formatear usuarios para la plantilla
     usuarios = [
     {

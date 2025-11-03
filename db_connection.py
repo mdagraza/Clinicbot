@@ -105,3 +105,7 @@ class MongoDBConnection:
     def get_collection_db_usuarios(self, collection: str = "usuarios"):
         self.db = self.client["Clinicbot-Usuarios"]
         return self.db[collection]
+    
+    def get_collection_db(self, db: str, collection: str):
+        self.db = self.client[db]
+        return self.db[collection]
