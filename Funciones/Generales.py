@@ -1,7 +1,7 @@
-def peticion_datos(user_id, peticion):
-    import requests
-    from django.conf import settings
+import requests
+from django.conf import settings
 
+def peticion_datos(user_id, peticion):
     # Obtener la lista de la peticion a través de API REST
     api_url = f"{settings.API_URL}/api/{peticion}"
     headers = {
@@ -16,9 +16,6 @@ def peticion_datos(user_id, peticion):
         return []
     
 def peticion_datos_detalle(user_id, peticion, id):
-    import requests
-    from django.conf import settings
-
     # Obtener la lista de la peticion a través de API REST
     api_url = f"{settings.API_URL}/api/{peticion}/{id}" 
     headers = {
