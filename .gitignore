@@ -196,3 +196,6 @@ cython_debug/
 
 #Añadir carpeta de imagenes
 /imagenes/
+
+# CSV referencia
+parametros-y-validacion-muestrasSangre.csv

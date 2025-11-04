@@ -1,4 +1,4 @@
-from Clinicbot.utils import UsuarioService
+from  .utils import UsuarioService
 from django.contrib import messages
 from db_connection import MongoDBConnection
 from datetime import datetime
@@ -30,10 +30,11 @@ def datos_prueba():
     if list(db_pacientes.find()): # Comprobar si ya hay pacientes en la colección convertiendo a lista
         return  # Si ya hay pacientes, no se añaden más
 
-    pacientes = [{
+    pacientes = [
+        {
             "nombre": "Miguel",
             "apellidos": "Dagraza Alonso",
-            "ident_muestra": "1234567",
+            "ident_muestra": "1234",
             "ident_petri": "1234",
             "edad": 30,
             "email": "nombre_1@test.com",
@@ -43,7 +44,7 @@ def datos_prueba():
             {
             "nombre": "Antonio Manuel",
             "apellidos": "Zacarias Del Río Parísimo de la Vega Fernandez",
-            "ident_muestra": "2345678",
+            "ident_muestra": "1235",
             "ident_petri": "1235",
             "edad": 25,
             "email": "nombre_2@test.com",
@@ -53,7 +54,7 @@ def datos_prueba():
             {
             "nombre": "Jesús",
             "apellidos": "Nazareno de la Cruz",
-            "ident_muestra": "3456789",
+            "ident_muestra": "1236",
             "ident_petri": "1236",
             "edad": 40,
             "email": "nombre_3@test.com",
@@ -63,7 +64,7 @@ def datos_prueba():
             {
             "nombre": "Jesús",
             "apellidos": "Nazareno de la Cruz",
-            "ident_muestra": "356984",
+            "ident_muestra": "2654",
             "ident_petri": "2654",
             "edad": 40,
             "email": "nombre_3@test.com",
@@ -72,46 +73,257 @@ def datos_prueba():
             }]
     db_pacientes.insert_many(pacientes)
 
-    muestras = [{
-                #"paciente_id": collection.find_one({"ident_muestra": "1234567"})["_id"],
-                "identificacion": "YY.1234567",
-                "color": "Rojo",
-                "posicion": 123123,
-                "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
+    muestras = [
+            {
+                "identificacion": "1234.112300433",
+                "caracteristicas_camara": "Cámara Neubauer digital",
+                "datos_muestra": {
+                    "tipo_muestra": "Sangre venosa",
+                    "fecha": "03/11",
+                    "hora": "10:00",
+                    "metodo_dilucion": "manual",
+                    "tipo_diluyente": "Buffer fosfato salino",
+                    "volumen_muestra_sembrado": 0.1,
+                    "dilucion": 200
+                },
+                "datos_imagen": {
+                    "id_imagen": "1",
+                    "extension": "png",
+                    "rgb": {
+                    "r": 220,
+                    "g": 100,
+                    "b": 100
+                    },
+                    "hsv": {
+                    "h": 0,
+                    "s": 0.8,
+                    "v": 0.9
+                    },
+                    "resolucion_imagen": 16,
+                    "umbral_color": 0.5
+                },
+                "datos_analisis": {
+                    "radio_min": 10,
+                    "radio_max": 50,
+                    "parametros_procesamiento": "Análisis automático 1-1"
+                },
+                "resultados": {
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
+                    "factor_dilucion": "1/200",
+                    "eritrocitos_cuadrado_1": 104,
+                    "eritrocitos_cuadrado_2": 95,
+                    "eritrocitos_cuadrado_3": 101,
+                    "eritrocitos_cuadrado_4": 103,
+                    "eritrocitos_cuadrado_5": 105,
+                    "eritrocitos_por_muestra": 4567178.826671993,
+                    "valores_referencia_mujeres": "4.2 a 5.4 millones/mm³",
+                    "valores_referencia_hombres": "4.7 a 6.1 millones/mm³"
+                },
+                "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                #"paciente_id": collection.find_one({"ident_muestra": "1234567"})["_id"],
-                "identificacion": "ZZ.1234567",
-                "color": "Verde",
-                "posicion": 123123,
-                "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
+                "identificacion": "1234.112600433",
+                "caracteristicas_camara": "Cámara Neubauer digital",
+                "datos_muestra": {
+                    "tipo_muestra": "Sangre venosa",
+                    "fecha": "03/11",
+                    "hora": "10:00",
+                    "metodo_dilucion": "manual",
+                    "tipo_diluyente": "Buffer fosfato salino",
+                    "volumen_muestra_sembrado": 0.1,
+                    "dilucion": 200
+                },
+                "datos_imagen": {
+                    "id_imagen": "1",
+                    "extension": "png",
+                    "rgb": {
+                    "r": 220,
+                    "g": 100,
+                    "b": 100
+                    },
+                    "hsv": {
+                    "h": 0,
+                    "s": 0.8,
+                    "v": 0.9
+                    },
+                    "resolucion_imagen": 16,
+                    "umbral_color": 0.5
+                },
+                "datos_analisis": {
+                    "radio_min": 10,
+                    "radio_max": 50,
+                    "parametros_procesamiento": "Análisis automático 1-1"
+                },
+                "resultados": {
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
+                    "factor_dilucion": "1/200",
+                    "eritrocitos_cuadrado_1": 104,
+                    "eritrocitos_cuadrado_2": 95,
+                    "eritrocitos_cuadrado_3": 101,
+                    "eritrocitos_cuadrado_4": 103,
+                    "eritrocitos_cuadrado_5": 105,
+                    "eritrocitos_por_muestra": 4567178.826671993,
+                    "valores_referencia_mujeres": "4.2 a 5.4 millones/mm³",
+                    "valores_referencia_hombres": "4.7 a 6.1 millones/mm³"
+                },
+                "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                #"paciente_id": collection.find_one({"ident_muestra": "1234567"})["_id"],
-                "identificacion": "kK.1234567",
-                "color": "Amarillo",
-                "posicion": 123123,
-                "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
+                "identificacion": "1236.112300435",
+                "caracteristicas_camara": "Cámara Neubauer digital",
+                "datos_muestra": {
+                    "tipo_muestra": "Sangre venosa",
+                    "fecha": "03/11",
+                    "hora": "10:00",
+                    "metodo_dilucion": "manual",
+                    "tipo_diluyente": "Buffer fosfato salino",
+                    "volumen_muestra_sembrado": 0.1,
+                    "dilucion": 200
+                },
+                "datos_imagen": {
+                    "id_imagen": "1",
+                    "extension": "png",
+                    "rgb": {
+                    "r": 220,
+                    "g": 100,
+                    "b": 100
+                    },
+                    "hsv": {
+                    "h": 0,
+                    "s": 0.8,
+                    "v": 0.9
+                    },
+                    "resolucion_imagen": 16,
+                    "umbral_color": 0.5
+                },
+                "datos_analisis": {
+                    "radio_min": 10,
+                    "radio_max": 50,
+                    "parametros_procesamiento": "Análisis automático 1-1"
+                },
+                "resultados": {
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
+                    "factor_dilucion": "1/200",
+                    "eritrocitos_cuadrado_1": 104,
+                    "eritrocitos_cuadrado_2": 95,
+                    "eritrocitos_cuadrado_3": 101,
+                    "eritrocitos_cuadrado_4": 103,
+                    "eritrocitos_cuadrado_5": 105,
+                    "eritrocitos_por_muestra": 4567178.826671993,
+                    "valores_referencia_mujeres": "4.2 a 5.4 millones/mm³",
+                    "valores_referencia_hombres": "4.7 a 6.1 millones/mm³"
+                },
+                "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                #"paciente_id": collection.find_one({"ident_muestra": "2345678"})["_id"],
-                "identificacion": "YY.2345678",
-                "color": "Azul",
-                "posicion": 234234,
-                "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
+                "identificacion": "1235.112300434",
+                "caracteristicas_camara": "Cámara Neubauer digital",
+                "datos_muestra": {
+                    "tipo_muestra": "Sangre venosa",
+                    "fecha": "03/11",
+                    "hora": "10:00",
+                    "metodo_dilucion": "manual",
+                    "tipo_diluyente": "Buffer fosfato salino",
+                    "volumen_muestra_sembrado": 0.1,
+                    "dilucion": 200
+                },
+                "datos_imagen": {
+                    "id_imagen": "1",
+                    "extension": "png",
+                    "rgb": {
+                    "r": 220,
+                    "g": 100,
+                    "b": 100
+                    },
+                    "hsv": {
+                    "h": 0,
+                    "s": 0.8,
+                    "v": 0.9
+                    },
+                    "resolucion_imagen": 16,
+                    "umbral_color": 0.5
+                },
+                "datos_analisis": {
+                    "radio_min": 10,
+                    "radio_max": 50,
+                    "parametros_procesamiento": "Análisis automático 1-1"
+                },
+                "resultados": {
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
+                    "factor_dilucion": "1/200",
+                    "eritrocitos_cuadrado_1": 104,
+                    "eritrocitos_cuadrado_2": 95,
+                    "eritrocitos_cuadrado_3": 101,
+                    "eritrocitos_cuadrado_4": 103,
+                    "eritrocitos_cuadrado_5": 105,
+                    "eritrocitos_por_muestra": 4567178.826671993,
+                    "valores_referencia_mujeres": "4.2 a 5.4 millones/mm³",
+                    "valores_referencia_hombres": "4.7 a 6.1 millones/mm³"
+                },
+                "fecha_creacion": "2025-10-05T15:30:00"
             },
             {
-                #"paciente_id": collection.find_one({"ident_muestra": "3456789"})["_id"],
-                "identificacion": "YY.3456789",
-                "color": "Verde",
-                "posicion": 345345,
-                "fecha": datetime.now().strftime("%Y-%m-%dT%H:%M")
+                "identificacion": "1236.112300435",
+                "caracteristicas_camara": "Cámara Neubauer digital",
+                "datos_muestra": {
+                    "tipo_muestra": "Sangre venosa",
+                    "fecha": "03/11",
+                    "hora": "10:00",
+                    "metodo_dilucion": "manual",
+                    "tipo_diluyente": "Buffer fosfato salino",
+                    "volumen_muestra_sembrado": 0.1,
+                    "dilucion": 200
+                },
+                "datos_imagen": {
+                    "id_imagen": "1",
+                    "extension": "png",
+                    "rgb": {
+                    "r": 220,
+                    "g": 100,
+                    "b": 100
+                    },
+                    "hsv": {
+                    "h": 0,
+                    "s": 0.8,
+                    "v": 0.9
+                    },
+                    "resolucion_imagen": 16,
+                    "umbral_color": 0.5
+                },
+                "datos_analisis": {
+                    "radio_min": 10,
+                    "radio_max": 50,
+                    "parametros_procesamiento": "Análisis automático 1-1"
+                },
+                "resultados": {
+                    "superficie_contada_1_cuadrado": 0.04,
+                    "superficie_contada_5_cuadrados": 0.2,
+                    "profundidad_camara_recuento": 0.1,
+                    "factor_dilucion": "1/200",
+                    "eritrocitos_cuadrado_1": 104,
+                    "eritrocitos_cuadrado_2": 95,
+                    "eritrocitos_cuadrado_3": 101,
+                    "eritrocitos_cuadrado_4": 103,
+                    "eritrocitos_cuadrado_5": 105,
+                    "eritrocitos_por_muestra": 4567178.826671993,
+                    "valores_referencia_mujeres": "4.2 a 5.4 millones/mm³",
+                    "valores_referencia_hombres": "4.7 a 6.1 millones/mm³"
+                },
+                "fecha_creacion": "2025-10-05T15:30:00"
             }]
     db_muestras.insert_many(muestras)
 
 
     petri = [{
-        "identificacion": "1234.112300433",
+        "identificacion": "1234.112300933",
         "placa": 90,
         "datos_muestra": {
             "tipo": "sangre",

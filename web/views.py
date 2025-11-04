@@ -217,7 +217,7 @@ def borrar_muestra(request):
     raise Http404
 
 def obtener_muestras(request, identificacion_paciente):
-    try:        
+    try:
         patron_id_paciente = {"$regex" : f"{identificacion_paciente}$"} # Se convierte el id a un patron que busca solo el string pasado solo en la parte derecha ($ Significa final del string)
 
         # Obtener la lista de muestras a través de API REST
@@ -226,20 +226,64 @@ def obtener_muestras(request, identificacion_paciente):
         #muestras = [m for m in muestras_datos if identificacion_paciente in m.get("identificacion", "")]
 
         muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificacion_paciente)
-
+        """ print("identificacion_paciente:", identificacion_paciente)
+        print("Muestras obtenidas:", muestras) """
         # Filtrar solo las muestras del paciente en MongoDB
         #muestras = db_muestras.find({"identificacion": patron_id_paciente})
         
         # Convertir los datos a una lista con los IDs como strings
         muestras_lista = [
-        {
-            "id": str(muestra["_id"]),
-            "identificacion": muestra.get("identificacion", ""), 
-            "color": muestra.get("color", ""),
-            "posicion": muestra.get("posicion", ""),
-            "fecha": muestra.get("fecha", ""),
-        }
-        for muestra in muestras
+            {
+            "id": str(muestra.get("_id", "")),
+            "identificacion": muestra.get("identificacion", ""),
+            "caracteristicas_camara": muestra.get("caracteristicas_camara", ""),
+            "datos_muestra": {
+                "tipo_muestra": muestra.get("datos_muestra", {}).get("tipo_muestra", ""),
+                "fecha": muestra.get("datos_muestra", {}).get("fecha", ""),
+                "hora": muestra.get("datos_muestra", {}).get("hora", ""),
+                "metodo_dilucion": muestra.get("datos_muestra", {}).get("metodo_dilucion", ""),
+                "tipo_diluyente": muestra.get("datos_muestra", {}).get("tipo_diluyente", ""),
+                "volumen_muestra_sembrado": muestra.get("datos_muestra", {}).get("volumen_muestra_sembrado", ""),
+                "dilucion": muestra.get("datos_muestra", {}).get("dilucion", ""),
+            },
+            "datos_imagen": {
+                "id_imagen": muestra.get("datos_imagen", {}).get("id_imagen", ""),
+                "extension": muestra.get("datos_imagen", {}).get("extension", ""),
+                "rgb": {
+                    "r": muestra.get("datos_imagen", {}).get("rgb", {}).get("r", ""),
+                    "g": muestra.get("datos_imagen", {}).get("rgb", {}).get("g", ""),
+                    "b": muestra.get("datos_imagen", {}).get("rgb", {}).get("b", ""),
+                },
+                "hsv": {
+                    "h": muestra.get("datos_imagen", {}).get("hsv", {}).get("h", ""),
+                    "s": muestra.get("datos_imagen", {}).get("hsv", {}).get("s", ""),
+                    "v": muestra.get("datos_imagen", {}).get("hsv", {}).get("v", ""),
+                },
+                "resolucion_imagen": muestra.get("datos_imagen", {}).get("resolucion_imagen", ""),
+                "umbral_color": muestra.get("datos_imagen", {}).get("umbral_color", ""),
+            },
+            "datos_analisis": {
+                "radio_min": muestra.get("datos_analisis", {}).get("radio_min", ""),
+                "radio_max": muestra.get("datos_analisis", {}).get("radio_max", ""),
+                "parametros_procesamiento": muestra.get("datos_analisis", {}).get("parametros_procesamiento", ""),
+            },
+            "resultados": {
+                "superficie_contada_1_cuadrado": muestra.get("resultados", {}).get("superficie_contada_1_cuadrado", ""),
+                "superficie_contada_5_cuadrados": muestra.get("resultados", {}).get("superficie_contada_5_cuadrados", ""),
+                "profundidad_camara_recuento": muestra.get("resultados", {}).get("profundidad_camara_recuento", ""),
+                "factor_dilucion": muestra.get("resultados", {}).get("factor_dilucion", ""),
+                "eritrocitos_cuadrado_1": muestra.get("resultados", {}).get("eritrocitos_cuadrado_1", ""),
+                "eritrocitos_cuadrado_2": muestra.get("resultados", {}).get("eritrocitos_cuadrado_2", ""),
+                "eritrocitos_cuadrado_3": muestra.get("resultados", {}).get("eritrocitos_cuadrado_3", ""),
+                "eritrocitos_cuadrado_4": muestra.get("resultados", {}).get("eritrocitos_cuadrado_4", ""),
+                "eritrocitos_cuadrado_5": muestra.get("resultados", {}).get("eritrocitos_cuadrado_5", ""),
+                "eritrocitos_por_muestra": muestra.get("resultados", {}).get("eritrocitos_por_muestra", ""),
+                "valores_referencia_mujeres": muestra.get("resultados", {}).get("valores_referencia_mujeres", ""),
+                "valores_referencia_hombres": muestra.get("resultados", {}).get("valores_referencia_hombres", ""),
+            },
+            "fecha_creacion": muestra.get("fecha_creacion", ""),
+            }
+            for muestra in muestras
         ]
         
         # Devolver los datos en formato JSON
@@ -405,6 +449,6 @@ def editar_petri(request):
 
  Datos de persona (Nombre, Apellidos, Edad, Genero, grupo sanguineo)
  Datos de muestra (identificacion(Formato: XY.1234567 [2 primeros caracteres es tipo de análisis, 7 siguientes caracteres es el identificacion de la muestra]), color, posicion)
- Datos petri: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día, mm mes, ttt horas, TT temperatura)
+ Datos petri: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día,mes, ttt horas, TT temperatura)
  
 '''
