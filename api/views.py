@@ -15,7 +15,7 @@ from django.conf import settings
 from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 import uuid
 
-PATRON_CODE = r"^[a-zA-Z0-9]{2}\.[a-zA-Z0-9]{7}$"
+PATRON_CODE = r"^[a-zA-Z0-9]{4}\.[0-9]{9}$"
 
 mongo = MongoDBConnection()
 
@@ -109,7 +109,7 @@ class ItemListView_Muestras(APIView):
 
 
         # Agregar la fecha
-        data["fecha"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
+        data["fecha_recepcion"] = datetime.now().strftime("YYYY.mm.ddTHH:mm")
 
         result = self.collection.insert_one(data)
         return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
@@ -207,7 +207,7 @@ class ItemListView_Petri(APIView):
             return Response({"error": f"Ya existe un registro con la identificacion: {str(data['identificacion'])}"}, status=status.HTTP_400_BAD_REQUEST)'''
 
         # Agregar la fecha
-        data["fecha"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
+        data["fecha_recepcion"] = datetime.now().strftime("YYYY.mm.ddTHH:mm")
 
         result = self.collection.insert_one(data)
         return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
