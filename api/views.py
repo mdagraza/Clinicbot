@@ -109,7 +109,7 @@ class ItemListView_Muestras(APIView):
 
 
         # Agregar la fecha
-        data["fecha_recepcion"] = datetime.now().strftime("YYYY.mm.ddTHH:mm")
+        data["fecha_recepcion"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
 
         result = self.collection.insert_one(data)
         return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
@@ -207,7 +207,7 @@ class ItemListView_Petri(APIView):
             return Response({"error": f"Ya existe un registro con la identificacion: {str(data['identificacion'])}"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Agregar la fecha
-        data["fecha_recepcion"] = datetime.now().strftime("YYYY.mm.ddTHH:mm")
+        data["fecha_recepcion"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
 
         result = self.collection.insert_one(data)
         return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
