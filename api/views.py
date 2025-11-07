@@ -198,13 +198,13 @@ class ItemListView_Petri(APIView):
     def post(self, request):
         data = request.data
 
-        '''#Filtrar entrada del codigo
+        #Filtrar entrada del codigo
         if "identificacion" not in data or not re.match(PATRON_CODE, data["identificacion"]):
             return Response({"error": "La identificacion(AAAA.123456789) no es válida."}, status=status.HTTP_400_BAD_REQUEST)
         
         # Buscar si ya existe en la base de datos
         if self.collection.find_one({"identificacion": data["identificacion"]}):
-            return Response({"error": f"Ya existe un registro con la identificacion: {str(data['identificacion'])}"}, status=status.HTTP_400_BAD_REQUEST)'''
+            return Response({"error": f"Ya existe un registro con la identificacion: {str(data['identificacion'])}"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Agregar la fecha
         data["fecha_recepcion"] = datetime.now().strftime("YYYY.mm.ddTHH:mm")
