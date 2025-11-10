@@ -1,8 +1,54 @@
 Muestras:
-
+{
+    "identificacion": <string: PPPP.ddmmtttTT>,
+    "caracteristicas_camara": <string>,
+    "datos_muestra": {
+        "tipo_muestra": <string>,
+        "fecha": <string: dd/mm/aaaa>,
+        "hora": <string: hh:mm>,
+        "metodo_dilucion": <string>,
+        "tipo_diluyente": <string>,
+        "volumen_muestra_sembrado": <float>,
+        "dilucion": <int>
+    },
+    "datos_imagen": {
+        "id_imagen": <string>,
+        "extension": <string: png, jpg, jpeg>,
+        "rgb": {
+            "r": <int: 0-255>,
+            "g": <int: 0-255>,
+            "b": <int: 0-255>
+        },
+        "hsv": {
+            "h": <int: 0-179>,
+            "s": <int: 0-255>,
+            "v": <int: 0-255>
+        },
+        "resolucion_imagen": <float>,
+        "umbral_color": <int>
+    },
+    "datos_analisis": {
+        "radio_min": <int>,
+        "radio_max": <int>,
+        "parametros_procesamiento": <string>
+    },
+    "resultados": {
+        "superficie_contada_1_cuadrado": <float>,
+        "superficie_contada_5_cuadrados": <float>,
+        "profundidad_camara_recuento": <float>,
+        "factor_dilucion": <string>,
+        "eritrocitos_cuadrado_1": <int>,
+        "eritrocitos_cuadrado_2": <int>,
+        "eritrocitos_cuadrado_3": <int>,
+        "eritrocitos_cuadrado_4": <int>,
+        "eritrocitos_cuadrado_5": <int>,
+        "eritrocitos_por_muestra": <float>,
+        "valores_referencia_mujeres": <string>,
+        "valores_referencia_hombres": <string>
+    }
+}
 
 Petri:
-
 {
   "identificacion": <string: PPPP.ddmmtttTT>,
   "placa": <int>,
@@ -42,4 +88,12 @@ Petri:
       "colonias_muestra": <int>,
       "objetos_no_validos": <int>
   }
+}
+
+Token: 
+[expires es opcional, por defecto 720h]
+{
+  "username": <string>,
+  "password": <string>,
+  "expires": <int>
 }

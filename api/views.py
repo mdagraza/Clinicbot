@@ -101,7 +101,7 @@ class ItemListView_Muestras(APIView):
 
         #Filtrar entrada del codigo
         if "identificacion" not in data or not re.match(PATRON_CODE, data["identificacion"]):
-            return Response({"error": "La identificación(AAAA.123456789) no es válida."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "La identificación no es válida. Patrón esperado: AAAA.123456789"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Buscar si ya existe en la base de datos
         if self.collection.find_one({"identificacion": data["identificacion"]}):
@@ -112,7 +112,7 @@ class ItemListView_Muestras(APIView):
         data["fecha_recepcion"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
 
         result = self.collection.insert_one(data)
-        return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
+        return Response({f"Registro con la identificación {str(data['identificacion'])} guardada."}, status=status.HTTP_201_CREATED)
 
 class ItemDetailView_Muestras(APIView):
     def __init__(self):
@@ -200,7 +200,7 @@ class ItemListView_Petri(APIView):
 
         #Filtrar entrada del codigo        
         if "identificacion" not in data or not re.match(PATRON_CODE, data["identificacion"]):
-            return Response({"error": "La identificación(AAAA.123456789) no es válida."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "La identificación no es válida. Patrón esperado: AAAA.123456789"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Buscar si ya existe en la base de datos
         if self.collection.find_one({"identificacion": data["identificacion"]}):
@@ -210,7 +210,7 @@ class ItemListView_Petri(APIView):
         data["fecha_recepcion"] = datetime.now().strftime("%Y-%m-%dT%H:%M")
 
         result = self.collection.insert_one(data)
-        return Response({"id": str(result.inserted_id)}, status=status.HTTP_201_CREATED)
+        return Response({f"Registro con la identificación {str(data['identificacion'])} guardada."}, status=status.HTTP_201_CREATED)
 
 class ItemDetailView_Petri(APIView):
     def __init__(self):
@@ -284,9 +284,9 @@ class TokenView(APIView):
     
     # Endpoint para obtener un token
     def post(self, request):
-        username = request.data.get('username')
-        password = request.data.get('password')
-        expires = request.data.get('expires') #Debe pasarse en horas
+        username = request.data.get('username', '')
+        password = request.data.get('password', '')
+        expires = request.data.get('expires', 720) #Debe pasarse en horas
         
         # Verificar credenciales (ajusta esto según tu sistema)
         user = self.users.find_one({"username": username})
