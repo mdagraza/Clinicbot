@@ -65,3 +65,6 @@ pip install -r requirements.txt
 ```bash
 python manage.py runserver 0.0.0.0:80
 ```
+---
+
+Proyecto desarrollado durante el FP Desarrollo de Aplicaciones Web.
