@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=w=6@^1sbzscgdd)ju)-cg^80xtcx5c)d7odt86fjvor^ukdu%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*'] #Necesario poner host permitidos (dominio) si el modo debug esta en False
 
@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework', #Paquete instalado djangorestframework
+    'drf_spectacular', #Swagger/OpenAPI documentation
     'web',
     'panel',
     'api',
     'panel_admin',
+    'core'
 ]
 
 MIDDLEWARE = [
@@ -111,11 +113,23 @@ SILENCED_SYSTEM_CHECKS = [
     'models.E032',  # Deshabilitar advertencias de modelos
 ]
 
-'''REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'Clinicbot.utils.UsuarioService',
-    ],
-}'''
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API ClinicBot',
+    'DESCRIPTION': 'Documentación de la API del Sistema de Gestión Médica ClinicBot',
+    'VERSION': '1.0.0',
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
+    'SERVE_AUTHENTICATION': None,
+    'SWAGGER_UI_SETTINGS': { 'persistAuthorization': False, 'supportedSubmitMethods': [], },
+    'SECURITY': [],
+    'AUTHENTICATION_WHITELIST': [],
+}
 
 
 # Password validation
@@ -167,4 +181,4 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5 MB
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configuración de la API REST
-API_URL = 'http://localhost:8000'
+API_URL = 'http://localhost'

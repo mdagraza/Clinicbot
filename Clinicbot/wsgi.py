@@ -16,8 +16,5 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Clinicbot.settings')
 application = get_wsgi_application()
 
 ##Crear usuario admin
-from .startup import *
+from Clinicbot.startup import *
 crear_admin()
-
-## Datos de prueba
-datos_prueba()

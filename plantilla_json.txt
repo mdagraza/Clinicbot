@@ -1,3 +1,16 @@
+Pacientes:
+{
+    "nombre": <string>,
+    "apellidos": <string>,
+    "ident_muestra": <string>,
+    "ident_petri": <string>,
+    "edad": <int>,
+    "email": <string>,
+    "genero": <string: "Hombre", "Mujer", "Otro">,
+    "gr_sanguineo": <string: "0-", "0+", "A+", "A-", "B+", "B-", "AB+", "AB-">
+}
+
+
 Muestras:
 {
     "identificacion": <string: PPPP.ddmmtttTT>,
@@ -93,7 +106,7 @@ Petri:
 Token: 
 [expires es opcional, por defecto 720h]
 {
-  "username": <string>,
-  "password": <string>,
-  "expires": <int>
+  "user": <string>,
+  "pass": <string>,
+  "expires": <int: horas>
 }

@@ -1,8 +1,10 @@
 from pymongo import MongoClient
 from threading import Lock
 
+#Estos datos deberían moverse fuera de aquí para no estar en git
 MONGODB_HOST = 'localhost'
 MONGODB_PORT = 27017
+
     
 class MongoDBConnection:
     _instance = None
@@ -12,6 +14,14 @@ class MongoDBConnection:
         with cls._lock:
             if cls._instance is None:
                 cls._instance = super().__new__(cls)
+                #TODO: Para poner user y pass           
+                    #cls._instance.client = MongoClient(
+                    #    host=MONGODB_HOST,
+                    #    port=MONGODB_PORT,
+                    #    username=MONGODB_USER,
+                    #    password=MONGODB_PASS,
+                    #    authSource="admin"
+                    #)
                 cls._instance.client = MongoClient(MONGODB_HOST, MONGODB_PORT)
         return cls._instance
     

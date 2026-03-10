@@ -1,27 +1,14 @@
-import json
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse, Http404, HttpResponseRedirect
-from pymongo import MongoClient
-from django.views.decorators.csrf import csrf_exempt
-from bson import ObjectId
-from datetime import datetime
-from db_connection import MongoDBConnection
 from panel.decorators import *
 from django.conf import settings
-import requests
-from Funciones.Generales import peticion_datos, peticion_datos_detalle
-
-mongo = MongoDBConnection()
-
-# Conectar con MongoDB
-db_pacientes = mongo.get_collection_db_pacientes()
-db_muestras = mongo.get_collection_db_muestras()
-db_petri = mongo.get_collection_db_petri()
+from Funciones.Generales import peticion_datos, peticion_datos_detalle, guardar_datos, actualizar_datos, eliminar_datos
 
 def home(request):
     if request.user:
         print("Usuario autenticado:", request.user["username"])
         print("Id del usuario:", request.user.get("idUsuario"))
+        print("Permisos:", request.user["permisos"])
     return render(request, "home.html")
 
 # Vista para mostrar la lista de pacientes y el formulario de edición
@@ -38,54 +25,31 @@ def datos_pacientes(request):
         email = request.POST.get("email")
         genero = request.POST.get("genero")
         gr_sanguineo = request.POST.get("gr_sanguineo")
+
+        #Crear estructura
+        paciente = {
+            "nombre": nombre,
+            "apellidos": apellidos,
+            "ident_muestra": ident_muestra,
+            "ident_petri": ident_petri,
+            "edad": int(edad),
+            "email": email,
+            "genero": genero,
+            "gr_sanguineo": gr_sanguineo
+        }
         
-        # Actualizar los datos en MongoDB
+        # Actualizar los datos
         if not paciente_id: #Si no hay ningún paciente cargado, se crea un nuevo con los datos | not... si es none, null o vacio
-            nuevo_paciente = {
-                "nombre": nombre,
-                "apellidos": apellidos,
-                "ident_muestra": ident_muestra,
-                "ident_petri": ident_petri,
-                "edad": int(edad),
-                "email": email,
-                "genero": genero,
-                "gr_sanguineo": gr_sanguineo
-            }
-            db_pacientes.insert_one(nuevo_paciente)
+            guardar_datos(request.user.get("idUsuario"), "pacientes", paciente)
         else:
-            db_pacientes.update_one(
-                {"_id": ObjectId(paciente_id)},
-                {"$set": {"nombre": nombre, "apellidos": apellidos, "ident_muestra": ident_muestra, "ident_petri": ident_petri, "edad": int(edad), "email": email, "genero": genero, "gr_sanguineo": gr_sanguineo}}
-            )
+            actualizar_datos(request.user.get("idUsuario"), "pacientes", paciente_id, paciente)
+
         return redirect('datos_pacientes')
-    
-    '''print(f"Hora actual 1: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    # Obtener la lista de pacientes a través de API REST
-    api_url = f"{settings.API_URL}/api/pacientes" #pacientes-list
-    headers = {
-        'Authorization': 'Bearer 9ce38f655d3beb4c79d538b7fba6c7ee7fea9f6ee6302dea6bfea1691ff6a618' # REVISAR: Cambiar por el token de acceso del usuario autenticado
-    }
-    response = requests.get(api_url, headers=headers)
-
-    if response.status_code == 200:
-        pacientes = response.json()
-    else:
-        print("Error al obtener los pacientes:", response.status_code, response.text)
-        pacientes = []
-
-    print(f"Hora actual 2: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")'''
 
     # Obtener la lista de pacientes a través de API REST
     pacientes = peticion_datos(request.user.get("idUsuario"), "pacientes")
-
-    #print("Pacientes obtenidos:", pacientes)
-
-
-    # Obtener la lista de pacientes de MongoDB y se ordenan en ascendente (-1 descendente)
-    #pacientes = db_pacientes.find().sort("apellidos",1)
     
     # Renombrar _id a id para que no cause problemas en la plantilla
-    #pacientes = [{"id": str(paciente["_id"]), "nombre": paciente["nombre"], "edad": paciente["edad"], "email": paciente["email"], "genero": paciente["genero"], "gr_sanguineo": paciente["gr_sanguineo"]} for paciente in pacientes]
     pacientes = [
     {
         "id": str(paciente["_id"]),
@@ -96,7 +60,12 @@ def datos_pacientes(request):
         "edad": paciente.get("edad", ""),
         "email": paciente.get("email", ""),
         "genero": paciente.get("genero", ""),
-        "gr_sanguineo": paciente.get("gr_sanguineo", "")
+        "gr_sanguineo": paciente.get("gr_sanguineo", ""),
+        **(
+            {
+                "tipo_usuario": paciente.get("datos_recepcion", {}).get("tipo_usuario", "")
+            } if "superuser" in request.user["permisos"] else {}
+        )
     }
     for paciente in pacientes
     ]
@@ -106,19 +75,25 @@ def datos_pacientes(request):
         'IMAGE_URLBASE' : settings.MEDIA_URL 
     }
 
-    print(f"Hora actual 3: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    #Crear permiso de visualización según usuario
+    visu_muestras = visu_petri = False
+    permisos = request.user.get('permisos', [])
+    if any(p in permisos for p in ("superuser", "petri")):
+        visu_petri = True
+    if any(p in permisos for p in ("superuser", "muestras")):
+        visu_muestras = True
+
     # Renderizar la página con la lista de pacientes y el formulario de edición
-    return render(request, "pacientes.html", {"pacientes": pacientes, "data_image" : data_image})
+    return render(request, "pacientes.html", {"pacientes": pacientes, "data_image" : data_image, "visu_petri": visu_petri, "visu_muestras": visu_muestras})
 
 def borrar_paciente(request):
     if request.method == 'POST':
         paciente_id = request.POST.get("paciente_id2")
         try:
-            # Convierte el ID en ObjectId y elimina el paciente
-            resultado = db_pacientes.delete_one({"_id": ObjectId(paciente_id)})
+            # Eliminar paciente
+            resultado = eliminar_datos(request.user.get("idUsuario"), "pacientes", paciente_id)
 
-            # Verifica si realmente se eliminó un documento
-            if resultado.deleted_count > 0:
+            if resultado:
                 return redirect('datos_pacientes') 
             else:
                 return HttpResponse("Persona no encontrada", status=404)
@@ -131,7 +106,8 @@ def borrar_paciente(request):
 
 @solo_superusuarios
 def editar_muestra(request):
-    if request.method == "POST":
+    return HttpResponse("Sin funcionalidad", status=404)
+    '''if request.method == "POST":
         # Obtener los datos del formulario para actualizar un paciente
         muestra_id = request.POST.get("muestra_id")
         paciente_id = request.POST.get("paciente_id")
@@ -163,7 +139,7 @@ def editar_muestra(request):
         return redirect(request.META.get('HTTP_REFERER', '/'))
     
     #Obtener la lista de pacientes
-    pacientes = db_pacientes.find().sort("apellidos",1)
+    pacientes = peticion_datos(request.user.get("idUsuario"), "pacientes")
     pacientes = [
     {
         "id": str(paciente["_id"]),
@@ -194,23 +170,22 @@ def editar_muestra(request):
 
 
     # Renderizar la página con la lista de pacientes y el formulario de edición
-    return render(request, "muestras.html", {"muestras": muestras, "pacientes": pacientes})
+    return render(request, "muestras.html", {"muestras": muestras, "pacientes": pacientes})'''
 
 
-def borrar_muestra(request):
+def borrar_muestra(request): #TODO: Esto deberia ser un fetch
     if request.method == 'POST':
         muestra_id = request.POST.get("muestra_id2")
         try:
-            # Convierte el ID en ObjectId y elimina el paciente
-            resultado = db_muestras.delete_one({"_id": ObjectId(muestra_id)})
+            # Eliminar muestra
+            resultado = eliminar_datos(request.user.get("idUsuario"), "muestras", muestra_id)
 
-            # Verifica si realmente se eliminó un documento
-            if resultado.deleted_count > 0:
-                return redirect('editar_muestra') 
+            if resultado:
+                return redirect('datos_pacientes') 
             else:
                 return HttpResponse("Persona no encontrada", status=404)
         except Exception as e:
-            return redirect('editar_muestra') 
+            return redirect('datos_pacientes') 
             #return HttpResponse(f"Error eliminando paciente: {str(e)}", status=500)
 
     #return HttpResponse("Page not found", status=404)
@@ -218,18 +193,11 @@ def borrar_muestra(request):
 
 def obtener_muestras(request, identificacion_paciente):
     try:
-        patron_id_paciente = {"$regex" : f"{identificacion_paciente}$"} # Se convierte el id a un patron que busca solo el string pasado solo en la parte derecha ($ Significa final del string)
-
         # Obtener la lista de muestras a través de API REST
-        #muestras_datos = peticion_datos(request.user.get("idUsuario"), "muestras") #PENDIENTE REVISAR : Que solo devuelva los datos del paciente en concreto, para no tener que solicitar todos los datos y luego filtrarlos
-        #muestras = [m for m in muestras_datos if m.get("identificacion") == patron_id_paciente] # regex no funciona con datos devueltos en formatos json, solo es para mongo
-        #muestras = [m for m in muestras_datos if identificacion_paciente in m.get("identificacion", "")]
-
-        muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificacion_paciente)
-        """ print("identificacion_paciente:", identificacion_paciente)
-        print("Muestras obtenidas:", muestras) """
-        # Filtrar solo las muestras del paciente en MongoDB
-        #muestras = db_muestras.find({"identificacion": patron_id_paciente})
+        if identificacion_paciente == 'no-relacionadas':
+            muestras = peticion_datos(request.user.get("idUsuario"), "muestras-no-asociadas")
+        else:
+            muestras = peticion_datos_detalle(request.user.get("idUsuario"), "muestras", identificacion_paciente)
         
         # Convertir los datos a una lista con los IDs como strings
         muestras_lista = [
@@ -281,7 +249,12 @@ def obtener_muestras(request, identificacion_paciente):
                 "valores_referencia_mujeres": muestra.get("resultados", {}).get("valores_referencia_mujeres", ""),
                 "valores_referencia_hombres": muestra.get("resultados", {}).get("valores_referencia_hombres", ""),
             },
-            "fecha_creacion": muestra.get("fecha_creacion", ""),
+            "fecha_recepcion": muestra.get("datos_recepcion", {}).get("fecha", ""),
+            **(
+                {
+                    "tipo_usuario": muestra.get("datos_recepcion", {}).get("tipo_usuario", "")
+                } if "superuser" in request.user["permisos"] else {}
+            )
             }
             for muestra in muestras
         ]
@@ -292,18 +265,15 @@ def obtener_muestras(request, identificacion_paciente):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
     
+def obtener_muestras_no_relacionadas(request):
+    return obtener_muestras(request, 'no-relacionadas')
+    
 def obtener_petri(request, identificacion_paciente):
-    try:        
-        patron_id_paciente = {"$regex": f"^{identificacion_paciente[:4]}"} # Se convierte el id a un patron que busca solo el string de los primeros 4 caracteres (^ Significa inicio del string)
-
-        # Obtener la lista de placas petri a través de API REST
-        #petri_datos = peticion_datos(request.user.get("idUsuario"), "petri") #PENDIENTE REVISAR : Que solo devuelva los datos del paciente en concreto, para no tener que solicitar todos los datos y luego filtrarlos
-        #petri = [p for p in petri_datos if identificacion_paciente in p.get("identificacion", "")]
-
-        petri = peticion_datos_detalle(request.user.get("idUsuario"), "petri", identificacion_paciente)
-
-        # Filtrar solo las placas petri del paciente en MongoDB
-        #petri = db_petri.find({"identificacion": patron_id_paciente})
+    try:
+        if identificacion_paciente == 'no-relacionadas':
+            petri = peticion_datos(request.user.get("idUsuario"), "petri-no-asociadas")
+        else:
+            petri = peticion_datos_detalle(request.user.get("idUsuario"), "petri", identificacion_paciente)
         
         # Convertir los datos a una lista con los IDs como strings
         petri_lista = [
@@ -347,6 +317,12 @@ def obtener_petri(request, identificacion_paciente):
                 "colonias_muestra": p.get("resultados", {}).get("colonias_muestra", ""),
                 "objetos_no_validos": p.get("resultados", {}).get("objetos_no_validos", "")
             },
+            "fecha_recepcion": p.get("datos_recepcion", {}).get("fecha", ""),
+            **(
+                {
+                    "tipo_usuario": p.get("datos_recepcion", {}).get("tipo_usuario", "")
+                } if "superuser" in request.user["permisos"] else {}
+            )
         }
         for p in petri
         ]
@@ -356,21 +332,23 @@ def obtener_petri(request, identificacion_paciente):
 
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+def obtener_petri_no_relacionadas(request):
+    return obtener_petri(request, 'no-relacionadas')
 
-def borrar_petri(request):
+def borrar_petri(request): #TODO: Esto deberia ser un fetch
     if request.method == 'POST':
-        muestra_id = request.POST.get("muestra_id2")
+        petri_id = request.POST.get("muestra_id2")
         try:
-            # Convierte el ID en ObjectId y elimina el paciente
-            resultado = db_muestras.delete_one({"_id": ObjectId(muestra_id)})
+            # Eliminar petri
+            resultado = eliminar_datos(request.user.get("idUsuario"), "petri", petri_id)
 
-            # Verifica si realmente se eliminó un documento
-            if resultado.deleted_count > 0:
-                return redirect('editar_muestra') 
+            if resultado:
+                return redirect('datos_pacientes') 
             else:
                 return HttpResponse("Persona no encontrada", status=404)
         except Exception as e:
-            return redirect('editar_muestra') 
+            return redirect('datos_pacientes') 
             #return HttpResponse(f"Error eliminando paciente: {str(e)}", status=500)
 
     #return HttpResponse("Page not found", status=404)
@@ -378,7 +356,8 @@ def borrar_petri(request):
 
 @solo_superusuarios
 def editar_petri(request):
-    if request.method == "POST":
+    return HttpResponse("Sin funcionalidad", status=404)
+    '''if request.method == "POST":
         # Obtener los datos del formulario para actualizar un paciente
         muestra_id = request.POST.get("muestra_id")
         paciente_id = request.POST.get("paciente_id")
@@ -410,7 +389,7 @@ def editar_petri(request):
         return redirect(request.META.get('HTTP_REFERER', '/'))
     
     #Obtener la lista de pacientes
-    pacientes = db_pacientes.find().sort("apellidos",1)
+    pacientes = peticion_datos(request.user.get("idUsuario"), "pacientes")
     pacientes = [
     {
         "id": str(paciente["_id"]),
@@ -441,14 +420,14 @@ def editar_petri(request):
 
 
     # Renderizar la página con la lista de pacientes y el formulario de edición
-    return render(request, "muestras.html", {"muestras": muestras, "pacientes": pacientes})
+    return render(request, "muestras.html", {"muestras": muestras, "pacientes": pacientes})'''
 
 
 
 '''
 
  Datos de persona (Nombre, Apellidos, Edad, Genero, grupo sanguineo)
- Datos de muestra (identificacion(Formato: XY.1234567 [2 primeros caracteres es tipo de análisis, 7 siguientes caracteres es el identificacion de la muestra]), color, posicion)
+ Datos de muestra: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día,mes, ttt horas, TT temperatura)
  Datos petri: identificacion: PPPP.ddmmtttTT (PPPP identificacion de paciente, dd día,mes, ttt horas, TT temperatura)
  
 '''

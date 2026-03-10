@@ -1,0 +1,426 @@
+{% extends 'layout/base1.html' %}
+{% load static %}
+
+
+{% block title %}Datos Pacientes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'formulario/styles-form.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="main-container">
+    <div class="sidebar" id="sidebar">
+        <h2>Pacientes</h2>
+        <button class="icon-button" onclick="nuevoUser()"><i class="fa-solid fa-user-plus"></i>Nuevo paciente</button>
+        <div class="busquedaPaciente">
+            <input type="search" id="buscarPaciente" placeholder="Buscar paciente..." onkeyup="filtrarPaciente()">
+            <button type="button" id="limpiarBuscar" onclick="borrarBuscador()">X</button>
+        </div>
+
+        <div class="lista2">
+            <ul>
+                {% if not pacientes %}
+                <li>No hay pacientes registrados</li>
+                {% endif %}
+                {% for paciente in pacientes %}
+                <li id="li{{ paciente.id }}"
+                    onclick="editarPaciente('{{ paciente.id }}', '{{ paciente.nombre }}', '{{ paciente.apellidos }}', '{{ paciente.ident_muestra }}', '{{ paciente.ident_petri }}', '{{ paciente.edad }}', '{{ paciente.email }}', '{{ paciente.genero }}', '{{ paciente.gr_sanguineo }}')">
+                    {{ paciente.apellidos }}, {{ paciente.nombre }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'datos-paciente')"><i
+                    class="fa-solid fa-user"></i>Datos Paciente</button>
+            {% if visu_muestras %}
+            <button class="tab-button" onclick="openTab(event, 'datos-muestras')"><i
+                    class="fa-solid fa-vial"></i>Muestras de Sangre</button>
+            {% endif %}
+            {% if visu_petri %}
+            <button class="tab-button" onclick="openTab(event, 'datos-petri')"><i
+                    class="fa-solid fa-microscope"></i>Análisis de placas petri</button>
+            {% endif %}
+        </div>
+
+        {% include "pacientes-datos.html" %}
+
+        {% if visu_muestras %}
+        {% include "pacientes-muestras.html" %}
+        {% endif %}
+
+        {% if visu_petri %}
+        {% include "pacientes-petri.html" %}
+        {% endif %}
+    </div>
+</div>
+
+
+<!---->
+
+<script>
+    /* ===========================
+       ESTADO GLOBAL
+    =========================== */
+    let pacienteSeleccionado = null;
+    let muestraSeleccionada = null;
+    let petriSeleccionada = null;
+    let abortController = null;
+
+    /* ===========================
+       HELPERS
+    =========================== */
+    const $ = (id) => document.getElementById(id);
+
+    const setValue = (id, value = "") => {
+        const el = $(id);
+        if (el) el.value = value ?? "";
+    };
+
+    const show = (id) => { if ($(id)) $(id).style.display = "block"; };
+    const hide = (id) => { if ($(id)) $(id).style.display = "none"; };
+
+    const setBoldSelection = (prevId, newId) => {
+        if (prevId && $(prevId)) $(prevId).style.fontWeight = "normal";
+        if (newId && $(newId)) $(newId).style.fontWeight = "bold";
+    };
+
+    /* ===========================
+       PACIENTE
+    =========================== */
+    function editarPaciente(
+        id, nombre, apellidos, ident_muestra, ident_petri,
+        edad, email, genero, gr_sanguineo
+    ) {
+        [
+            ['paciente_id', id], ['paciente_id2', id],
+            ['nombre', nombre], ['apellidos', apellidos],
+            ['ident_muestra', ident_muestra], ['ident_petri', ident_petri],
+            ['edad', edad], ['email', email],
+            ['genero', genero], ['gr_sanguineo', gr_sanguineo]
+        ].forEach(([i, v]) => setValue(i, v));
+
+        $('guardarDatos').innerText = "Actualizar paciente";
+
+        hide('formulario-muestras');
+        hide('cerrarFormMuestra');
+        hide('formulario-petri');
+        hide('cerrarFormPetri');
+
+        setBoldSelection(pacienteSeleccionado, `li${id}`);
+        pacienteSeleccionado = `li${id}`;
+        muestraSeleccionada = null;
+        petriSeleccionada = null;
+
+        cargarListasPaciente(id, ident_muestra, ident_petri);
+    }
+
+    function nuevoUser() {
+        [
+            'paciente_id', 'paciente_id2', 'nombre', 'apellidos',
+            'ident_muestra', 'ident_petri', 'edad', 'email',
+            'genero', 'gr_sanguineo'
+        ].forEach(id => setValue(id));
+
+        $('guardarDatos').innerText = "Guardar paciente";
+
+        hide('formulario-muestras');
+        hide('cerrarFormMuestra');
+        hide('formulario-petri');
+        hide('cerrarFormPetri');
+
+        setBoldSelection(pacienteSeleccionado, null);
+        pacienteSeleccionado = null;
+    }
+
+    /* ===========================
+       LISTAS
+    =========================== */
+    function cargarListasPaciente(pacienteId, identMuestra, identPetri) {
+        if (abortController) abortController.abort();
+        abortController = new AbortController();
+        const { signal } = abortController;
+
+        cargarLista(
+            "muestras-lista",
+            `/obtener_muestras/${identMuestra}/`,
+            "No hay muestras asociadas",
+            signal,
+            editarMuestra
+        );
+
+        cargarLista(
+            "petri-lista",
+            `/obtener_petri/${identPetri}/`,
+            "No hay análisis de placas petri asociadas",
+            signal,
+            editarPetri
+        );
+    }
+
+    function cargarLista(containerId, url, emptyText, signal, onClick) {
+        const ul = $(containerId);
+        if (!ul) return;
+
+        ul.innerHTML = "<li>Cargando...</li>";
+
+        fetch(url, { signal })
+            .then(r => r.json())
+            .then(items => {
+                ul.innerHTML = "";
+                if (!items.length) {
+                    ul.innerHTML = `<li>${emptyText}</li>`;
+                    return;
+                }
+
+                items.forEach(item => {
+                    const li = document.createElement("li");
+                    li.id = `li${item.id}`;
+                    li.innerText =
+                        item.identificacion +
+                        " | " +
+                        (item.datos_muestra?.tipo_muestra || item.datos_muestra?.tipo || "");
+                    li.onclick = () => onClick(item);
+                    ul.appendChild(li);
+                });
+            })
+            .catch(err => console.error(err));
+    }
+
+    /* ===========================
+       MUESTRA
+    =========================== */
+    function editarMuestra(muestra) {
+        resetImageViewer('datos-muestras');
+        const div = $('datos-muestras');
+        if (!div) return;
+
+        setValue('muestra_id', muestra.id);
+        setValue('muestra_id2', muestra.id);
+        setValue('identificacion', muestra.identificacion);
+
+        const dm = muestra.datos_muestra || {};
+        setValue('tipo_muestra', dm.tipo_muestra);
+        setValue('fecha_muestra', dm.fecha);
+        setValue('hora_muestra', dm.hora);
+
+        const di = muestra.datos_imagen || {};
+        setValue('id_imagen', di.id_imagen);
+        setValue('extension_imagen', di.extension);
+
+        show('formulario-muestras');
+        show('cerrarFormMuestra');
+        $('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
+
+        setBoldSelection(muestraSeleccionada, `li${muestra.id}`);
+        muestraSeleccionada = `li${muestra.id}`;
+    }
+
+    /* ===========================
+       PETRI
+    =========================== */
+    function editarPetri(petri) {
+        resetImageViewer('datos-petri');
+        const div = $('datos-petri');
+        if (!div) return;
+
+        setValue('petri_id', petri.id);
+        setValue('identificacion', petri.identificacion);
+        setValue('placa', petri.placa);
+
+        const dm = petri.datos_muestra || {};
+        setValue('tipo', dm.tipo);
+        setValue('fecha', dm.fecha);
+
+        const di = petri.datos_imagen || {};
+        setValue('id_imagen', di.id_imagen);
+        setValue('extension', di.extension);
+
+        show('formulario-petri');
+        show('cerrarFormPetri');
+        $('formulario-petri').scrollIntoView({ behavior: 'smooth' });
+
+        setBoldSelection(petriSeleccionada, `li${petri.id}`);
+        petriSeleccionada = `li${petri.id}`;
+    }
+
+    /* ===========================
+       BUSCADOR / TABS
+    =========================== */
+    function openTab(evt, tabName) {
+        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".tab-button").forEach(b => b.classList.remove("active"));
+        $(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    function borrarBuscador() {
+        $('buscarPaciente').value = "";
+        filtrarPaciente();
+    }
+
+    function quitarTildes(texto) {
+        return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function filtrarPaciente() {
+        const filtro = quitarTildes($('buscarPaciente').value.toUpperCase());
+        document.querySelectorAll('.lista2 ul li').forEach(li => {
+            const txt = quitarTildes(li.innerText.toUpperCase());
+            li.style.display = txt.includes(filtro) ? "" : "none";
+        });
+    }
+
+    /* ===========================
+       CIERRE FORMULARIOS
+    =========================== */
+    $('cerrarFormMuestra')?.addEventListener('click', () => {
+        hide('formulario-muestras');
+        hide('cerrarFormMuestra');
+        setBoldSelection(muestraSeleccionada, null);
+        muestraSeleccionada = null;
+    });
+
+    $('cerrarFormPetri')?.addEventListener('click', () => {
+        hide('formulario-petri');
+        hide('cerrarFormPetri');
+        setBoldSelection(petriSeleccionada, null);
+        petriSeleccionada = null;
+    });
+
+    /* ===========================
+       VISOR DE IMÁGENES (PETRI / MUESTRAS)
+    =========================== */
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const IMAGE_BASE_URL =
+            `{{ data_image.IMAGE_URLBASE|safe|escapejs }}`.replaceAll('\\', '/');
+
+        function initImageViewer(config) {
+            const container = $(config.containerId);
+            if (!container) return;
+
+            const toggleBtn = container.querySelector(config.toggleBtnId);
+            const viewer = container.querySelector(config.viewerContentId);
+            const image = container.querySelector(config.imageElementId);
+            const placeholder = container.querySelector(config.placeholderId);
+            const idInput = container.querySelector(config.imageIdInput);
+            const extInput = container.querySelector(config.extensionInput);
+
+            if (!toggleBtn || !viewer || !image || !placeholder) return;
+
+            const icon = toggleBtn.querySelector('.toggle-icon');
+            const text = toggleBtn.querySelector('.toggle-text');
+
+            function updateImage() {
+                const id = idInput.value.trim();
+                const ext = extInput.value.trim();
+
+                if (!id || !ext) {
+                    image.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                    placeholder.innerHTML = `
+                    <div class="placeholder-text">
+                        <span>📸</span>
+                        <p>Introduce el ID de imagen</p>
+                    </div>`;
+                    return;
+                }
+
+                const url = `${IMAGE_BASE_URL}/${config.subfolder}/${id}.${ext}`;
+                image.src = url;
+                image.style.display = 'block';
+                placeholder.style.display = 'none';
+
+                image.onerror = () => {
+                    image.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                    placeholder.innerHTML = `
+                    <div class="placeholder-text">
+                        <span>❌</span>
+                        <p>No se encontró la imagen:<br>${id}.${ext}</p>
+                    </div>`;
+                };
+            }
+
+            toggleBtn.addEventListener('click', () => {
+                const visible = viewer.style.display === 'block';
+                viewer.style.display = visible ? 'none' : 'block';
+                icon?.classList.toggle('rotated', !visible);
+                text.textContent = visible ? 'Mostrar imagen' : 'Ocultar imagen';
+                if (!visible) updateImage();
+            });
+
+            image.addEventListener('click', () => {
+                if (image.src) window.open(image.src, '_blank');
+            });
+
+            idInput.addEventListener('input', updateImage);
+            extInput.addEventListener('input', updateImage);
+        }
+
+        initImageViewer({
+            containerId: 'datos-petri',
+            toggleBtnId: '#toggleImageViewer',
+            viewerContentId: '#imageViewerContent',
+            imageIdInput: '#id_imagen',
+            extensionInput: '#extension',
+            imageElementId: '#petriImage',
+            placeholderId: '#imagePlaceholder',
+            subfolder: 'petri'
+        });
+
+        initImageViewer({
+            containerId: 'datos-muestras',
+            toggleBtnId: '#toggleImageViewerMuestra',
+            viewerContentId: '#imageViewerContentMuestra',
+            imageIdInput: '#id_imagen',
+            extensionInput: '#extension_imagen',
+            imageElementId: '#muestraImage',
+            placeholderId: '#imagePlaceholderMuestra',
+            subfolder: 'muestras'
+        });
+    });
+
+    function resetImageViewer(containerId) {
+        const container = $(containerId);
+        if (!container) return;
+
+        const viewer = container.querySelector('[id^="imageViewerContent"]');
+        const toggleBtn = container.querySelector('[id^="toggleImageViewer"]');
+        const image = container.querySelector('img');
+        const placeholder = container.querySelector('[id^="imagePlaceholder"]');
+
+        if (viewer) viewer.style.display = 'none';
+
+        if (toggleBtn) {
+            const icon = toggleBtn.querySelector('.toggle-icon');
+            const text = toggleBtn.querySelector('.toggle-text');
+            icon?.classList.remove('rotated');
+            if (text) text.textContent = 'Mostrar imagen';
+        }
+
+        if (image) {
+            image.style.display = 'none';
+            image.src = '';
+        }
+
+        if (placeholder) {
+            placeholder.style.display = 'flex';
+            placeholder.innerHTML = `
+            <div class="placeholder-text">
+                <span>📸</span>
+                <p>Introduce el ID de imagen para visualizar</p>
+            </div>`;
+        }
+    }
+</script>
+
+
+{% endblock %}

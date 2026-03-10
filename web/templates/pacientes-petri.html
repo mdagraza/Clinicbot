@@ -5,14 +5,23 @@
                 <h2>Placas petri</h2>
                 <button id="cerrarFormPetri" style="display:none;">×</button>
             </div>
+            <div class="opciones-no-relacionadas">
+                <input type="checkbox" id="petri-no-relacionadas" name="petri-no-relacionadas" value="check">
+                <label for="petri-no-relacionadas">Placas petri sin relación con algún paciente</label>
+            </div>
+            <div class="busquedaPetri">
+                <input type="search" id="buscarPetri" placeholder="Buscar placa petri..." onkeyup="filtrarPetri()">
+                <button type="button" id="limpiarBuscar" onclick="borrarBuscadorPetri()">X</button>
+            </div>
             <div class="lista22">
                 <ul id="petri-lista">
-                    <li>No hay análisis de placas petri asociadas</li>
+                    <li>Sin paciente seleccionado</li>
                 </ul>
             </div>
         </div>
         <div class="formulario-petri" id="formulario-petri" style="display:none;">
             <h2>Análisis de Placas Petri</h2>
+            <p class="fechaRecibido"></p>
             {# Antes %url 'editar_petri'% - Se debería cambiar a algo con javascript, para actualizar los datos #}
             <form id="formularioDatos" method="POST" action="#">
                 {% csrf_token %}

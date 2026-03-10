@@ -10,10 +10,11 @@
 <main class="content-wrapper is-centered">
     <div class="main-container">
 
-        <!-- Sección de Bienvenida (el contenido de tu home original) -->
+        <!-- Sección de Bienvenida -->
         <div class="welcome-section">
             <div class="image-container">
-                <img src="{% static 'images/logo.png' %}" alt="Imagen de Clinicbot" class="center-image" id="logo-defecto">
+                <img src="{% static 'images/logo.png' %}" alt="Imagen de Clinicbot" class="center-image"
+                    id="logo-defecto">
             </div>
             <div class="text-container">
                 <h1>Clinicbot</h1>
@@ -34,12 +35,28 @@
                 <input type="text" name="username" placeholder="Usuario" autofocus required tabindex="1">
 
                 <div class="password-input-wrapper">
-                    <input type="password" name="password" placeholder="Contraseña" required  tabindex="2">
+                    <input type="password" name="password" placeholder="Contraseña" required tabindex="2">
                     <button type="button" class="toggle-password" aria-label="Mostrar contraseña">
                         <!-- Icono de ojo cerrado (visible por defecto) -->
-                        <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" transform="translate(2 10)"><path d="m0 .5c2.53705308 3.66666667 5.37038642 5.5 8.5 5.5 3.1296136 0 5.9629469-1.83333333 8.5-5.5"/><path d="m2.5 3.423-2 2.077"/><path d="m14.5 3.423 2 2.077"/><path d="m10.5 6 1 2.5"/><path d="m6.5 6-1 2.5"/></g></svg>
+                        <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <g fill="none" fill-rule="evenodd" stroke="currentColor" stroke-linecap="round"
+                                stroke-linejoin="round" transform="translate(2 10)">
+                                <path
+                                    d="m0 .5c2.53705308 3.66666667 5.37038642 5.5 8.5 5.5 3.1296136 0 5.9629469-1.83333333 8.5-5.5" />
+                                <path d="m2.5 3.423-2 2.077" />
+                                <path d="m14.5 3.423 2 2.077" />
+                                <path d="m10.5 6 1 2.5" />
+                                <path d="m6.5 6-1 2.5" />
+                            </g>
+                        </svg>
                         <!-- Icono de ojo abierto (oculto por defecto) -->
-                        <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <svg class="icon-eye-slash" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor" style="display: none;">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
                     </button>
                 </div>
 
@@ -54,23 +71,23 @@
 {% endblock %}
 
 {% block scripts %}
-    <script>
+<script>
     // Se ejecuta cuando el HTML de la página está listo
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // --- Script para el hover del logo (existente) ---
         const logo = document.getElementById('logo-defecto'); //Se selecciona el logo por su ID
-        
+
         //Rutas por defecto
         const imagenPorDefecto = "{% static 'images/logo.png' %}";
         const imagenColor = "{% static 'images/logo_color.png' %}";
 
         //Evento raton encima del Logo
-        logo.addEventListener('mouseenter', function() {
+        logo.addEventListener('mouseenter', function () {
             this.src = imagenColor;
         });
 
         //Evento raton fuera del Logo
-        logo.addEventListener('mouseout', function() {
+        logo.addEventListener('mouseout', function () {
             this.src = imagenPorDefecto;
         });
 

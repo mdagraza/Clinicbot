@@ -4,177 +4,180 @@
   /*height: 100vh;*/
   min-height: 50vh; /**/
   overflow: hidden;
-  width: 100%;    
-  height: 100%;   
+  width: 100%;
+  height: 100%;
+  align-items: center;
 }
 
 /* Cada sección (bienvenida y login) ocupa la mitad del espacio */
-.welcome-section, .login-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    /*padding: 20px;*/
-    padding: 40px 20px; /**/
-    min-width: 0; /**/
+.welcome-section,
+.login-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /*padding: 20px;*/
+  padding: 40px 20px; /**/
+  min-width: 0; /**/
 }
 
 /* Imagen de home */
 .center-image {
-    width: 300px;
-    height: auto;
-    margin-bottom: 20px;
-    animation-name: slideInDown;
-    animation-duration: 1s;
+  width: 300px;
+  height: auto;
+  margin-bottom: 20px;
+  animation-name: slideInDown;
+  animation-duration: 1s;
 }
 
 .otros_logos {
-    max-width: 80%; /* Que no exceda el 80% del ancho de su contenedor */
-    height: auto;   /* Mantiene la proporción */
-    margin-top: 20px;
+  max-width: 80%; /* Que no exceda el 80% del ancho de su contenedor */
+  height: auto; /* Mantiene la proporción */
+  margin-top: 20px;
 }
 
 .text-container h1 {
-    font-size: 60px;
-    font-weight: bold;
-    color: #333;
-    animation-name: slideInUp;
-    animation-duration: 1500ms;
+  font-size: 60px;
+  font-weight: bold;
+  color: #333;
+  animation-name: slideInUp;
+  animation-duration: 1500ms;
 }
 
-@keyframes slideInDown { 
-    from {
-        transform: translate3d(0, -100%, 0);
-        opacity: 0;
-    }
-    to {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
+@keyframes slideInDown {
+  from {
+    transform: translate3d(0, -100%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideInUp {
-    from {
-        transform: translate3d(0, 100%, 0);
-        opacity: 0;
-    }
-    to {
-        transform: translate3d(0, 0, 0);
-        opacity: 1;
-    }
+  from {
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
 }
 
 /* Formulario de Login */
 form {
-    width: 100%;
-    max-width: 400px;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 form h2 {
-    text-align: center;
-    margin-bottom: 25px;
-    color: #333;
-    font-size: 24px; 
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+  font-size: 24px;
 }
 
 form input {
-    width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border-color 0.3s ease; 
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
 }
 
 form input:focus {
-    outline: none;
-    border-color: #4a90e2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
 }
 
 form button:not(.toggle-password) {
-    width: 100%;
-    padding: 12px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  width: 100%;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 form button:not(.toggle-password):hover {
-    background-color: #3a7bc8;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  background-color: #3a7bc8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Wrapper para el input de contraseña para posicionar el botón */
 .password-input-wrapper {
-    position: relative;
-    /* Hacemos que ocupe el ancho y tenga el margen del input original */
-    margin-bottom: 20px;
+  position: relative;
+  /* Hacemos que ocupe el ancho y tenga el margen del input original */
+  margin-bottom: 20px;
 }
 
 /* El input dentro del wrapper debe tener espacio a la derecha para el botón */
 .password-input-wrapper input {
-    /* Quitamos el margen que ahora tiene el wrapper */
-    margin-bottom: 0; 
-    /* Añadimos padding para que el texto no se solape con el botón */
-    padding-right: 45px !important; /* !important para asegurar que sobreescribe el estilo general */
+  /* Quitamos el margen que ahora tiene el wrapper */
+  margin-bottom: 0;
+  /* Añadimos padding para que el texto no se solape con el botón */
+  padding-right: 45px !important; /* !important para asegurar que sobreescribe el estilo general */
 }
 
 /* Estilo para el botón de mostrar/ocultar contraseña */
 .toggle-password {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaa; /* Un color gris neutro */
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa; /* Un color gris neutro */
 }
 
 .toggle-password:hover {
-    color: #333; /* Oscurecer al pasar el ratón */
+  color: #333; /* Oscurecer al pasar el ratón */
 }
 
 /* Estilo para los iconos SVG dentro del botón */
 .toggle-password svg {
-    width: 20px;
-    height: 20px;
+  width: 20px;
+  height: 20px;
 }
 
 @media screen and (max-width: 768px) {
-    .main-container {
-        flex-direction: column;
-        padding: 0;
-    }
-    .welcome-section {
-        padding-bottom: 0;
-    }
-    .login-section {
-        width: 90%;
-        max-width: 400px;
-        padding-top: 30px;
-    }
-    .center-image {
-        width: 200px;
-    }
-    .text-container h1 {
-        font-size: 48px;
-    }
+  .main-container {
+    flex-direction: column;
+    padding: 0;
+    align-items: center;
+  }
+  .welcome-section {
+    padding-bottom: 0;
+  }
+  .login-section {
+    width: 90%;
+    max-width: 400px;
+    padding-top: 30px;
+  }
+  .center-image {
+    width: 200px;
+  }
+  .text-container h1 {
+    font-size: 48px;
+  }
 }

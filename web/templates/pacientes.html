@@ -26,7 +26,7 @@
                 <li>No hay pacientes registrados</li>
                 {% endif %}
                 {% for paciente in pacientes %}
-                <li id="li{{ paciente.id }}"
+                <li id="li{{ paciente.id }}" data-user="{{ paciente.tipo_usuario }}"
                     onclick="editarPaciente('{{ paciente.id }}', '{{ paciente.nombre }}', '{{ paciente.apellidos }}', '{{ paciente.ident_muestra }}', '{{ paciente.ident_petri }}', '{{ paciente.edad }}', '{{ paciente.email }}', '{{ paciente.genero }}', '{{ paciente.gr_sanguineo }}')">
                     {{ paciente.apellidos }}, {{ paciente.nombre }}
                 </li>
@@ -39,17 +39,25 @@
         <div class="tabs">
             <button class="tab-button active" onclick="openTab(event, 'datos-paciente')"><i
                     class="fa-solid fa-user"></i>Datos Paciente</button>
+            {% if visu_muestras %}
             <button class="tab-button" onclick="openTab(event, 'datos-muestras')"><i
                     class="fa-solid fa-vial"></i>Muestras de Sangre</button>
+            {% endif %}
+            {% if visu_petri %}
             <button class="tab-button" onclick="openTab(event, 'datos-petri')"><i
                     class="fa-solid fa-microscope"></i>Análisis de placas petri</button>
+            {% endif %}
         </div>
 
         {% include "pacientes-datos.html" %}
 
+        {% if visu_muestras %}
         {% include "pacientes-muestras.html" %}
+        {% endif %}
 
+        {% if visu_petri %}
         {% include "pacientes-petri.html" %}
+        {% endif %}
     </div>
 </div>
 
@@ -60,7 +68,6 @@
     let pacienteSeleccionado; //Se guarda el id del paciente seleccionado
     let muestraSeleccionada; //Se guarda el id de la muestra seleccionada
     let petriSeleccionada; //Se guarda el id de la petri seleccionada
-    let placas_petri; //Se guarda las placas petri del paciente seleccionado
 
     let abortController = null; //Variable global o fuera de la función, para poder abortar el fetch anterior
 
@@ -78,26 +85,40 @@
         document.getElementById('gr_sanguineo').value = gr_sanguineo;
         document.getElementById('guardarDatos').innerText = "Actualizar paciente";
 
-        document.getElementById('formulario-muestras').style.display = 'none';
-        document.getElementById('cerrarFormMuestra').style.display = 'none';
+        const formM = document.getElementById('formulario-muestras');
+        if (formM) formM.style.display = 'none';
+        const cerrarM = document.getElementById('cerrarFormMuestra');
+        if (cerrarM) cerrarM.style.display = 'none';
 
-        document.getElementById('formulario-petri').style.display = 'none';
-        document.getElementById('cerrarFormPetri').style.display = 'none';
+        if (document.getElementById('formulario-petri')) {
+            document.getElementById('formulario-petri').style.display = 'none';
+            document.getElementById('cerrarFormPetri').style.display = 'none';
+        }
+
 
         if (pacienteSeleccionado) {
-            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal"; //Se pone no35503550rmal el paciente previamente seleccionado
+            const prevEl = document.getElementById(pacienteSeleccionado);
+            if (prevEl) prevEl.style.fontWeight = "normal"; //Se pone normal el paciente previamente seleccionado
             muestraSeleccionada = null; // Resetea la muestra seleccionada
             petriSeleccionada = null; // Resetea la petri seleccionada
         }
         pacienteSeleccionado = "li" + String(id);
-        document.getElementById(pacienteSeleccionado).style.fontWeight = "bold";
+        const pacienteEl = document.getElementById(pacienteSeleccionado);
+        if (pacienteEl) pacienteEl.style.fontWeight = "bold";
 
         // Limpiar la lista mientras se cargan los datos y mostrar mensaje de carga
-        document.getElementById("muestras-lista").innerHTML = "";
-        document.getElementById("petri-lista").innerHTML = "";
-
-        document.getElementById("muestras-lista").appendChild(document.createElement("li")).innerText = "Cargando muestras...";
-        document.getElementById("petri-lista").appendChild(document.createElement("li")).innerText = "Cargando análisis de placas petri...";
+        const listaMuestrasElm = document.getElementById("muestras-lista");
+        if (listaMuestrasElm) {
+            listaMuestrasElm.innerHTML = "";
+            listaMuestrasElm.appendChild(document.createElement("li")).innerText = "Cargando muestras...";
+            document.getElementById("muestras-no-relacionadas").checked = false; //quitar check de no relacionadas
+        }
+        const listaPetriElm = document.getElementById("petri-lista");
+        if (listaPetriElm) {
+            listaPetriElm.innerHTML = "";
+            listaPetriElm.appendChild(document.createElement("li")).innerText = "Cargando análisis de placas petri...";
+            document.getElementById("petri-no-relacionadas").checked = false; //quitar check de no relacionadas
+        }
 
         // Abortar la solicitud fetch anterior si existe
         if (abortController) {
@@ -111,25 +132,22 @@
             .then(response => response.json())
             .then(muestras => {
                 let listaMuestras = document.getElementById("muestras-lista");
+                if (!listaMuestras) return; // No hay lista de muestras en el DOM, salir
                 listaMuestras.innerHTML = ""; // Limpiar la lista
 
                 if (muestras.length > 0) {
-                    // Save the muestras globally for editarMuestra
-                    window._lastMuestras = muestras;
                     muestras.forEach(muestra => {
                         let li = document.createElement("li");
                         li.setAttribute('id', "li" + String(muestra.id));
                         li.setAttribute('data-muestra-id', muestra.id);
                         li.setAttribute('data-paciente-id', id);
-                        // Mostrar identificacion y tipo_muestra
-                        let tipoMuestra = (muestra.datos_muestra && muestra.datos_muestra.tipo_muestra) ? muestra.datos_muestra.tipo_muestra : "";
-                        li.innerText = muestra.identificacion + " | " + tipoMuestra;
+                        if (muestra.tipo_usuario) {
+                            li.setAttribute('data-user', muestra.tipo_usuario);
+                        }
+                        li.innerText = muestra.identificacion + " | " + muestra.datos_muestra.tipo_muestra;
                         li.onclick = function () {
                             editarMuestra(
-                                muestra.id,
-                                muestra.identificacion,
-                                tipoMuestra
-                                // No more undefined variables; all data is fetched inside editarMuestra
+                                muestra
                             );
                         };
                         listaMuestras.appendChild(li);
@@ -143,21 +161,28 @@
             .catch(error => console.error("Error al obtener las muestras:", error));
 
         // Obtener petri del paciente seleccionado
+
         fetch(`/obtener_petri/${ident_petri}/`, { signal })
             .then(response => response.json())
             .then(petris => {
                 let listaPetri = document.getElementById("petri-lista");
+                if (!listaPetri) return;
                 listaPetri.innerHTML = ""; // Limpiar la lista
-                placas_petri = petris; // Guardar las placas petri en una variable global
+
                 if (petris.length > 0) {
                     petris.forEach((petri, i) => {
                         let li = document.createElement("li");
                         li.setAttribute('id', "li" + String(petri.id));
                         li.setAttribute('data-petri-id', petri.id);
                         li.setAttribute('data-paciente-id', id);
+                        if (petri.tipo_usuario) {
+                            li.setAttribute('data-user', petri.tipo_usuario);
+                        }
                         li.innerText = petri.identificacion + " | " + petri.datos_muestra.tipo;
                         li.onclick = function () {
-                            editarPetri(i);
+                            editarPetri(
+                                petri
+                            );
                         };
                         listaPetri.appendChild(li);
                     });
@@ -168,9 +193,16 @@
                 }
             })
             .catch(error => console.error("Error al obtener las placas petri:", error));
+
     }
 
     function nuevoUser() {
+        openTab(event, 'datos-paciente');
+        limpiarFormularios();
+        document.querySelector('.tabs').querySelector('.tab-button').classList.add('active'); //Se pone tab como activo manualmente
+    }
+
+    function limpiarFormularios() {
         document.getElementById('paciente_id').value = "";
         document.getElementById('paciente_id2').value = "";
         document.getElementById('nombre').value = "";
@@ -183,32 +215,55 @@
         document.getElementById('gr_sanguineo').value = "";
         document.getElementById('guardarDatos').innerText = "Guardar paciente";
 
-        document.getElementById("muestras-lista").innerHTML = "";
-        let li = document.createElement("li");
-        li.innerText = "No hay muestras asociadas";
-        document.getElementById("muestras-lista").appendChild(li);
+        // Limpiar listas de muestras y petri
+        const lista_muestras = document.getElementById("muestras-lista");
+        if (lista_muestras) {
+            lista_muestras.innerHTML = "";
+            let li = document.createElement("li");
+            li.innerText = "Sin paciente seleccionado";
+            lista_muestras.appendChild(li);
+        }
+        const lista_petri = document.getElementById("petri-lista");
+        if (lista_petri) {
+            lista_petri.innerHTML = "";
+            let li = document.createElement("li");
+            li.innerText = "Sin paciente seleccionado";
+            lista_petri.appendChild(li);
+        }
 
-        document.getElementById('formulario-muestras').style.display = 'none';
-        document.getElementById('cerrarFormMuestra').style.display = 'none';
+        const formM2 = document.getElementById('formulario-muestras');
+        if (formM2) formM2.style.display = 'none';
+        const cerrarM2 = document.getElementById('cerrarFormMuestra');
+        if (cerrarM2) cerrarM2.style.display = 'none';
 
-        document.getElementById('formulario-petri').style.display = 'none';
-        document.getElementById('cerrarFormPetri').style.display = 'none';
+        if (document.getElementById('formulario-petri')) {
+            document.getElementById('formulario-petri').style.display = 'none';
+        }
+        if (document.getElementById('cerrarFormPetri')) {
+            document.getElementById('cerrarFormPetri').style.display = 'none';
+        }
 
-        document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
+        if (pacienteSeleccionado && document.getElementById(pacienteSeleccionado)) {
+            document.getElementById(pacienteSeleccionado).style.fontWeight = "normal";
+        }
     }
 
-    function editarMuestra(muestraId, identificacion, color, posicion, fecha) {
+    function editarMuestra(muestra) {
+        const divMuestra = document.getElementById('datos-muestras');
+        if (!divMuestra) return; // No está la pestaña de muestras en el HTML, salir sin hacer nada
 
-        let muestra = null;
-        if (window._lastMuestras && Array.isArray(window._lastMuestras)) {
-            muestra = window._lastMuestras.find(m => m.id == muestraId);
-        }
-        if (!muestra) {
-            muestra = {
-                id: muestraId,
-                identificacion: identificacion,
-                datos_muestra: { tipo_muestra: tipo_muestra, fecha: datos_muestra_fecha },
-            };
+        resetImageViewer('muestraImage');
+
+        //Fecha de recepción
+        const fechaRecibidoEl = divMuestra.querySelector('.fechaRecibido');
+        if (fechaRecibidoEl) {
+            const fechaRecibido = muestra.fecha_recepcion ? new Date(muestra.fecha_recepcion) : null;
+            fechaRecibidoEl.textContent = fechaRecibido
+                ? `Fecha recepción: ${fechaRecibido.toLocaleDateString()} ${fechaRecibido.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}`
+                : '';
         }
 
         // Set all fields
@@ -247,9 +302,6 @@
 
         // Resultados
         document.getElementById('superficie_1_cuadrado').value = muestra.resultados.superficie_contada_1_cuadrado ?? ""
-        console.log(muestra.resultados.superficie_contada_5_cuadrados);
-        console.log(muestra.resultados.profundidad_camara_recuento);
-        console.log(muestra.resultados.factor_dilucion);
         document.getElementById('superficie_5_cuadrados').value = muestra.resultados.superficie_contada_5_cuadrados ?? ""
         document.getElementById('profundidad_camara').value = muestra.resultados.profundidad_camara_recuento ?? ""
         document.getElementById('factor_dilucion').value = muestra.resultados.factor_dilucion ?? ""
@@ -262,90 +314,108 @@
         document.getElementById('valores_referencia_mujeres').value = muestra.resultados.valores_referencia_mujeres ?? ""
         document.getElementById('valores_referencia_hombres').value = muestra.resultados.valores_referencia_hombres ?? ""
 
-        document.getElementById('formulario-muestras').style.display = 'block';
-        document.getElementById('formulario-muestras').scrollIntoView({ behavior: 'smooth' });
+        const formMElm = divMuestra.querySelector('#formulario-muestras');
+        if (formMElm) {
+            formMElm.style.display = 'block';
+            formMElm.scrollIntoView({ behavior: 'smooth' });
+        }
 
-        document.getElementById('cerrarFormMuestra').style.display = 'block'; //Mostrar boton cerrar
+        const cerrarBtnM = divMuestra.querySelector('#cerrarFormMuestra');
+        if (cerrarBtnM) cerrarBtnM.style.display = 'block'; //Mostrar boton cerrar
 
         if (muestraSeleccionada) {
-            document.getElementById(muestraSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+            const prevM = document.getElementById(muestraSeleccionada);
+            if (prevM) prevM.style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
         }
-        muestraSeleccionada = "li" + String(muestraId);
-        document.getElementById(muestraSeleccionada).style.fontWeight = "bold";
+        muestraSeleccionada = "li" + String(muestra.id);
+        const currM = document.getElementById(muestraSeleccionada);
+        if (currM) currM.style.fontWeight = "bold";
     }
 
-    function editarPetri(petriIndex) {
-        // Ocultar ventana de imagen si estaba visible
-        document.getElementById('imageViewerContent').style.display = 'none';
-        document.getElementById('toggleImageViewer').querySelector('.toggle-icon').classList.remove('rotated');
-        document.getElementById('toggleImageViewer').querySelector('.toggle-text').textContent = 'Mostrar imagen';
-        document.getElementById('petriImage').style.display = 'none';
-        document.getElementById('petriImage').src = '';
+    function editarPetri(petri) {
+        const divPetri = document.getElementById('datos-petri');
+        if (!divPetri) return; // No está la pestaña de muestras en el HTML, salir sin hacer nada       
 
-        const divPestana = document.getElementById('datos-petri');
+        resetImageViewer('petriImage');
 
-        divPestana.querySelector('#petri_id').value = placas_petri[petriIndex].id;
+        //Fecha de recepción
+        const fechaRecibidoEl = divPetri.querySelector('.fechaRecibido');
+        if (fechaRecibidoEl) {
+            const fechaRecibido = petri.fecha_recepcion ? new Date(petri.fecha_recepcion) : null;
+            fechaRecibidoEl.textContent = fechaRecibido
+                ? `Fecha recepción: ${fechaRecibido.toLocaleDateString()} ${fechaRecibido.toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}`
+                : '';
+        }
 
-        divPestana.querySelector('#identificacion').value = placas_petri[petriIndex].identificacion;
+        divPetri.querySelector('#petri_id').value = petri.id;
 
-        divPestana.querySelector('#placa').value = placas_petri[petriIndex].placa;
+        divPetri.querySelector('#identificacion').value = petri.identificacion;
+
+        divPetri.querySelector('#placa').value = petri.placa;
         //datos_muestra
-        divPestana.querySelector('#tipo').value = placas_petri[petriIndex].datos_muestra.tipo;
-        divPestana.querySelector('#fecha').value = placas_petri[petriIndex].datos_muestra.fecha;
-        divPestana.querySelector('#hora').value = placas_petri[petriIndex].datos_muestra.hora;
-        divPestana.querySelector('#metodo_siembra').value = placas_petri[petriIndex].datos_muestra.metodo_siembra;
-        divPestana.querySelector('#tipo_medio').value = placas_petri[petriIndex].datos_muestra.tipo_medio;
-        divPestana.querySelector('#volumen').value = placas_petri[petriIndex].datos_muestra.volumen;
-        divPestana.querySelector('#dilucion').value = placas_petri[petriIndex].datos_muestra.dilucion;
-        divPestana.querySelector('#tiempo_incubacion').value = placas_petri[petriIndex].datos_muestra.tiempo_incubacion;
-        divPestana.querySelector('#temperatura').value = placas_petri[petriIndex].datos_muestra.temperatura;
+        divPetri.querySelector('#tipo').value = petri.datos_muestra.tipo;
+        divPetri.querySelector('#fecha').value = petri.datos_muestra.fecha;
+        divPetri.querySelector('#hora').value = petri.datos_muestra.hora;
+        divPetri.querySelector('#metodo_siembra').value = petri.datos_muestra.metodo_siembra;
+        divPetri.querySelector('#tipo_medio').value = petri.datos_muestra.tipo_medio;
+        divPetri.querySelector('#volumen').value = petri.datos_muestra.volumen;
+        divPetri.querySelector('#dilucion').value = petri.datos_muestra.dilucion;
+        divPetri.querySelector('#tiempo_incubacion').value = petri.datos_muestra.tiempo_incubacion;
+        divPetri.querySelector('#temperatura').value = petri.datos_muestra.temperatura;
         //imagen
-        divPestana.querySelector('#id_imagen').value = placas_petri[petriIndex].datos_imagen.id_imagen;
-        divPestana.querySelector('#extension').value = placas_petri[petriIndex].datos_imagen.extension;
-        divPestana.querySelector('#resolucion').value = placas_petri[petriIndex].datos_imagen.resolucion;
-        divPestana.querySelector('#umbral_color').value = placas_petri[petriIndex].datos_imagen.umbral_color;
-        divPestana.querySelector('#r').value = placas_petri[petriIndex].datos_imagen.rgb.r;
-        divPestana.querySelector('#g').value = placas_petri[petriIndex].datos_imagen.rgb.g;
-        divPestana.querySelector('#b').value = placas_petri[petriIndex].datos_imagen.rgb.b;
-        divPestana.querySelector('#h').value = placas_petri[petriIndex].datos_imagen.hsv.h;
-        divPestana.querySelector('#s').value = placas_petri[petriIndex].datos_imagen.hsv.s;
-        divPestana.querySelector('#v').value = placas_petri[petriIndex].datos_imagen.hsv.v;
+        divPetri.querySelector('#id_imagen').value = petri.datos_imagen.id_imagen;
+        divPetri.querySelector('#extension').value = petri.datos_imagen.extension;
+        divPetri.querySelector('#resolucion').value = petri.datos_imagen.resolucion;
+        divPetri.querySelector('#umbral_color').value = petri.datos_imagen.umbral_color;
+        divPetri.querySelector('#r').value = petri.datos_imagen.rgb.r;
+        divPetri.querySelector('#g').value = petri.datos_imagen.rgb.g;
+        divPetri.querySelector('#b').value = petri.datos_imagen.rgb.b;
+        divPetri.querySelector('#h').value = petri.datos_imagen.hsv.h;
+        divPetri.querySelector('#s').value = petri.datos_imagen.hsv.s;
+        divPetri.querySelector('#v').value = petri.datos_imagen.hsv.v;
         //datos_analisis
-        divPestana.querySelector('#radio_min').value = placas_petri[petriIndex].datos_analisis.radio_min;
-        divPestana.querySelector('#radio_max').value = placas_petri[petriIndex].datos_analisis.radio_max;
+        divPetri.querySelector('#radio_min').value = petri.datos_analisis.radio_min;
+        divPetri.querySelector('#radio_max').value = petri.datos_analisis.radio_max;
         //resultados
-        divPestana.querySelector('#colonias_placa').value = placas_petri[petriIndex].resultados.colonias_placa;
-        divPestana.querySelector('#colonias_muestra').value = placas_petri[petriIndex].resultados.colonias_muestra;
-        divPestana.querySelector('#objetos_no_validos').value = placas_petri[petriIndex].resultados.objetos_no_validos;
+        divPetri.querySelector('#colonias_placa').value = petri.resultados.colonias_placa;
+        divPetri.querySelector('#colonias_muestra').value = petri.resultados.colonias_muestra;
+        divPetri.querySelector('#objetos_no_validos').value = petri.resultados.objetos_no_validos;
 
 
-        divPestana.querySelector('#formulario-petri').style.display = 'block';
-        divPestana.querySelector('#formulario-petri').scrollIntoView({ behavior: 'smooth' });
+        divPetri.querySelector('#formulario-petri').style.display = 'block';
+        divPetri.querySelector('#formulario-petri').scrollIntoView({ behavior: 'smooth' });
 
-        divPestana.querySelector('#cerrarFormPetri').style.display = 'block'; //Mostrar boton cerrar
+        divPetri.querySelector('#cerrarFormPetri').style.display = 'block'; //Mostrar boton cerrar
 
         if (petriSeleccionada) {
-            divPestana.querySelector('#' + petriSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
+            divPetri.querySelector('#' + petriSeleccionada).style.fontWeight = "normal"; //Se pone normal la muestra previamente seleccionado
         }
-        petriSeleccionada = "li" + String(placas_petri[petriIndex].id);
-        divPestana.querySelector('#' + petriSeleccionada).style.fontWeight = "bold";
+        petriSeleccionada = "li" + String(petri.id);
+        divPetri.querySelector('#' + petriSeleccionada).style.fontWeight = "bold";
     }
 
     //Evento botón para cerrar el formulario de Muestra abierta
-    document.getElementById('cerrarFormMuestra').addEventListener('click', function () {
-        document.getElementById('formulario-muestras').style.display = 'none';
-        document.getElementById('cerrarFormMuestra').style.display = 'none';
+    if (document.getElementById('cerrarFormMuestra')) {
+        document.getElementById('cerrarFormMuestra').addEventListener('click', function () {
+            if (document.getElementById('formulario-muestras')) document.getElementById('formulario-muestras').style.display = 'none';
+            document.getElementById('cerrarFormMuestra').style.display = 'none';
 
-        document.getElementById(muestraSeleccionada).style.fontWeight = "normal";
-    });
+            if (muestraSeleccionada && document.getElementById(muestraSeleccionada)) document.getElementById(muestraSeleccionada).style.fontWeight = "normal";
+        });
+    }
 
     //Evento botón para cerrar el formulario de Petri abierta
-    document.getElementById('cerrarFormPetri').addEventListener('click', function () {
-        document.getElementById('formulario-petri').style.display = 'none';
-        document.getElementById('cerrarFormPetri').style.display = 'none';
+    if (document.getElementById('cerrarFormPetri')) {
+        document.getElementById('cerrarFormPetri').addEventListener('click', function () {
+            if (document.getElementById('formulario-petri')) document.getElementById('formulario-petri').style.display = 'none';
+            document.getElementById('cerrarFormPetri').style.display = 'none';
 
-        document.getElementById(petriSeleccionada).style.fontWeight = "normal";
-    });
+            if (petriSeleccionada && document.getElementById(petriSeleccionada)) document.getElementById(petriSeleccionada).style.fontWeight = "normal";
+        });
+    }
 
     function openTab(evt, tabName) {
         var i, tabcontent, tabbuttons;
@@ -364,9 +434,27 @@
         evt.currentTarget.classList.add("active");
     }
 
-    function borrarBuscador() {
-        document.getElementById("buscarPaciente").value = "";
-        filtrarPaciente();
+    function limpiarBuscador(idText) {
+        document.getElementById(idText).value = "";
+    }
+
+    function borrarBuscador() { //Si hay algo escrito se borra el buscador, si no se limpa paciente seleccionado
+        if (document.getElementById("buscarPaciente").value) {
+            limpiarBuscador("buscarPaciente");
+            filtrarPaciente();
+        } else {
+            limpiarFormularios();
+        }
+    }
+
+    function borrarBuscadorMuestra() {
+        limpiarBuscador("buscarMuestra");
+        filtrarMuestra();
+    }
+
+    function borrarBuscadorPetri() {
+        limpiarBuscador("buscarPetri");
+        filtrarPetri();
     }
 
     // Función para eliminar tildes/acentos de un texto
@@ -374,11 +462,11 @@
         return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
-    function filtrarPaciente() {
+    function filtrar(idText, contenedor, lista) {
         var input, filter, ul, li, a, i, txtValue;
-        input = document.getElementById('buscarPaciente');
+        input = document.getElementById(idText);
         filter = quitarTildes(input.value.toUpperCase());
-        ul = document.querySelector('.lista2 ul');
+        ul = document.querySelector(contenedor + ' ' + lista + ' ul');
         li = ul.getElementsByTagName('li');
 
         for (i = 0; i < li.length; i++) {
@@ -393,39 +481,71 @@
         }
     }
 
+    function filtrarPaciente() {
+        filtrar('buscarPaciente', '.main-container', '.lista2');
+    }
+
+    function filtrarMuestra() {
+        filtrar('buscarMuestra', '#datos-muestras', '.lista22');
+    }
+
+    function filtrarPetri() {
+        filtrar('buscarPetri', '#datos-petri', '.lista22');
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
-        const toggleBtn = document.getElementById('toggleImageViewer');
-        const openTabBtn = document.getElementById('petriImage');
-        const viewerContent = document.getElementById('imageViewerContent');
-        const toggleIcon = toggleBtn.querySelector('.toggle-icon');
-        const toggleText = toggleBtn.querySelector('.toggle-text');
-        const petriImage = document.getElementById('petriImage');
-        const imagePlaceholder = document.getElementById('imagePlaceholder');
-        const idImagenInput = document.getElementById('id_imagen');
-        const extensionInput = document.getElementById('extension');
+        // ===== VISOR DE IMAGEN PETRI =====
+        const datosPetri = document.getElementById('datos-petri');
+        let toggleBtn, openTabBtn, viewerContent, toggleIcon, toggleText, petriImage, imagePlaceholder, idImagenInput, extensionInput;
+        if (datosPetri) {
+            toggleBtn = datosPetri.querySelector('#toggleImageViewer');
+            openTabBtn = datosPetri.querySelector('#petriImage');
+            viewerContent = datosPetri.querySelector('#imageViewerContent');
+            toggleIcon = toggleBtn ? toggleBtn.querySelector('.toggle-icon') : null;
+            toggleText = toggleBtn ? toggleBtn.querySelector('.toggle-text') : null;
+            petriImage = datosPetri.querySelector('#petriImage');
+            imagePlaceholder = datosPetri.querySelector('#imagePlaceholder');
+            idImagenInput = datosPetri.querySelector('#id_imagen');
+            extensionInput = datosPetri.querySelector('#extension');
+        }
+
+        // ===== VISOR DE IMAGEN MUESTRAS =====
+        const datosMuestras = document.getElementById('datos-muestras');
+        let toggleBtnMuestra, viewerContentMuestra, muestraImage, imagePlaceholderMuestra, idImagenInputMuestra, extensionInputMuestra;
+        if (datosMuestras) {
+            toggleBtnMuestra = datosMuestras.querySelector('#toggleImageViewerMuestra');
+            viewerContentMuestra = datosMuestras.querySelector('#imageViewerContentMuestra');
+            muestraImage = datosMuestras.querySelector('#muestraImage');
+            imagePlaceholderMuestra = datosMuestras.querySelector('#imagePlaceholderMuestra');
+            idImagenInputMuestra = datosMuestras.querySelector('#id_imagen');
+            extensionInputMuestra = datosMuestras.querySelector('#extension_imagen');
+        }
 
         // Toggle del visualizador
-        toggleBtn.addEventListener('click', function () {
-            const isVisible = viewerContent.style.display !== 'none';
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function () {
+                const isVisible = viewerContent && viewerContent.style.display !== 'none';
 
-            if (isVisible) {
-                viewerContent.style.display = 'none';
-                toggleIcon.classList.remove('rotated');
-                toggleText.textContent = 'Mostrar imagen';
-                openTabBtn.style.display = 'none';
-            } else {
-                viewerContent.style.display = 'block';
-                toggleIcon.classList.add('rotated');
-                toggleText.textContent = 'Ocultar imagen';
-                updateImageDisplay();
-                if (petriImage.src && petriImage.src !== window.location.href) {
-                    openTabBtn.style.display = 'flex';
+                if (isVisible) {
+                    if (viewerContent) viewerContent.style.display = 'none';
+                    if (toggleIcon) toggleIcon.classList.remove('rotated');
+                    if (toggleText) toggleText.textContent = 'Mostrar imagen';
+                    if (openTabBtn) openTabBtn.style.display = 'none';
+                } else {
+                    if (viewerContent) viewerContent.style.display = 'block';
+                    if (toggleIcon) toggleIcon.classList.add('rotated');
+                    if (toggleText) toggleText.textContent = 'Ocultar imagen';
+                    updateImageDisplay();
+                    if (petriImage && petriImage.src && petriImage.src !== window.location.href) {
+                        if (openTabBtn) openTabBtn.style.display = 'flex';
+                    }
                 }
-            }
-        });
+            });
+        }
 
         // Función para actualizar la visualización de la imagen
         function updateImageDisplay() {
+            if (!idImagenInput || !extensionInput || !petriImage || !imagePlaceholder) return;
             const idImagen = idImagenInput.value.trim();
             const extension = extensionInput.value.trim();
 
@@ -435,7 +555,11 @@
                 petriImage.src = imageUrl;
                 petriImage.style.display = 'block';
                 imagePlaceholder.style.display = 'none';
-                openTabBtn.style.display = viewerContent.style.display === 'block' ? 'flex' : 'none';
+                if (viewerContent) {
+                    openTabBtn.style.display = viewerContent.style.display === 'block' ? 'flex' : 'none';
+                } else if (openTabBtn) {
+                    openTabBtn.style.display = 'none';
+                }
 
                 // Manejar errores de carga
                 petriImage.onerror = function () {
@@ -447,7 +571,7 @@
                         <p>No se pudo encontrar la imagen: ${idImagen}.${extension}</p>
                     </div>
                 `;
-                    openTabBtn.style.display = 'none';
+                    if (openTabBtn) openTabBtn.style.display = 'none';
                 };
             } else {
                 petriImage.style.display = 'none';
@@ -458,23 +582,219 @@
                     <p>Introduce el ID de imagen para visualizar</p>
                 </div>
             `;
-                openTabBtn.style.display = 'none';
+                if (openTabBtn) openTabBtn.style.display = 'none';
             }
         }
 
         // Abrir imagen en nueva pestaña
-        openTabBtn.addEventListener('click', function () {
-            if (petriImage.src && petriImage.src !== window.location.href) {
-                window.open(petriImage.src, '_blank');
-            }
-        });
+        if (openTabBtn) {
+            openTabBtn.addEventListener('click', function () {
+                if (petriImage && petriImage.src && petriImage.src !== window.location.href) {
+                    window.open(petriImage.src, '_blank');
+                }
+            });
+        }
 
         // Actualizar imagen cuando cambien los campos
-        idImagenInput.addEventListener('input', updateImageDisplay);
-        extensionInput.addEventListener('input', updateImageDisplay);
+        if (idImagenInput) idImagenInput.addEventListener('input', updateImageDisplay);
+        if (extensionInput) extensionInput.addEventListener('input', updateImageDisplay);
 
         // Actualizar imagen al cargar la página si ya hay valores
-        updateImageDisplay();
+        if (datosPetri) updateImageDisplay();
+
+        // ===== FUNCIONALIDAD VISOR MUESTRAS =====
+        if (toggleBtnMuestra) {
+            const toggleIconMuestra = toggleBtnMuestra.querySelector('.toggle-icon');
+            const toggleTextMuestra = toggleBtnMuestra.querySelector('.toggle-text');
+
+            // Toggle del visualizador de muestras
+            toggleBtnMuestra.addEventListener('click', function () {
+                const isVisible = viewerContentMuestra && viewerContentMuestra.style.display !== 'none';
+
+                if (isVisible) {
+                    if (viewerContentMuestra) viewerContentMuestra.style.display = 'none';
+                    if (toggleIconMuestra) toggleIconMuestra.classList.remove('rotated');
+                    if (toggleTextMuestra) toggleTextMuestra.textContent = 'Mostrar imagen';
+                } else {
+                    if (viewerContentMuestra) viewerContentMuestra.style.display = 'block';
+                    if (toggleIconMuestra) toggleIconMuestra.classList.add('rotated');
+                    if (toggleTextMuestra) toggleTextMuestra.textContent = 'Ocultar imagen';
+                    updateImageDisplayMuestra();
+                }
+            });
+
+            // Función para actualizar la visualización de la imagen de muestras
+            function updateImageDisplayMuestra() {
+                if (!idImagenInputMuestra || !extensionInputMuestra || !muestraImage || !imagePlaceholderMuestra) return;
+                const idImagen = idImagenInputMuestra.value.trim();
+                const extension = extensionInputMuestra.value.trim();
+
+                if (idImagen && extension) {
+                    const imageUrl = `{{ data_image.IMAGE_URLBASE|safe|escapejs }}`.replaceAll('\\', '/') + `/muestras/${idImagen}.${extension}`;
+
+                    muestraImage.src = imageUrl;
+                    muestraImage.style.display = 'block';
+                    imagePlaceholderMuestra.style.display = 'none';
+
+                    // Manejar errores de carga
+                    muestraImage.onerror = function () {
+                        muestraImage.style.display = 'none';
+                        imagePlaceholderMuestra.style.display = 'flex';
+                        imagePlaceholderMuestra.innerHTML = `
+                        <div class="placeholder-text">
+                            <span>❌</span>
+                            <p>No se pudo encontrar la imagen: ${idImagen}.${extension}</p>
+                        </div>
+                    `;
+                    };
+                } else {
+                    if (muestraImage) muestraImage.style.display = 'none';
+                    if (imagePlaceholderMuestra) {
+                        imagePlaceholderMuestra.style.display = 'flex';
+                        imagePlaceholderMuestra.innerHTML = `
+                        <div class="placeholder-text">
+                            <span>📸</span>
+                            <p>Introduce el ID de imagen para visualizar</p>
+                        </div>
+                    `;
+                    }
+                }
+            }
+
+            // Abrir imagen en nueva pestaña al hacer clic
+            if (muestraImage) {
+                muestraImage.addEventListener('click', function () {
+                    if (muestraImage.src && muestraImage.src !== window.location.href) {
+                        window.open(muestraImage.src, '_blank');
+                    }
+                });
+            }
+
+            // Actualizar imagen cuando cambien los campos
+            if (idImagenInputMuestra) idImagenInputMuestra.addEventListener('input', updateImageDisplayMuestra);
+            if (extensionInputMuestra) extensionInputMuestra.addEventListener('change', updateImageDisplayMuestra);
+
+            // Actualizar imagen al cargar la página si ya hay valores
+            if (datosMuestras) updateImageDisplayMuestra();
+        }
+    });
+
+    function resetImageViewer(imagen) {
+        let ViewerContent;
+        let Toggle;
+        if (imagen.includes('petri')) { //TODO: Corregir esto
+            ViewerContent = document.getElementById('imageViewerContent');
+            Toggle = document.getElementById('toggleImageViewer');
+        } else {
+            ViewerContent = document.getElementById('imageViewerContentMuestra');
+            Toggle = document.getElementById('toggleImageViewerMuestra');
+        }
+        const ImageEl = document.getElementById(imagen);
+        if (ViewerContent) ViewerContent.style.display = 'none';
+        if (Toggle) {
+            const icon = Toggle.querySelector('.toggle-icon');
+            const text = Toggle.querySelector('.toggle-text');
+            if (icon) icon.classList.remove('rotated');
+            if (text) text.textContent = 'Mostrar imagen';
+        }
+        if (ImageEl) {
+            ImageEl.style.display = 'none';
+            ImageEl.src = '';
+        }
+    }
+
+    //Muestras no relaciadas con ningún paciente
+    document.getElementById("muestras-no-relacionadas").addEventListener("change", function (event) {
+        if (event.target.checked) {
+            limpiarFormularios();
+
+            // Limpiar la lista mientras se cargan los datos y mostrar mensaje de carga
+            const listaMuestrasElm = document.getElementById("muestras-lista");
+            if (listaMuestrasElm) {
+                listaMuestrasElm.innerHTML = "";
+                listaMuestrasElm.appendChild(document.createElement("li")).innerText = "Cargando muestras...";
+            }
+
+            fetch(`/obtener_muestras_no_relacionadas/`)
+                .then(response => response.json())
+                .then(muestras => {
+                    let listaMuestras = document.getElementById("muestras-lista");
+                    if (!listaMuestras) return; // No hay lista de muestras en el DOM, salir
+                    listaMuestras.innerHTML = ""; // Limpiar la lista
+
+                    if (muestras.length > 0) {
+                        muestras.forEach(muestra => {
+                            let li = document.createElement("li");
+                            li.setAttribute('id', "li" + String(muestra.id));
+                            li.setAttribute('data-muestra-id', muestra.id);
+                            if (muestra.tipo_usuario) {
+                                li.setAttribute('data-user', muestra.tipo_usuario);
+                            }
+                            li.innerText = muestra.identificacion + " | " + muestra.datos_muestra.tipo_muestra;
+                            li.onclick = function () {
+                                editarMuestra(
+                                    muestra
+                                );
+                            };
+                            listaMuestras.appendChild(li);
+                        });
+                    } else {
+                        let li = document.createElement("li");
+                        li.innerText = "No hay muestras asociadas";
+                        listaMuestras.appendChild(li);
+                    }
+                })
+                .catch(error => console.error("Error al obtener las muestras:", error));
+
+        } else {
+            limpiarFormularios();
+        }
+    });
+    //Placas petri no relaciadas con ningún paciente
+    document.getElementById("petri-no-relacionadas").addEventListener("change", function (event) {
+        if (event.target.checked) {
+            limpiarFormularios();
+
+            // Limpiar la lista mientras se cargan los datos y mostrar mensaje de carga
+            const listaPetriElm = document.getElementById("petri-lista");
+            if (listaPetriElm) {
+                listaPetriElm.innerHTML = "";
+                listaPetriElm.appendChild(document.createElement("li")).innerText = "Cargando análisis de placas petri...";
+            }
+
+            fetch(`/obtener_petri_no_relacionadas/`)
+                .then(response => response.json())
+                .then(petris => {
+                    let listaPetri = document.getElementById("petri-lista");
+                    if (!listaPetri) return;
+                    listaPetri.innerHTML = ""; // Limpiar la lista
+
+                    if (petris.length > 0) {
+                        petris.forEach((petri, i) => {
+                            let li = document.createElement("li");
+                            li.setAttribute('id', "li" + String(petri.id));
+                            li.setAttribute('data-petri-id', petri.id);
+                            if (petri.tipo_usuario) {
+                                li.setAttribute('data-user', petri.tipo_usuario);
+                            }
+                            li.innerText = petri.identificacion + " | " + petri.datos_muestra.tipo;
+                            li.onclick = function () {
+                                editarPetri(
+                                    petri
+                                );
+                            };
+                            listaPetri.appendChild(li);
+                        });
+                    } else {
+                        let li = document.createElement("li");
+                        li.innerText = "No hay análisis de placas petri asociadas";
+                        listaPetri.appendChild(li);
+                    }
+                })
+                .catch(error => console.error("Error al obtener las placas petri:", error));
+        } else {
+            limpiarFormularios();
+        }
     });
 </script>
 
